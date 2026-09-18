@@ -1,10 +1,11 @@
-[gd_scene load_steps=19 format=3 uid="uid://d4e8q1arenamain"]
+[gd_scene load_steps=20 format=3 uid="uid://d4e8q1arenamain"]
 
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="1_hud"]
 [ext_resource type="Script" path="res://scripts/managers/game_manager.gd" id="2_gm"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="3_player"]
 [ext_resource type="Script" path="res://scripts/camera/camera_follow.gd" id="4_cam"]
 [ext_resource type="PackedScene" path="res://scenes/environment/xp_gem.tscn" id="5_gem"]
+[ext_resource type="Script" path="res://scripts/environment/world_manager.gd" id="6_wm"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
 size = Vector3(80, 1, 80)
@@ -55,8 +56,8 @@ ambient_light_color = Color(0.75, 0.82, 0.75, 1)
 ambient_light_energy = 0.9
 tonemap_mode = 3
 glow_enabled = true
-glow_intensity = 0.8
-glow_bloom = 0.3
+glow_intensity = 0.9
+glow_bloom = 0.35
 
 [node name="Arena" type="Node3D"]
 
@@ -66,8 +67,11 @@ environment = SubResource("Environment_1")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 25, 0)
 light_color = Color(1, 0.98, 0.92, 1)
-light_energy = 1.2
+light_energy = 1.25
 shadow_enabled = true
+
+[node name="WorldManager" type="Node" parent="."]
+script = ExtResource("6_wm")
 
 [node name="Ground" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)

@@ -1,13 +1,18 @@
 class_name HUD
 extends CanvasLayer
 
-## Exact Magica.io Style Mobile HUD
+## Exact Magica.io Style Mobile HUD with 9-World Selection Carousel
 
 var alive_label: Label
 var kills_label: Label
 var level_label: Label
 var xp_bar: ProgressBar
 var kill_feed_container: VBoxContainer
+
+var world_manager: WorldManager = null
+var world_title_label: Label = null
+var prev_world_btn: Button = null
+var next_world_btn: Button = null
 
 var victory_panel: Control
 var defeat_panel: Control
@@ -38,6 +43,11 @@ func _ensure_initialized() -> void:
 	level_label = find_child("LevelLabel", true, false) as Label
 	xp_bar = find_child("XPBar", true, false) as ProgressBar
 	kill_feed_container = find_child("KillFeedContainer", true, false) as VBoxContainer
+	
+	world_title_label = find_child("WorldTitleLabel", true, false) as Label
+	prev_world_btn = find_child("PrevWorldBtn", true, false) as Button
+	next_world_btn = find_child("NextWorldBtn", true, false) as Button
+	
 	victory_panel = find_child("VictoryPanel", true, false) as Control
 	defeat_panel = find_child("DefeatPanel", true, false) as Control
 	rank_label = find_child("RankLabel", true, false) as Label
@@ -46,6 +56,38 @@ func _ensure_initialized() -> void:
 		restart_button_vic = victory_panel.find_child("RestartButton", true, false) as Button
 	if defeat_panel:
 		restart_button_def = defeat_panel.find_child("RestartButton", true, false) as Button
+
+	# Connect World Manager
+	call_deferred("_connect_world_manager")
+
+func _connect_world_manager() -> void:
+	world_manager = get_tree().current_scene.find_child("WorldManager", true, false) as WorldManager
+	if world_manager:
+		if not world_manager.world_changed.is_connected(_on_world_changed):
+			world_manager.world_changed.connect(_on_world_changed)
+		if prev_world_btn and not prev_world_btn.pressed.is_connected(world_manager.prev_world):
+			prev_world_btn.pressed.connect(world_manager.prev_world)
+		if next_world_btn and not next_world_btn.pressed.is_connected(world_manager.next_world):
+			next_world_btn.pressed.connect(world_manager.next_world)
+		_on_world_changed(world_manager.current_world_index, world_manager.WORLDS_DATA[world_manager.current_world_index]["name"])
+
+func _on_world_changed(_idx: int, wname: String) -> void:
+	if world_title_label:
+		world_title_label.text = wname
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		var keycode := (event as InputEventKey).keycode
+		if keycode >= KEY_1 and keycode <= KEY_9:
+			var target_index: int = keycode - KEY_1
+			if world_manager:
+				world_manager.apply_world(target_index)
+		elif keycode == KEY_BRACKETLEFT or keycode == KEY_COMMA:
+			if world_manager:
+				world_manager.prev_world()
+		elif keycode == KEY_BRACKETRIGHT or keycode == KEY_PERIOD:
+			if world_manager:
+				world_manager.next_world()
 
 func update_alive_count(alive: int, _total: int = 15) -> void:
 	_ensure_initialized()

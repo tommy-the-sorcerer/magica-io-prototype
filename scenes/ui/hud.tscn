@@ -3,14 +3,14 @@
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_badge"]
-bg_color = Color(0, 0, 0, 0.4)
+bg_color = Color(0, 0, 0, 0.45)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pill"]
-bg_color = Color(0, 0, 0, 0.35)
+bg_color = Color(0, 0, 0, 0.4)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
@@ -97,19 +97,54 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -140.0
-offset_top = 20.0
+offset_top = 16.0
 offset_right = 140.0
-offset_bottom = 54.0
+offset_bottom = 48.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_pill")
 
 [node name="LevelLabel" type="Label" parent="TopCenter"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 18
 text = "Level 1"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="WorldSelector" type="HBoxContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -170.0
+offset_top = 56.0
+offset_right = 170.0
+offset_bottom = 90.0
+grow_horizontal = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="PrevWorldBtn" type="Button" parent="WorldSelector"]
+custom_minimum_size = Vector2(36, 32)
+layout_mode = 2
+text = "◀"
+
+[node name="Panel" type="PanelContainer" parent="WorldSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+
+[node name="WorldTitleLabel" type="Label" parent="WorldSelector/Panel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.45, 1)
+theme_override_font_sizes/font_size = 14
+text = "🌲 1. Emerald Plains"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NextWorldBtn" type="Button" parent="WorldSelector"]
+custom_minimum_size = Vector2(36, 32)
+layout_mode = 2
+text = "▶"
 
 [node name="TopLeft" type="HBoxContainer" parent="."]
 offset_left = 20.0
