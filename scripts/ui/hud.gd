@@ -45,7 +45,7 @@ func update_player_xp(curr_xp: float, max_xp: float, level: int) -> void:
 
 func add_kill_feed(killer_name: String, victim_name: String, is_player_killer: bool) -> void:
 	var label := Label.new()
-	label.theme_override_font_sizes/font_size = 14
+	label.add_theme_font_size_override("font_size", 14)
 	
 	if is_player_killer:
 		label.text = "👑 YOU 💥 %s" % victim_name
