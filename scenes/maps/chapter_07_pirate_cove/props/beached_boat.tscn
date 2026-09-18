@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://pcboat01"]
+
+[ext_resource type="PackedScene" path="res://assets/nature_kit/canoe.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_boat"]
+size = Vector3(1.8, 1.0, 3.8)
+
+[node name="BeachedBoat" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_boat")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)

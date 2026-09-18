@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cscrypt01"]
+
+[ext_resource type="PackedScene" path="res://assets/graveyard_kit/crypt-large.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_crypt"]
+size = Vector3(4.5, 4.0, 5.0)
+
+[node name="SwampCrypt" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
+shape = SubResource("BoxShape3D_crypt")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.4, 0, 0, 0, 2.4, 0, 0, 0, 2.4, 0, 0, 0)

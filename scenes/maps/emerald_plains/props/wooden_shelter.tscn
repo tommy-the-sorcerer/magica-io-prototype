@@ -1,0 +1,60 @@
+[gd_scene load_steps=7 format=3 uid="uid://c8woodensheltertscn"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_shelter"]
+size = Vector3(4.4, 2.8, 3.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_timber"]
+albedo_color = Color(0.48, 0.32, 0.18, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_post"]
+top_radius = 0.14
+bottom_radius = 0.16
+height = 2.6
+radial_segments = 6
+
+[sub_resource type="BoxMesh" id="BoxMesh_beam"]
+size = Vector3(4.2, 0.22, 0.22)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plank_roof"]
+albedo_color = Color(0.42, 0.28, 0.16, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="BoxMesh_roof_plank"]
+size = Vector3(4.6, 0.15, 3.6)
+
+[node name="WoodenShelter" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+shape = SubResource("BoxShape3D_shelter")
+
+[node name="Post1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 1.3, 1.4)
+mesh = SubResource("CylinderMesh_post")
+surface_material_override/0 = SubResource("StandardMaterial3D_timber")
+
+[node name="Post2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 1.3, 1.4)
+mesh = SubResource("CylinderMesh_post")
+surface_material_override/0 = SubResource("StandardMaterial3D_timber")
+
+[node name="Post3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 1.1, -1.4)
+mesh = SubResource("CylinderMesh_post")
+surface_material_override/0 = SubResource("StandardMaterial3D_timber")
+
+[node name="Post4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 1.1, -1.4)
+mesh = SubResource("CylinderMesh_post")
+surface_material_override/0 = SubResource("StandardMaterial3D_timber")
+
+[node name="FrontBeam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 1.4)
+mesh = SubResource("BoxMesh_beam")
+surface_material_override/0 = SubResource("StandardMaterial3D_timber")
+
+[node name="RoofPlank" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.984808, -0.173648, 0, 0.173648, 0.984808, 0, 2.45, 0)
+mesh = SubResource("BoxMesh_roof_plank")
+surface_material_override/0 = SubResource("StandardMaterial3D_plank_roof")

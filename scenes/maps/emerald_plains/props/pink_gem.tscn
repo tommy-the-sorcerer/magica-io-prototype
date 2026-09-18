@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://r44bi44smdv5"]
+
+[ext_resource type="Script" path="res://scripts/core/base_coin.gd" id="1_coin"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_gem"]
+radius = 0.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pink_gem"]
+albedo_color = Color(1, 0.25, 0.75, 1)
+roughness = 0.15
+emission_enabled = true
+emission = Color(1, 0.15, 0.7, 1)
+emission_energy_multiplier = 2.4
+
+[sub_resource type="PrismMesh" id="PrismMesh_top"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="PrismMesh" id="PrismMesh_bottom"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[node name="PinkDiamond" type="Area3D"]
+collision_layer = 8
+collision_mask = 1
+script = ExtResource("1_coin")
+coin_value = 1
+rotation_speed = 3.5
+bob_amplitude = 0.15
+bob_frequency = 4.5
+magnet_range = 5.0
+magnet_speed = 16.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_gem")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("PrismMesh_top")
+surface_material_override/0 = SubResource("StandardMaterial3D_pink_gem")
+
+[node name="BottomCone" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0.25, 0)
+mesh = SubResource("PrismMesh_bottom")
+surface_material_override/0 = SubResource("StandardMaterial3D_pink_gem")

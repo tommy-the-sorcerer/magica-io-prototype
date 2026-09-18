@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://qdn33k0kpxqq"]
+
+[ext_resource type="Script" path="res://scripts/core/hazards/damage_zone.gd" id="1_dmg"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_crack"]
+size = Vector3(1.8, 0.1, 7.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fissure_lava"]
+albedo_color = Color(1, 0.35, 0, 1)
+emission_enabled = true
+emission = Color(1, 0.28, 0, 1)
+emission_energy_multiplier = 3.2
+roughness = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fissure_col"]
+size = Vector3(2.2, 1.2, 7.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rock_lip"]
+size = Vector3(0.4, 0.25, 7.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_crust"]
+albedo_color = Color(0.15, 0.12, 0.16, 1)
+roughness = 0.95
+
+[node name="LavaCrack" type="Node3D"]
+
+[node name="DamageArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_dmg")
+damage_per_second = 30.0
+initial_hit_damage = 15.0
+hazard_name = "Lava Fissure"
+
+[node name="LavaGlow" type="MeshInstance3D" parent="DamageArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+mesh = SubResource("BoxMesh_crack")
+surface_material_override/0 = SubResource("StandardMaterial3D_fissure_lava")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DamageArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_fissure_col")
+
+[node name="RockLipLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0, 0.1, 0)
+mesh = SubResource("BoxMesh_rock_lip")
+surface_material_override/0 = SubResource("StandardMaterial3D_crust")
+
+[node name="RockLipRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 0.1, 0)
+mesh = SubResource("BoxMesh_rock_lip")
+surface_material_override/0 = SubResource("StandardMaterial3D_crust")
+
+[node name="CrackLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+light_color = Color(1, 0.45, 0.1, 1)
+light_energy = 1.8
+omni_range = 5.5

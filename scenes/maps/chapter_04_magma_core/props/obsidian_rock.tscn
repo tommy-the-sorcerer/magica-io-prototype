@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://mcobsidian01"]
+
+[ext_resource type="PackedScene" path="res://assets/nature_kit/stone_largeC.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_obsidian"]
+size = Vector3(3.2, 2.4, 2.8)
+
+[node name="ObsidianRock" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+shape = SubResource("BoxShape3D_obsidian")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)

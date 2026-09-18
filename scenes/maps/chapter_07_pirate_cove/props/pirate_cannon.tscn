@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://pccannon01"]
+
+[ext_resource type="PackedScene" path="res://assets/pirate_kit/cannon.glb" id="1_cannon"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cannon"]
+size = Vector3(1.8, 1.2, 2.4)
+
+[node name="PirateCannon" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("BoxShape3D_cannon")
+
+[node name="CannonModel" parent="." instance=ExtResource("1_cannon")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)

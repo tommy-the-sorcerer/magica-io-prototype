@@ -1,0 +1,90 @@
+[gd_scene load_steps=12 format=3 uid="uid://c8gorgontreantkingtscn"]
+
+[ext_resource type="Script" path="res://scripts/maps/emerald_plains/gorgon_treant_king.gd" id="1_boss"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_boss"]
+height = 5.2
+radius = 1.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bark"]
+albedo_color = Color(0.28, 0.18, 0.12, 1)
+roughness = 0.95
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_torso"]
+top_radius = 1.4
+bottom_radius = 1.8
+height = 3.6
+radial_segments = 10
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_moss_foliage"]
+albedo_color = Color(0.18, 0.42, 0.22, 1)
+roughness = 0.85
+
+[sub_resource type="SphereMesh" id="SphereMesh_head_canopy"]
+radius = 1.6
+height = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glowing_eyes"]
+albedo_color = Color(1, 0.75, 0.1, 1)
+emission_enabled = true
+emission = Color(1, 0.7, 0.05, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_eye"]
+size = Vector3(0.25, 0.15, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_arm"]
+size = Vector3(0.6, 2.8, 0.6)
+
+[node name="GorgonTreantKing" type="CharacterBody3D"]
+collision_layer = 3
+collision_mask = 7
+script = ExtResource("1_boss")
+max_health = 650.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, 0)
+shape = SubResource("CylinderShape3D_boss")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 650.0
+
+[node name="Nameplate3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.2, 0)
+billboard = 1
+font_size = 28
+outline_size = 8
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="Torso" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
+mesh = SubResource("CylinderMesh_torso")
+surface_material_override/0 = SubResource("StandardMaterial3D_bark")
+
+[node name="HeadCanopy" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+mesh = SubResource("SphereMesh_head_canopy")
+surface_material_override/0 = SubResource("StandardMaterial3D_moss_foliage")
+
+[node name="LeftEye" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 4.2, -1.35)
+mesh = SubResource("BoxMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_glowing_eyes")
+
+[node name="RightEye" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 4.2, -1.35)
+mesh = SubResource("BoxMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_glowing_eyes")
+
+[node name="LeftBranchArm" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 2.4, 0)
+mesh = SubResource("BoxMesh_arm")
+surface_material_override/0 = SubResource("StandardMaterial3D_bark")
+
+[node name="RightBranchArm" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 2.4, 0)
+mesh = SubResource("BoxMesh_arm")
+surface_material_override/0 = SubResource("StandardMaterial3D_bark")

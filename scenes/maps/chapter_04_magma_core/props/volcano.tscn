@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://mcvolcano01"]
+
+[ext_resource type="Script" path="res://scripts/maps/chapter_04_magma_core/volcano_controller.gd" id="1_ctrl"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_04_magma_core/props/falling_volcanic_rock.tscn" id="2_bomb"]
+[ext_resource type="Script" path="res://scripts/core/hazards/heat_zone.gd" id="3_heat"]
+[ext_resource type="Script" path="res://scripts/core/hazards/damage_zone.gd" id="4_damage"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_volcano_cone"]
+top_radius = 5.5
+bottom_radius = 12.5
+height = 6.5
+radial_segments = 24
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_volcanic_rock"]
+albedo_color = Color(0.16, 0.14, 0.18, 1)
+roughness = 0.92
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_volcano_col"]
+height = 6.5
+radius = 11.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_caldera_lava"]
+top_radius = 5.2
+bottom_radius = 5.2
+height = 0.4
+radial_segments = 24
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_caldera_lava"]
+albedo_color = Color(1, 0.35, 0, 1)
+emission_enabled = true
+emission = Color(1, 0.25, 0, 1)
+emission_energy_multiplier = 3.8
+roughness = 0.15
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_lava_core"]
+height = 2.0
+radius = 5.2
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_heat_field"]
+height = 10.0
+radius = 28.0
+
+[node name="Volcano" type="Node3D"]
+script = ExtResource("1_ctrl")
+falling_rock_scene = ExtResource("2_bomb")
+eruption_rock_count = 6
+arena_spread_radius = 26.0
+
+[node name="MountainBody" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MountainBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.25, 0)
+mesh = SubResource("CylinderMesh_volcano_cone")
+surface_material_override/0 = SubResource("StandardMaterial3D_volcanic_rock")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MountainBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.25, 0)
+shape = SubResource("CylinderShape3D_volcano_col")
+
+[node name="CalderaLava" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.4, 0)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("4_damage")
+damage_per_second = 50.0
+initial_hit_damage = 25.0
+hazard_name = "Caldera Lava"
+
+[node name="LavaMesh" type="MeshInstance3D" parent="CalderaLava"]
+mesh = SubResource("CylinderMesh_caldera_lava")
+surface_material_override/0 = SubResource("StandardMaterial3D_caldera_lava")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CalderaLava"]
+shape = SubResource("CylinderShape3D_lava_core")
+
+[node name="LavaLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 0)
+light_color = Color(1, 0.45, 0.1, 1)
+light_energy = 2.5
+omni_range = 14.0
+
+[node name="MountainContactDamage" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("4_damage")
+damage_per_second = 30.0
+initial_hit_damage = 15.0
+hazard_name = "Volcano Magma Rock"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MountainContactDamage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.25, 0)
+shape = SubResource("CylinderShape3D_volcano_col")

@@ -79,17 +79,18 @@ func shoot_spell() -> void:
 	# Spawn Fireball Projectile
 	var fireball_scene := load("res://scenes/spells/fireball.tscn")
 	if fireball_scene:
-		var proj := fireball_scene.instantiate() as Projectile
-		proj.caster = self
-		get_tree().current_scene.add_child(proj)
-		
-		# Position at wand flame tip
-		var spawn_pos: Vector3 = wand_flame.global_position if wand_flame else global_position + Vector3(0, 0.8, 0)
-		proj.global_position = spawn_pos
-		
-		# Shoot forward in player's facing direction
-		var forward_dir: Vector3 = -visuals.global_transform.basis.z
-		proj.look_at(spawn_pos + forward_dir, Vector3.UP)
+		var proj: Projectile = fireball_scene.instantiate() as Projectile
+		if proj:
+			proj.caster = self
+			get_tree().current_scene.add_child(proj)
+			
+			# Position at wand flame tip
+			var spawn_pos: Vector3 = wand_flame.global_position if wand_flame else global_position + Vector3(0, 0.8, 0)
+			proj.global_position = spawn_pos
+			
+			# Shoot forward in player's facing direction
+			var forward_dir: Vector3 = -visuals.global_transform.basis.z
+			proj.look_at(spawn_pos + forward_dir, Vector3.UP)
 	
 	# Punchy recoil animation on right arm
 	if right_arm_pivot:

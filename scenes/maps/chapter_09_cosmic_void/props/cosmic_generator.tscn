@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cvgenerator01"]
+
+[ext_resource type="PackedScene" path="res://assets/space_kit/machine_generator.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_generator"]
+size = Vector3(2.5, 3.0, 2.5)
+
+[node name="CosmicGenerator" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("BoxShape3D_generator")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 0, 0, 0)
+
+[node name="GeneratorLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+light_color = Color(0, 0.8, 1, 1)
+light_energy = 2.0
+omni_range = 6.0

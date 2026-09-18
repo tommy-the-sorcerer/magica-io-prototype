@@ -78,6 +78,10 @@ func _update_nameplate(current_hp: float, max_hp: float) -> void:
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= 9.8 * delta
+		if global_position.y < -22.0:
+			if health_component and not health_component.is_dead:
+				health_component.take_damage(99999, null)
+			return
 
 	match current_state:
 		State.MATCH_START:

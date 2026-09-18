@@ -9,12 +9,12 @@ extends Camera3D
 @export var min_distance: float = 5.0
 @export var max_distance: float = 24.0
 @export var zoom_speed: float = 1.5
-var current_distance: float = 11.0
-var target_distance: float = 11.0
+var current_distance: float = 16.0
+var target_distance: float = 16.0
 
 # Orbit / 360-Degree Rotation
 var yaw: float = 0.0 # Horizontal 360 degree rotation in radians
-var pitch: float = -42.0 # Isometric tilt angle in degrees
+var pitch: float = -45.0 # Isometric tilt angle in degrees
 var is_dragging: bool = false
 var touch_start_dist: float = 0.0
 var active_touches: Dictionary = {}

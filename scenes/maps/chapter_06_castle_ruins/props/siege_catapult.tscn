@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://crcatapult01"]
+
+[ext_resource type="PackedScene" path="res://assets/castle_kit/siege-catapult.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_catapult"]
+size = Vector3(3.5, 2.5, 3.2)
+
+[node name="SiegeCatapult" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+shape = SubResource("BoxShape3D_catapult")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 0, 0, 0)

@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://dmcactustall01"]
+
+[ext_resource type="Script" path="res://scripts/maps/chapter_02_desert_mirage/cactus_hazard.gd" id="1_hazard"]
+[ext_resource type="PackedScene" path="res://assets/nature_kit/cactus_tall.glb" id="2_model"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_cactus"]
+height = 3.2
+radius = 0.45
+
+[node name="CactusTall" type="StaticBody3D"]
+script = ExtResource("1_hazard")
+contact_damage = 12.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+shape = SubResource("CylinderShape3D_cactus")
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 0, 0, 0)

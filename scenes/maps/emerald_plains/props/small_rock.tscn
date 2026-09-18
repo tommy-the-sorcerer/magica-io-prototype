@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://c8smallrocktscn"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_slate"]
+albedo_color = Color(0.50, 0.54, 0.51, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="BoxMesh_small_stone"]
+size = Vector3(0.55, 0.25, 0.45)
+
+[node name="SmallRock" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9, 0, 0.3, 0, 1, 0, -0.3, 0, 0.9, 0, 0.12, 0)
+mesh = SubResource("BoxMesh_small_stone")
+surface_material_override/0 = SubResource("StandardMaterial3D_slate")

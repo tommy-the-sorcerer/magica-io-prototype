@@ -1,0 +1,22 @@
+﻿[gd_resource type="Resource" script_class="ChapterLevelData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/chapter_level_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+level_number = 5
+level_title = "Level 5: Gathering Gale"
+enemy_count = 12
+coin_count = 24
+storm_shrink_duration = 130.0
+storm_start_radius = 46.0
+storm_end_radius = 10.0
+storm_dps = 6.0
+sun_color = Color(0.92, 0.90, 0.82, 1)
+sun_energy = 1.15
+ambient_color = Color(0.65, 0.78, 0.62, 1)
+ambient_energy = 0.8
+fog_density = 0.003
+wind_particle_speed = 1.6
+is_boss_level = false
+boss_name = ""

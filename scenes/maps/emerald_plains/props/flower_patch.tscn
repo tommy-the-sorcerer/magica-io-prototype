@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://dwbk6e4bh6gu0"]
+
+[ext_resource type="PackedScene" path="res://assets/nature_kit/grass_large.glb" id="1_grass"]
+[ext_resource type="PackedScene" path="res://assets/nature_kit/flower_yellowA.glb" id="2_flower_y"]
+[ext_resource type="PackedScene" path="res://assets/nature_kit/flower_purpleA.glb" id="3_flower_p"]
+
+[node name="FlowerPatch" type="Node3D"]
+
+[node name="Grass" parent="." instance=ExtResource("1_grass")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0)
+
+[node name="FlowerYellow" parent="." instance=ExtResource("2_flower_y")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0.3, 0, 0.2)
+
+[node name="FlowerPurple" parent="." instance=ExtResource("3_flower_p")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, -0.35, 0, -0.2)
