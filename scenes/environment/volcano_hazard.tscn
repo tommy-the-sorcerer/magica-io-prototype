@@ -1,0 +1,64 @@
+[gd_scene load_steps=8 format=3 uid="uid://c8volcanohazard"]
+
+[ext_resource type="Script" path="res://scripts/environment/hazard_zone.gd" id="1_hz"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_crater"]
+top_radius = 4.5
+bottom_radius = 7.5
+height = 3.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rock"]
+albedo_color = Color(0.22, 0.2, 0.24, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_crater"]
+height = 3.5
+radius = 7.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_lava"]
+height = 1.2
+radius = 4.2
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_lava"]
+top_radius = 4.2
+bottom_radius = 4.2
+height = 0.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lava"]
+albedo_color = Color(1, 0.28, 0, 1)
+emission_enabled = true
+emission = Color(1, 0.22, 0, 1)
+emission_energy_multiplier = 2.5
+roughness = 0.3
+
+[node name="VolcanoHazard" type="StaticBody3D"]
+
+[node name="CraterMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
+mesh = SubResource("CylinderMesh_crater")
+surface_material_override/0 = SubResource("StandardMaterial3D_rock")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
+shape = SubResource("CylinderShape3D_crater")
+
+[node name="LavaArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_hz")
+damage_per_second = 25.0
+hazard_name = "Molten Lava"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LavaArea"]
+shape = SubResource("CylinderShape3D_lava")
+
+[node name="LavaMesh" type="MeshInstance3D" parent="LavaArea"]
+mesh = SubResource("CylinderMesh_lava")
+surface_material_override/0 = SubResource("StandardMaterial3D_lava")
+
+[node name="LavaLight" type="OmniLight3D" parent="LavaArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+light_color = Color(1, 0.4, 0.1, 1)
+light_energy = 3.0
+omni_range = 10.0
