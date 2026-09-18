@@ -24,7 +24,7 @@ To ensure all 4 team members can commit and push simultaneously without overwrit
 | **Person 1** | **Player & Mobile Controls** | `scenes/ui/joystick/`, `scenes/player/`, `scripts/player/`, `scripts/camera/` | Dual virtual joysticks + 3D player movement + wobble-walk + 45° follow camera |
 | **Person 2** | **Spells, Combat & VFX** | `scenes/spells/`, `scripts/spells/`, `scripts/combat/`, `scenes/vfx/` | Fireball AoE + Ice Lance pierce + HealthComponent + explosion particles |
 | **Person 3** | **Arena, Storm & Environment** | `scenes/arena/`, `scenes/environment/`, `scripts/environment/`, `assets/models/` | 3D Voxel arena + shrinking storm barrier + breakable crates + XP gems |
-| **Person 4** | **Bot AI, HUD & Match Loop** | `scenes/bots/`, `scripts/ai/`, `scenes/ui/hud/`, `scripts/managers/` | 10-15 NavMesh wizard bots + Mobile HUD + match win/loss manager |
+| **Person 4** | **Simulated Multiplayer, Bot AI & HUD** | `scenes/bots/`, `scripts/ai/`, `scenes/ui/hud/`, `scenes/ui/matchmaking_screen.tscn`, `scripts/managers/` | Fake 3s matchmaking screen + 14 bots with flags/gamertags + overhead 3D nameplates + Live Kill Feed + win/loss manager |
 
 ---
 
