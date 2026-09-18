@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://c8playerhero"]
+[gd_scene load_steps=12 format=3 uid="uid://c8playerhero"]
 
 [ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_script"]
 [ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
@@ -24,6 +24,14 @@ albedo_color = Color(0.42, 0.22, 0.12, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_hair"]
 size = Vector3(0.46, 0.25, 0.46)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_staff"]
+albedo_color = Color(0.55, 0.35, 0.18, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_staff"]
+top_radius = 0.04
+bottom_radius = 0.04
+height = 0.9
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
@@ -64,3 +72,11 @@ surface_material_override/0 = SubResource("StandardMaterial3D_skin")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
 mesh = SubResource("BoxMesh_hair")
 surface_material_override/0 = SubResource("StandardMaterial3D_hair")
+
+[node name="StaffMesh" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0.35, 0.5, -0.2)
+mesh = SubResource("CylinderMesh_staff")
+surface_material_override/0 = SubResource("StandardMaterial3D_staff")
+
+[node name="CastPoint" type="Marker3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 0.6, -0.6)
