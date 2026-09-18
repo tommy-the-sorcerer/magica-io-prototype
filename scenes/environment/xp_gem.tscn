@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://c8xpgemscene"]
+
+[sub_resource type="GDScript" id="GDScript_gem"]
+script/source = "extends Area3D
+
+func _process(delta: float) -> void:
+	rotation.y += 2.0 * delta
+	position.y = 0.4 + sin(Time.get_ticks_msec() * 0.005 + get_instance_id()) * 0.1
+"
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
+radius = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pink"]
+albedo_color = Color(1.0, 0.45, 0.85, 1)
+emission_enabled = true
+emission = Color(1.0, 0.35, 0.8, 1)
+emission_energy_multiplier = 0.8
+roughness = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_crystal"]
+size = Vector3(0.35, 0.35, 0.35)
+
+[node name="XPGem" type="Area3D"]
+script = SubResource("GDScript_gem")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.707107, -0.707107, 0, 0.5, 0.5, -0.707107, 0.5, 0.5, 0.707107, 0, 0, 0)
+mesh = SubResource("BoxMesh_crystal")
+surface_material_override/0 = SubResource("StandardMaterial3D_pink")

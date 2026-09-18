@@ -1,16 +1,13 @@
 class_name HUD
 extends CanvasLayer
 
-## Mobile In-Game HUD with Alive Counter, Dynamic Kill Feed, and Victory/Defeat Overlays
+## Exact Magica.io Style Mobile HUD
 
 var alive_label: Label
 var kills_label: Label
-var kill_feed_container: VBoxContainer
-
-var hp_bar: ProgressBar
-var hp_label: Label
 var level_label: Label
 var xp_bar: ProgressBar
+var kill_feed_container: VBoxContainer
 
 var victory_panel: Control
 var defeat_panel: Control
@@ -38,11 +35,9 @@ func _ensure_initialized() -> void:
 	_initialized = true
 	alive_label = find_child("AliveLabel", true, false) as Label
 	kills_label = find_child("KillsLabel", true, false) as Label
-	kill_feed_container = find_child("KillFeedContainer", true, false) as VBoxContainer
-	hp_bar = find_child("HPBar", true, false) as ProgressBar
-	hp_label = find_child("HPLabel", true, false) as Label
 	level_label = find_child("LevelLabel", true, false) as Label
 	xp_bar = find_child("XPBar", true, false) as ProgressBar
+	kill_feed_container = find_child("KillFeedContainer", true, false) as VBoxContainer
 	victory_panel = find_child("VictoryPanel", true, false) as Control
 	defeat_panel = find_child("DefeatPanel", true, false) as Control
 	rank_label = find_child("RankLabel", true, false) as Label
@@ -52,29 +47,24 @@ func _ensure_initialized() -> void:
 	if defeat_panel:
 		restart_button_def = defeat_panel.find_child("RestartButton", true, false) as Button
 
-func update_alive_count(alive: int, total: int = 15) -> void:
+func update_alive_count(alive: int, _total: int = 15) -> void:
 	_ensure_initialized()
 	if alive_label:
-		alive_label.text = "👤 Alive: %d / %d" % [alive, total]
+		alive_label.text = "ALIVE: %d" % alive
 
 func add_kill() -> void:
 	_ensure_initialized()
 	current_kills += 1
 	if kills_label:
-		kills_label.text = "⚔️ Kills: %d" % current_kills
+		kills_label.text = "KILLS: %d" % current_kills
 
-func update_player_hp(curr: float, max_hp: float) -> void:
-	_ensure_initialized()
-	if hp_bar:
-		hp_bar.max_value = max_hp
-		hp_bar.value = curr
-	if hp_label:
-		hp_label.text = "%d / %d" % [int(curr), int(max_hp)]
+func update_player_hp(_curr: float, _max_hp: float) -> void:
+	pass
 
 func update_player_xp(curr_xp: float, max_xp: float, level: int) -> void:
 	_ensure_initialized()
 	if level_label:
-		level_label.text = "Lv. %d" % level
+		level_label.text = "Level %d" % level
 	if xp_bar:
 		xp_bar.max_value = max_xp
 		xp_bar.value = curr_xp
@@ -86,16 +76,14 @@ func add_kill_feed(killer_name: String, victim_name: String, is_player_killer: b
 		
 	var label := Label.new()
 	label.add_theme_font_size_override("font_size", 14)
-	
 	if is_player_killer:
 		label.text = "👑 YOU 💥 %s" % victim_name
-		label.modulate = Color(1.0, 0.85, 0.2) # Gold
+		label.modulate = Color(1.0, 0.85, 0.2)
 	else:
 		label.text = "%s 💥 %s" % [killer_name, victim_name]
 		label.modulate = Color(0.9, 0.9, 0.9, 0.85)
 		
 	kill_feed_container.add_child(label)
-	
 	var tween := create_tween()
 	tween.tween_interval(2.5)
 	tween.tween_property(label, "modulate:a", 0.0, 1.0)
