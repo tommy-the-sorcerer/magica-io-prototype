@@ -166,9 +166,10 @@ func _get_mouse_world_dir() -> Vector3:
 	var ray_dir := camera.project_ray_normal(mouse_pos)
 	
 	var ground_plane := Plane(Vector3.UP, global_position.y)
-	var hit_pos = ground_plane.intersects_ray(ray_origin, ray_dir)
-	if hit_pos:
-		var dir := (hit_pos - global_position)
+	var hit_pos: Variant = ground_plane.intersects_ray(ray_origin, ray_dir)
+	if hit_pos is Vector3:
+		var hit_vec: Vector3 = hit_pos
+		var dir: Vector3 = hit_vec - global_position
 		dir.y = 0.0
 		return dir.normalized()
 	return Vector3.ZERO
