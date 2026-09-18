@@ -303,7 +303,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_pill")
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_font_sizes/font_size = 13
-text = "🔄 Trackpad: 2 Fingers Slide Sideways to Orbit 360° | Q / E Keys | Pinch Zoom"
+text = "🎮 WASD: Move | SPACE: Shoot Fireball | RIGHT-CLICK: Dash | LEFT-CLICK Drag: 360° Orbit | Wheel: Zoom"
 horizontal_alignment = 1
 vertical_alignment = 1
 
