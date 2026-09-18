@@ -17,15 +17,17 @@ func take_damage(amount: float, source: Node = null) -> void:
 	if current_health <= 0:
 		return
 	
+	var valid_source: Node = source if is_instance_valid(source) else null
+	
 	current_health = maxf(0.0, current_health - amount)
 	health_changed.emit(current_health, max_health)
-	damaged.emit(amount, source)
+	damaged.emit(amount, valid_source)
 	
 	# Flash parent mesh if visual exists
 	_flash_mesh()
 	
 	if current_health <= 0:
-		died.emit(source)
+		died.emit(valid_source)
 
 func heal(amount: float) -> void:
 	if current_health <= 0:
