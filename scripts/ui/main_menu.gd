@@ -50,6 +50,7 @@ extends Control
 @onready var rewards_btn: Button = $LeftNav/RewardsBtn if has_node("LeftNav/RewardsBtn") else null
 @onready var missions_btn: Button = $LeftNav/MissionsBtn if has_node("LeftNav/MissionsBtn") else null
 @onready var missions_badge: Panel = $LeftNav/MissionsBtn/Badge if has_node("LeftNav/MissionsBtn/Badge") else null
+@onready var chapter_maps_btn: Button = $LeftNav/ChapterMapsBtn if has_node("LeftNav/ChapterMapsBtn") else null
 
 # Lower Left Navigation References
 @onready var heroes_portal_btn: Button = $LowerLeftNav/HeroesPortalBtn if has_node("LowerLeftNav/HeroesPortalBtn") else null
@@ -203,6 +204,8 @@ func _connect_all_ui_buttons() -> void:
 		rewards_btn.pressed.connect(open_rewards)
 	if missions_btn:
 		missions_btn.pressed.connect(open_missions)
+	if chapter_maps_btn:
+		chapter_maps_btn.pressed.connect(open_chapter_maps)
 	if heroes_portal_btn:
 		heroes_portal_btn.pressed.connect(open_heroes_portal)
 	if heroes_btn:
@@ -302,7 +305,18 @@ func _animate_ui_entry() -> void:
 
 # ==============================================================================
 # 3D HERO SHOWCASE, 360° DRAG ROTATION & FLIP ANIMATION
-# ==============================================================================
+const CHAPTER_MAP_SCENES: Array[String] = [
+	"res://scenes/maps/emerald_plains/emerald_plains.tscn",
+	"res://scenes/maps/chapter_02_desert_mirage/desert_mirage.tscn",
+	"res://scenes/maps/chapter_03_frostbite_tundra/frostbite_tundra.tscn",
+	"res://scenes/maps/chapter_04_magma_core/magma_core.tscn",
+	"res://scenes/maps/chapter_05_mystic_grove/mystic_grove.tscn",
+	"res://scenes/maps/chapter_06_castle_ruins/castle_ruins.tscn",
+	"res://scenes/maps/chapter_07_pirate_cove/pirate_cove.tscn",
+	"res://scenes/maps/chapter_08_cursed_swamp/cursed_swamp.tscn",
+	"res://scenes/maps/chapter_09_cosmic_void/cosmic_void.tscn",
+	"res://scenes/maps/chapter_10_celestial_peak/celestial_peak.tscn",
+]
 
 func _unhandled_input(event: InputEvent) -> void:
 	if modal_overlay and modal_overlay.visible:
@@ -313,6 +327,15 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_SPACE:
 			trigger_hero_flip()
+		elif event.keycode >= KEY_1 and event.keycode <= KEY_9:
+			var idx: int = event.keycode - KEY_1
+			if idx < CHAPTER_MAP_SCENES.size():
+				get_tree().change_scene_to_file(CHAPTER_MAP_SCENES[idx])
+		elif event.keycode == KEY_0:
+			if CHAPTER_MAP_SCENES.size() > 9:
+				get_tree().change_scene_to_file(CHAPTER_MAP_SCENES[9])
+		elif event.keycode == KEY_M:
+			open_chapter_maps()
 
 func _gui_input(event: InputEvent) -> void:
 	if modal_overlay and modal_overlay.visible:
@@ -1526,6 +1549,70 @@ func _load_menu_data() -> void:
 				equipped_items = d.equipped_items
 			if d.has("settings_state") and d.settings_state is Dictionary:
 				settings_state = d.settings_state
+
+# ==============================================================================
+# MODAL: GANESH'S 10 CHAPTER MAPS & BOSSES
+# ==============================================================================
+
+func open_chapter_maps() -> void:
+	open_modal("10 CHAPTER MAPS & BOSSES")
+	action_btn.text = "CLOSE"
+	action_btn.pressed.disconnect(close_modal) if action_btn.pressed.is_connected(close_modal) else null
+	action_btn.pressed.connect(close_modal, CONNECT_ONE_SHOT)
+	
+	var sub := Label.new()
+	sub.text = "Select any of Ganesh's 3D Chapter Maps to immediately battle the chapter's boss with Heavenly Ascendant:"
+	sub.add_theme_color_override("font_color", Color(0.85, 0.8, 0.95))
+	sub.add_theme_font_size_override("font_size", 13)
+	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dynamic_content.add_child(sub)
+	
+	var chapter_data: Array = [
+		{"name": "Chapter 1: Emerald Plains", "boss": "👑 Gorgon Treant King", "scene": "res://scenes/maps/emerald_plains/emerald_plains.tscn", "icon": "🌲"},
+		{"name": "Chapter 2: Desert Mirage", "boss": "💀 Anubis Scythe Lord", "scene": "res://scenes/maps/chapter_02_desert_mirage/desert_mirage.tscn", "icon": "🏜️"},
+		{"name": "Chapter 3: Frostbite Tundra", "boss": "❄️ Frost Fiend Ymir", "scene": "res://scenes/maps/chapter_03_frostbite_tundra/frostbite_tundra.tscn", "icon": "⛄"},
+		{"name": "Chapter 4: Magma Core", "boss": "🌋 Ignis Molten Overlord", "scene": "res://scenes/maps/chapter_04_magma_core/magma_core.tscn", "icon": "🔥"},
+		{"name": "Chapter 5: Mystic Grove", "boss": "🍄 Spore Queen Nightshade", "scene": "res://scenes/maps/chapter_05_mystic_grove/mystic_grove.tscn", "icon": "🌿"},
+		{"name": "Chapter 6: Castle Ruins", "boss": "⚔️ Warlord Iron Bane", "scene": "res://scenes/maps/chapter_06_castle_ruins/castle_ruins.tscn", "icon": "🏰"},
+		{"name": "Chapter 7: Pirate Cove", "boss": "🏴‍☠️ Captain Davy Blood Tide", "scene": "res://scenes/maps/chapter_07_pirate_cove/pirate_cove.tscn", "icon": "⚓"},
+		{"name": "Chapter 8: Cursed Swamp", "boss": "🧟 Lord Malakor", "scene": "res://scenes/maps/chapter_08_cursed_swamp/cursed_swamp.tscn", "icon": "🦇"},
+		{"name": "Chapter 9: Cosmic Void", "boss": "🌌 Xeno Gorgon Apex", "scene": "res://scenes/maps/chapter_09_cosmic_void/cosmic_void.tscn", "icon": "🪐"},
+		{"name": "Chapter 10: Celestial Peak", "boss": "✨ Judgment Seraph", "scene": "res://scenes/maps/chapter_10_celestial_peak/celestial_peak.tscn", "icon": "☀️"},
+	]
+	
+	for c in chapter_data:
+		var card := _create_card_panel()
+		var hbox := HBoxContainer.new()
+		hbox.add_theme_constant_override("separation", 14)
+		card.add_child(hbox)
+		
+		var icon_lbl := Label.new()
+		icon_lbl.text = c.icon
+		icon_lbl.add_theme_font_size_override("font_size", 24)
+		hbox.add_child(icon_lbl)
+		
+		var info_vbox := VBoxContainer.new()
+		info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var title := Label.new()
+		title.text = c.name
+		title.add_theme_color_override("font_color", Color(1, 0.9, 0.4))
+		title.add_theme_font_size_override("font_size", 14)
+		info_vbox.add_child(title)
+		
+		var boss_lbl := Label.new()
+		boss_lbl.text = "Boss: %s" % c.boss
+		boss_lbl.add_theme_color_override("font_color", Color(0.9, 0.5, 0.5))
+		boss_lbl.add_theme_font_size_override("font_size", 12)
+		info_vbox.add_child(boss_lbl)
+		hbox.add_child(info_vbox)
+		
+		var battle_btn := _create_action_button("BATTLE ▶", Color(0.2, 0.65, 0.35))
+		var scene_path: String = c.scene
+		battle_btn.pressed.connect(func():
+			get_tree().change_scene_to_file(scene_path)
+		)
+		hbox.add_child(battle_btn)
+		dynamic_content.add_child(card)
 
 # ==============================================================================
 # PLAY TRANSITION

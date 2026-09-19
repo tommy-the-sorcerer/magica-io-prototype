@@ -5,10 +5,10 @@ extends CharacterBody3D
 ## Features animated 4-wing flight fluttering, floating glowing halo, divine spellcasting, and health tracking
 
 @export_group("Movement")
-@export var move_speed: float = 7.5
-@export var acceleration: float = 35.0
-@export var deceleration: float = 45.0
-@export var rotation_speed: float = 720.0
+@export var move_speed: float = 9.0
+@export var acceleration: float = 70.0
+@export var deceleration: float = 85.0
+@export var rotation_speed: float = 960.0
 
 @export_group("Spells")
 @export var fireball_scene: PackedScene = preload("res://scenes/spells/fireball.tscn")
@@ -359,7 +359,7 @@ func _physics_process(delta: float) -> void:
 			visuals.scale = Vector3.ONE
 			visuals.rotation.x = 0.0
 
-	# Input: WASD / Arrow keys (Players can move during casting per specifications)
+	# Input: WASD / Arrow keys (Camera-relative arcade movement)
 	var input_dir := Vector2.ZERO
 	if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
 		input_dir.y -= 1
@@ -371,25 +371,46 @@ func _physics_process(delta: float) -> void:
 		input_dir.x += 1
 	input_dir = input_dir.normalized()
 
-	var effective_speed: float = move_speed * _speed_modifier
 	var is_moving: bool = input_dir.length_squared() > 0.01
 
-	# Core Movement: Acceleration 35 units/s², Deceleration 45 units/s²
+	# Convert 2D input into Camera-Relative 3D world space
+	var cam := get_viewport().get_camera_3d()
+	var cam_forward := -cam.global_transform.basis.z if cam else Vector3.FORWARD
+	cam_forward.y = 0.0
+	cam_forward = cam_forward.normalized()
+	var cam_right := cam.global_transform.basis.x if cam else Vector3.RIGHT
+	cam_right.y = 0.0
+	cam_right = cam_right.normalized()
+
+	var move_dir := Vector3.ZERO
 	if is_moving:
-		var target_vel := Vector3(input_dir.x, 0, input_dir.y) * effective_speed
+		move_dir = (cam_right * input_dir.x + cam_forward * -input_dir.y).normalized()
+
+	var effective_speed: float = move_speed * _speed_modifier
+
+	# Snappy, buttery-smooth arcade momentum
+	if is_moving:
+		var target_vel := move_dir * effective_speed
 		velocity.x = move_toward(velocity.x, target_vel.x, acceleration * delta)
 		velocity.z = move_toward(velocity.z, target_vel.z, acceleration * delta)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, deceleration * delta)
 		velocity.z = move_toward(velocity.z, 0.0, deceleration * delta)
 
-	# Core Rotation: Rotation Speed (towards mouse): 720°/second
+	# Fluid Orientation: Face mouse when aiming/casting, or face movement direction
 	var aim_dir := _get_mouse_aim_direction()
+	var is_actively_aiming := (_is_casting_attack or _is_charging_beam or 
+		Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or 
+		Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT) or 
+		Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE))
+
 	var target_rot_y: float = visuals.rotation.y
-	if aim_dir.length_squared() > 0.01:
+	if is_actively_aiming and aim_dir.length_squared() > 0.01:
 		target_rot_y = atan2(-aim_dir.x, -aim_dir.z)
-	elif is_moving:
-		target_rot_y = atan2(-input_dir.x, -input_dir.y)
+	elif is_moving and move_dir.length_squared() > 0.01:
+		target_rot_y = atan2(-move_dir.x, -move_dir.z)
+	elif aim_dir.length_squared() > 0.01:
+		target_rot_y = atan2(-aim_dir.x, -aim_dir.z)
 
 	var angle_diff: float = wrapf(target_rot_y - visuals.rotation.y, -PI, PI)
 	var max_rot: float = deg_to_rad(rotation_speed) * delta
@@ -401,9 +422,11 @@ func _physics_process(delta: float) -> void:
 
 	if is_moving:
 		var wobble_rate: float = 0.015 * _speed_modifier
-		visuals.rotation.z = sin(Time.get_ticks_msec() * wobble_rate) * 0.1
+		# Dynamic kinetic banking when turning & moving
+		var bank_target: float = clampf(-input_dir.x * 0.14, -0.15, 0.15)
+		visuals.rotation.z = lerp(visuals.rotation.z, bank_target + sin(Time.get_ticks_msec() * wobble_rate) * 0.06, 12.0 * delta)
 	else:
-		visuals.rotation.z = move_toward(visuals.rotation.z, 0, 8.0 * delta)
+		visuals.rotation.z = move_toward(visuals.rotation.z, 0, 10.0 * delta)
 
 	move_and_slide()
 	

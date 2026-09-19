@@ -65,7 +65,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			yaw -= 0.18
 		elif mb.button_index == MOUSE_BUTTON_WHEEL_RIGHT and mb.pressed:
 			yaw += 0.18
-		elif mb.button_index == MOUSE_BUTTON_RIGHT or mb.button_index == MOUSE_BUTTON_MIDDLE or mb.button_index == MOUSE_BUTTON_LEFT:
+		elif mb.button_index == MOUSE_BUTTON_MIDDLE:
 			is_dragging = mb.pressed
 
 	# 4. MOUSE DRAG MOTION (When holding left/right click and moving)
@@ -105,11 +105,6 @@ func _physics_process(delta: float) -> void:
 	if not target or not is_instance_valid(target):
 		_find_target()
 		return
-
-	if Input.is_key_pressed(KEY_Q):
-		yaw -= 2.5 * delta
-	if Input.is_key_pressed(KEY_E):
-		yaw += 2.5 * delta
 
 	current_distance = lerpf(current_distance, target_distance, delta * 8.0)
 

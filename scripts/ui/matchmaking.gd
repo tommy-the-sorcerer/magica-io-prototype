@@ -59,11 +59,33 @@ func _on_all_players_found() -> void:
 	tween.tween_interval(0.6)
 	tween.tween_callback(_start_game)
 
+const CHAPTER_MAPS: Array[String] = [
+	"res://scenes/maps/emerald_plains/emerald_plains.tscn",
+	"res://scenes/maps/chapter_02_desert_mirage/desert_mirage.tscn",
+	"res://scenes/maps/chapter_03_frostbite_tundra/frostbite_tundra.tscn",
+	"res://scenes/maps/chapter_04_magma_core/magma_core.tscn",
+	"res://scenes/maps/chapter_05_mystic_grove/mystic_grove.tscn",
+	"res://scenes/maps/chapter_06_castle_ruins/castle_ruins.tscn",
+	"res://scenes/maps/chapter_07_pirate_cove/pirate_cove.tscn",
+	"res://scenes/maps/chapter_08_cursed_swamp/cursed_swamp.tscn",
+	"res://scenes/maps/chapter_09_cosmic_void/cosmic_void.tscn",
+	"res://scenes/maps/chapter_10_celestial_peak/celestial_peak.tscn",
+]
+
+func _get_target_map_scene() -> String:
+	var lvl: int = 1
+	if LevelManager.instance:
+		lvl = LevelManager.instance.current_level_id
+	var chapter_idx: int = clampi((lvl - 1) / 10, 0, CHAPTER_MAPS.size() - 1)
+	return CHAPTER_MAPS[chapter_idx]
+
 func _start_game() -> void:
 	match_found.emit()
-	# Smooth fade out and transition to gameplay arena
+	var target_scene := _get_target_map_scene()
+	# Smooth fade out and transition to Ganesh's 3D chapter map
 	var tween := create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, 0.4)
 	tween.tween_callback(func():
-		get_tree().change_scene_to_file("res://scenes/arena/arena.tscn")
+		get_tree().change_scene_to_file(target_scene)
 	)
+
