@@ -5,11 +5,16 @@ extends Node
 ## Manages level configurations, difficulty scaling, save/load persistence,
 ## and level progression.
 
-static var instance: LevelManager = null
+static var _instance: LevelManager = null
+static var instance: LevelManager:
+	get:
+		if _instance == null:
+			_instance = LevelManager.new()
+		return _instance
+	set(val):
+		_instance = val
 
 static func get_instance() -> LevelManager:
-	if instance == null:
-		instance = LevelManager.new()
 	return instance
 
 var unlocked_levels: int = 1
@@ -228,6 +233,9 @@ func get_region_for_level(level_id: int) -> Dictionary:
 	elif level_id <= 90: return REGIONS[5]
 	else: return REGIONS[6]
 
+func _enter_tree() -> void:
+	instance = self
+
 func _generate_100_levels() -> void:
 	for i in range(1, 101):
 		var reg: Dictionary = get_region_for_level(i)
@@ -237,13 +245,14 @@ func _generate_100_levels() -> void:
 			lname = "Skull Dragon Citadel (Grand Final Boss)"
 			
 		var difficulty_stars: int = clampi(1 + int(float(i - 1) / 33.0), 1, 3)
+		var diff: Dictionary = scale_difficulty(i)
 		levels[i] = {
 			"id": i,
 			"name": lname,
 			"difficulty_stars": difficulty_stars,
-			"enemy_count": mini(50, 14 + (i - 1)),
-			"reward_xp": 100 + i * 45,
-			"reward_coins": 300 + i * 80,
+			"enemy_count": diff.get("enemy_count", 14),
+			"reward_xp": diff.get("reward_xp", 100 + i * 50),
+			"reward_coins": diff.get("reward_coins", 300 + i * 100),
 			"region_name": r_name,
 			"region_id": reg.get("id", 1),
 			"region_color": reg.get("color", Color.WHITE)
@@ -255,18 +264,40 @@ func get_level_config(level_id: int) -> Dictionary:
 	return levels[1]
 
 func scale_difficulty(level_num: int) -> Dictionary:
+	var lvl: int = maxi(1, level_num)
+	var lvl_factor: float = float(lvl - 1)
+	
+	# Progressive bot count: Level 1: 14, Level 2: 16, Level 3: 17, Level 5: 20...
+	var count: int = clampi(14 + int(lvl_factor * 1.5), 14, 35)
+	
+	# Progressive health: +15% per level (Level 1: 1.0x, Level 2: 1.15x, Level 3: 1.30x...)
+	var hp_mult: float = 1.0 + (lvl_factor * 0.15)
+	
+	# Progressive speed: +3.5% per level, up to 1.45x
+	var spd_mult: float = clampf(1.0 + (lvl_factor * 0.035), 1.0, 1.45)
+	
+	# Progressive bot aggression/attack rate: cooldown reduces slightly
+	var cd_mult: float = clampf(1.0 - (lvl_factor * 0.025), 0.65, 1.0)
+	
 	return {
-		"enemy_health": 100.0 * (1.0 + level_num * 0.05),
-		"enemy_speed": 4.5 * (1.0 + level_num * 0.03),
-		"spawn_rate": maxf(1.0 - level_num * 0.005, 0.3)
+		"enemy_count": count,
+		"health_multiplier": hp_mult,
+		"speed_multiplier": spd_mult,
+		"cooldown_multiplier": cd_mult,
+		"enemy_health": 100.0 * hp_mult,
+		"enemy_speed": 4.4 * spd_mult,
+		"reward_xp": 100 + lvl * 50,
+		"reward_coins": 300 + lvl * 100
 	}
 
 func unlock_next_level() -> void:
-	if current_level_id >= unlocked_levels:
-		unlocked_levels = mini(100, current_level_id + 1)
+	var next_lvl: int = current_level_id + 1
+	if next_lvl > unlocked_levels:
+		unlocked_levels = mini(100, next_lvl)
 	var cfg := get_level_config(current_level_id)
 	player_coins += cfg.get("reward_coins", 300)
 	player_xp += cfg.get("reward_xp", 100)
+	current_level_id = mini(100, next_lvl)
 	save_progression()
 
 func get_selected_player_scene() -> PackedScene:

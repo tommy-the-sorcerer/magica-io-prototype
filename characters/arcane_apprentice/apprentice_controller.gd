@@ -6,13 +6,14 @@ extends CharacterBody3D
 ## [E] Special ability is disabled per specification.
 
 @export_group("Movement")
-@export var move_speed: float = 7.5
-@export var acceleration: float = 35.0
-@export var deceleration: float = 45.0
-@export var rotation_speed: float = 720.0
+@export var move_speed: float = 8.8
+@export var acceleration: float = 52.0
+@export var deceleration: float = 65.0
+@export var rotation_speed: float = 900.0
 
 @export_group("Spells")
 @export var electro_blast_scene: PackedScene = preload("res://characters/arcane_apprentice/skills/electro_blast.tscn")
+@export var fireball_scene: PackedScene = preload("res://scenes/spells/fireball.tscn")
 @export var electro_shield_scene: PackedScene = preload("res://characters/arcane_apprentice/skills/electro_shield.tscn")
 @export var dash_burst_scene: PackedScene = preload("res://characters/arcane_apprentice/vfx/electro_dash_burst.tscn")
 @export var dash_ghost_scene: PackedScene = preload("res://characters/arcane_apprentice/vfx/electro_dash_ghost.tscn")
@@ -28,6 +29,11 @@ const CAST_START_DELAY: float = 0.12
 const ATTACK_RELEASE_TIME: float = 0.20
 const ATTACK_RECOVERY_TIME: float = 0.18
 const TOTAL_ATTACK_ANIM_TIME: float = 0.38
+
+var _current_release_time: float = 0.20
+var _current_total_time: float = 0.38
+var _pending_is_fireball: bool = false
+var _buffered_is_fireball: bool = false
 
 var _is_casting_attack: bool = false
 var _attack_timer: float = 0.0
@@ -97,32 +103,31 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not health_component or not health_component.is_alive():
 		return
 	
-	# Primary attack: Electro Blast (follows Attack Release Standards)
+	# Primary attack: Electro Blast or Space Bar Fireball
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT or event.button_index == MOUSE_BUTTON_RIGHT:
-			_request_electro_blast()
+			_request_attack(false)
 	elif event is InputEventKey and event.pressed and not event.echo:
 		var keycode: int = (event as InputEventKey).keycode
 		if keycode == KEY_SPACE:
-			_request_electro_blast()
+			_request_attack(true)
 		elif (keycode == KEY_R or keycode == KEY_C) and _shield_timer <= 0.0:
 			_cast_electro_shield()
 		elif keycode == KEY_Q and _dash_cd_timer <= 0.0:
 			_perform_dash()
-		# NOTE: [E] key is deliberately NOT bound (no special attack per user request)
 
 ## UI Power Button Triggers
 func trigger_primary_attack() -> void:
 	if not health_component or not health_component.is_alive(): return
-	_request_electro_blast()
+	_request_attack(true)
 
 func trigger_secondary_attack() -> void:
 	if not health_component or not health_component.is_alive(): return
-	_request_electro_blast()
+	_request_attack(false)
 
 func trigger_beam_attack() -> void:
 	if not health_component or not health_component.is_alive(): return
-	_request_electro_blast()
+	_request_attack(false)
 
 func trigger_shield_defense() -> void:
 	if not health_component or not health_component.is_alive(): return
@@ -154,17 +159,17 @@ func _get_mouse_aim_direction() -> Vector3:
 			return dir.normalized()
 	return -visuals.global_transform.basis.z
 
-## Requests Electro Blast with 0.08s input buffering
-func _request_electro_blast() -> void:
+## Requests attack with input buffering (Fireball 0.9s delay or Electro Blast)
+func _request_attack(is_fireball: bool) -> void:
 	if not _is_casting_attack:
-		_start_electro_blast_pipeline()
+		_start_attack_pipeline(is_fireball)
 	else:
-		# Check if button pressed during the 0.08s Input Buffer window before recovery completes
-		var time_remaining: float = TOTAL_ATTACK_ANIM_TIME - _attack_timer
+		var time_remaining: float = _current_total_time - _attack_timer
 		if time_remaining <= INPUT_BUFFER_WINDOW:
 			_buffered_attack = true
+			_buffered_is_fireball = is_fireball
 
-func _start_electro_blast_pipeline() -> void:
+func _start_attack_pipeline(is_fireball: bool) -> void:
 	if not can_cast:
 		return
 	can_cast = false
@@ -172,6 +177,14 @@ func _start_electro_blast_pipeline() -> void:
 	_attack_timer = 0.0
 	_attack_released = false
 	_buffered_attack = false
+	_pending_is_fireball = is_fireball
+	
+	if is_fireball:
+		_current_release_time = 0.28
+		_current_total_time = 0.42
+	else:
+		_current_release_time = 0.20
+		_current_total_time = 0.38
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
@@ -215,30 +228,30 @@ func _physics_process(delta: float) -> void:
 				_update_nameplate(health_component.current_health, health_component.max_health)
 	
 	# Attack Release Standards Pipeline
-	# 0.00s: Press | 0.12s: Cast Start Delay | 0.20s: Attack Release | 0.18s Recovery -> 0.38s Total
 	if _is_casting_attack:
 		_attack_timer += delta
 		
-		# Phase 1: Cast Start Delay (0.0s to 0.12s) - Electro ball surges and draws back
+		# Phase 1: Cast Start Delay - Electro ball surges and draws back
 		if _attack_timer < CAST_START_DELAY:
 			if electro_ball:
 				electro_ball.position.z = lerp(electro_ball.position.z, _orig_electro_ball_pos.z + 0.14, 20.0 * delta)
-		# Phase 2: Attack Release Time (at 0.20s after button press)
-		elif _attack_timer >= ATTACK_RELEASE_TIME and not _attack_released:
+		# Phase 2: Attack Release Time
+		elif _attack_timer >= _current_release_time and not _attack_released:
 			_attack_released = true
 			_spawn_electro_blast()
-		# Phase 3: Recovery Time (0.20s to 0.38s)
-		elif _attack_timer >= ATTACK_RELEASE_TIME:
+		# Phase 3: Recovery Time
+		elif _attack_timer >= _current_release_time:
 			if electro_ball:
 				electro_ball.position.z = lerp(electro_ball.position.z, _orig_electro_ball_pos.z, 14.0 * delta)
 		
-		# Minimum Total Animation Time (0.38s) reached
-		if _attack_timer >= TOTAL_ATTACK_ANIM_TIME:
+		# Minimum Total Animation Time reached
+		if _attack_timer >= _current_total_time:
 			_is_casting_attack = false
 			can_cast = true
 			if _buffered_attack:
+				var next_fb := _buffered_is_fireball
 				_buffered_attack = false
-				_start_electro_blast_pipeline()
+				_start_attack_pipeline(next_fb)
 	
 	# Active Dash Processing (Dash Standard: Speed 16.0 units/s, Duration 0.22s)
 	if _is_dashing:
@@ -265,67 +278,99 @@ func _physics_process(delta: float) -> void:
 			_end_dash()
 		return
 	
-	# Standard movement (Players can move during casting per specifications)
-	var input_dir := Vector2.ZERO
-	if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP): input_dir.y -= 1
-	if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN): input_dir.y += 1
-	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT): input_dir.x -= 1
-	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT): input_dir.x += 1
-	input_dir = input_dir.normalized()
+	# Gather Movement Input (Arrow keys, WASD, InputMap actions, Virtual Joystick)
+	var input_dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	if input_dir.length_squared() < 0.01:
+		if Input.is_key_pressed(KEY_UP) or Input.is_key_pressed(KEY_W): input_dir.y -= 1.0
+		if Input.is_key_pressed(KEY_DOWN) or Input.is_key_pressed(KEY_S): input_dir.y += 1.0
+		if Input.is_key_pressed(KEY_LEFT) or Input.is_key_pressed(KEY_A): input_dir.x -= 1.0
+		if Input.is_key_pressed(KEY_RIGHT) or Input.is_key_pressed(KEY_D): input_dir.x += 1.0
 	
-	var effective_speed: float = move_speed * _speed_modifier
+	# Mobile Virtual Joystick integration if available in scene
+	var hud_node: HUD = get_tree().current_scene.find_child("HUD", true, false) as HUD if get_tree() and get_tree().current_scene else null
+	if hud_node:
+		var joy_output: Variant = hud_node.get("joystick_output")
+		if joy_output != null and (joy_output is Vector2) and (joy_output as Vector2).length_squared() > 0.01:
+			input_dir += (joy_output as Vector2)
+	
+	# Diagonal normalization: diagonal movement is NEVER faster than straight movement
+	if input_dir.length_squared() > 1.0:
+		input_dir = input_dir.normalized()
+
 	var is_moving: bool = input_dir.length_squared() > 0.01
-	
-	# Core Movement: Acceleration 35 units/s², Deceleration 45 units/s²
+	var effective_speed: float = move_speed * _speed_modifier
+
+	# Transform input direction relative to the camera horizontal yaw
+	var move_world_dir := Vector3.ZERO
 	if is_moving:
-		var target_vel := Vector3(input_dir.x, 0, input_dir.y) * effective_speed
+		var cam := get_viewport().get_camera_3d()
+		if cam:
+			var cam_forward: Vector3 = -cam.global_transform.basis.z
+			cam_forward.y = 0.0
+			cam_forward = cam_forward.normalized()
+			var cam_right: Vector3 = cam.global_transform.basis.x
+			cam_right.y = 0.0
+			cam_right = cam_right.normalized()
+			move_world_dir = (cam_right * input_dir.x + cam_forward * (-input_dir.y)).normalized()
+		else:
+			move_world_dir = Vector3(input_dir.x, 0.0, input_dir.y).normalized()
+
+		var target_vel: Vector3 = move_world_dir * effective_speed
 		velocity.x = move_toward(velocity.x, target_vel.x, acceleration * delta)
 		velocity.z = move_toward(velocity.z, target_vel.z, acceleration * delta)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, deceleration * delta)
 		velocity.z = move_toward(velocity.z, 0.0, deceleration * delta)
-	
-	# Core Rotation: Rotation Speed (towards mouse): 720°/second
-	var aim_dir := _get_mouse_aim_direction()
-	var target_rot_y: float = visuals.rotation.y
-	if aim_dir.length_squared() > 0.01:
-		target_rot_y = atan2(-aim_dir.x, -aim_dir.z)
-	elif is_moving:
-		target_rot_y = atan2(-input_dir.x, -input_dir.y)
-	
-	var angle_diff: float = wrapf(target_rot_y - visuals.rotation.y, -PI, PI)
-	var max_rot: float = deg_to_rad(rotation_speed) * delta
-	if absf(angle_diff) <= max_rot:
-		visuals.rotation.y = target_rot_y
-	else:
-		visuals.rotation.y += signf(angle_diff) * max_rot
-	visuals.rotation.y = wrapf(visuals.rotation.y, -PI, PI)
-	
+
+	# Core Rotation: strictly driven by WASD / arrow movement keys (NOT mouse or cursor)
+	if is_moving:
+		var target_rot_y := atan2(-move_world_dir.x, -move_world_dir.z)
+		var angle_diff: float = wrapf(target_rot_y - visuals.rotation.y, -PI, PI)
+		var max_rot: float = deg_to_rad(rotation_speed) * delta
+		if absf(angle_diff) <= max_rot:
+			visuals.rotation.y = target_rot_y
+		else:
+			visuals.rotation.y += signf(angle_diff) * max_rot
+		visuals.rotation.y = wrapf(visuals.rotation.y, -PI, PI)
+
 	if is_moving:
 		visuals.rotation.z = sin(Time.get_ticks_msec() * 0.018) * 0.08
 	else:
 		visuals.rotation.z = move_toward(visuals.rotation.z, 0, 8.0 * delta)
 		visuals.rotation.x = move_toward(visuals.rotation.x, 0, 8.0 * delta)
-	
+
+	# Physically move CharacterBody3D actual 3D world position
 	move_and_slide()
+	
+	# Arena Horizontal Boundary Clamp (keeps player inside playable arena circle)
+	var horiz_pos := Vector2(global_position.x, global_position.z)
+	const ARENA_RADIUS: float = 48.0
+	if horiz_pos.length() > ARENA_RADIUS:
+		var clamped := horiz_pos.normalized() * ARENA_RADIUS
+		global_position.x = clamped.x
+		global_position.z = clamped.y
+		velocity.x = 0.0
+		velocity.z = 0.0
+
 	_animate_apprentice(delta, is_moving)
 
-## Casts crackling Electro Blast from the floating ball (released at 0.20s)
+## Casts crackling Electro Blast or Fireball in character facing direction
 func _spawn_electro_blast() -> void:
-	if not electro_blast_scene:
-		return
-	
-	var aim_dir := _get_mouse_aim_direction()
+	var aim_dir := -visuals.global_transform.basis.z
+	aim_dir.y = 0.0
 	if aim_dir.length_squared() < 0.01:
-		aim_dir = -visuals.global_transform.basis.z
-		aim_dir.y = 0.0
-		if aim_dir.length_squared() < 0.01:
-			aim_dir = Vector3.FORWARD
+		aim_dir = Vector3.FORWARD
 	aim_dir = aim_dir.normalized()
 	
-	var proj: Node3D = electro_blast_scene.instantiate() as Node3D
+	var scene_to_spawn: PackedScene = fireball_scene if (_pending_is_fireball and fireball_scene) else electro_blast_scene
+	if not scene_to_spawn:
+		return
+	
+	var proj: Node3D = scene_to_spawn.instantiate() as Node3D
 	if proj:
 		proj.set("caster", self)
+		if _pending_is_fireball:
+			proj.set("speed", 38.0)
 		get_tree().current_scene.add_child(proj)
 		
 		if _active_shield and is_instance_valid(_active_shield):

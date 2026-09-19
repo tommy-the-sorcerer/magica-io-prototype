@@ -14,9 +14,11 @@ var player_node: Node3D = null
 var hud: HUD = null
 
 func _ready() -> void:
+	var cur_lvl: int = 1
 	if LevelManager.instance:
-		var cfg: Dictionary = LevelManager.instance.get_level_config(LevelManager.instance.current_level_id)
-		bot_spawn_count = cfg.get("enemy_count", bot_spawn_count)
+		cur_lvl = LevelManager.instance.current_level_id
+		var diff: Dictionary = LevelManager.instance.scale_difficulty(cur_lvl)
+		bot_spawn_count = diff.get("enemy_count", bot_spawn_count)
 		
 	total_combatants = bot_spawn_count + 1
 	alive_combatants = total_combatants
@@ -113,9 +115,17 @@ func _spawn_bots() -> void:
 		push_warning("Bot scene not found!")
 		return
 		
+	var diff: Dictionary = LevelManager.instance.scale_difficulty(LevelManager.instance.current_level_id) if LevelManager.instance else {}
+	var hp_mult: float = diff.get("health_multiplier", 1.0)
+	var spd_mult: float = diff.get("speed_multiplier", 1.0)
+	var cd_mult: float = diff.get("cooldown_multiplier", 1.0)
+		
 	for i in range(bot_spawn_count):
 		var bot: BotAI = bot_scene.instantiate() as BotAI
 		get_tree().current_scene.add_child(bot)
+		
+		if bot.has_method("apply_difficulty_scaling"):
+			bot.apply_difficulty_scaling(hp_mult, spd_mult, cd_mult)
 		
 		# Place in a ring around the map
 		var angle: float = (float(i) / float(bot_spawn_count)) * TAU

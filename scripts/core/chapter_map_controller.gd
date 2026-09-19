@@ -94,7 +94,14 @@ func _spawn_enemies() -> void:
 	if not bot_scene:
 		return
 		
-	total_combatants = enemy_count + 1
+	var cur_lvl: int = LevelManager.instance.current_level_id if LevelManager.instance else 1
+	var diff: Dictionary = LevelManager.instance.scale_difficulty(cur_lvl) if LevelManager.instance else {}
+	var count: int = diff.get("enemy_count", enemy_count)
+	var hp_mult: float = diff.get("health_multiplier", 1.0)
+	var spd_mult: float = diff.get("speed_multiplier", 1.0)
+	var cd_mult: float = diff.get("cooldown_multiplier", 1.0)
+	
+	total_combatants = count + 1
 	active_combatants = total_combatants
 	
 	if hud:
@@ -104,9 +111,12 @@ func _spawn_enemies() -> void:
 	if enemy_spawns:
 		spawn_markers = enemy_spawns.get_children()
 		
-	for i in range(enemy_count):
+	for i in range(count):
 		var bot: Node3D = bot_scene.instantiate() as Node3D
 		add_child(bot)
+		
+		if bot.has_method("apply_difficulty_scaling"):
+			bot.apply_difficulty_scaling(hp_mult, spd_mult, cd_mult)
 		
 		var spawn_pos := Vector3(randf_range(-22, 22), 0.2, randf_range(-22, 22))
 		if not spawn_markers.is_empty():
@@ -134,6 +144,9 @@ func _setup_boss_encounter() -> void:
 	var hp: HealthComponent = boss.find_child("HealthComponent", true, false) as HealthComponent
 	if hp:
 		hp.died.connect(func(_killer): 
+			if LevelManager.instance:
+				LevelManager.instance.unlock_next_level()
+				LevelManager.instance.save_progression()
 			if hud: hud.show_victory()
 		)
 
@@ -165,6 +178,9 @@ func _on_enemy_died(killer: Node) -> void:
 			if killer.is_in_group("player") or killer.is_in_group("players") or killer.name == "Player":
 				hud.add_kill()
 		if active_combatants == 1:
+			if LevelManager.instance:
+				LevelManager.instance.unlock_next_level()
+				LevelManager.instance.save_progression()
 			hud.show_victory()
 
 func _on_player_died(_killer: Node) -> void:

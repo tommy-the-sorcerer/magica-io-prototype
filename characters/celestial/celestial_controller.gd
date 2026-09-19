@@ -5,10 +5,10 @@ extends CharacterBody3D
 ## Features animated 4-wing flight fluttering, floating glowing halo, divine spellcasting, and health tracking
 
 @export_group("Movement")
-@export var move_speed: float = 7.5
-@export var acceleration: float = 35.0
-@export var deceleration: float = 45.0
-@export var rotation_speed: float = 720.0
+@export var move_speed: float = 8.8
+@export var acceleration: float = 52.0
+@export var deceleration: float = 65.0
+@export var rotation_speed: float = 900.0
 
 @export_group("Spells")
 @export var fireball_scene: PackedScene = preload("res://scenes/spells/fireball.tscn")
@@ -31,6 +31,9 @@ const CAST_START_DELAY: float = 0.12
 const ATTACK_RELEASE_TIME: float = 0.20
 const ATTACK_RECOVERY_TIME: float = 0.18
 const TOTAL_ATTACK_ANIM_TIME: float = 0.38
+
+var _current_release_time: float = 0.20
+var _current_total_time: float = 0.38
 
 var _is_casting_attack: bool = false
 var _attack_timer: float = 0.0
@@ -222,6 +225,13 @@ func _start_spell_pipeline(spell_scene: PackedScene) -> void:
 	_attack_released = false
 	_buffered_attack = false
 	_pending_spell_scene = spell_scene
+	
+	if spell_scene == fireball_scene:
+		_current_release_time = 0.28
+		_current_total_time = 0.42
+	else:
+		_current_release_time = ATTACK_RELEASE_TIME
+		_current_total_time = TOTAL_ATTACK_ANIM_TIME
 
 ## Requests beam adhering to Beam Standards
 func _request_celestial_beam() -> void:
@@ -292,25 +302,24 @@ func _physics_process(delta: float) -> void:
 				_update_nameplate(health_component.current_health, health_component.max_health)
 
 	# Attack Release Standards Pipeline
-	# 0.00s: Press | 0.12s: Cast Start Delay | 0.20s: Attack Release | 0.18s Recovery -> 0.38s Total
 	if _is_casting_attack:
 		_attack_timer += delta
 		
-		# Phase 1: Cast Start Delay (0.0s to 0.12s) - Scepter pre-cast tilt
+		# Phase 1: Cast Start Delay - Scepter pre-cast tilt
 		if _attack_timer < CAST_START_DELAY:
 			if scepter:
 				scepter.rotation.x = lerp_angle(scepter.rotation.x, -0.22, 20.0 * delta)
-		# Phase 2: Attack Release Time (at 0.20s after button press)
-		elif _attack_timer >= ATTACK_RELEASE_TIME and not _attack_released:
+		# Phase 2: Attack Release Time
+		elif _attack_timer >= _current_release_time and not _attack_released:
 			_attack_released = true
 			_spawn_spell(_pending_spell_scene)
-		# Phase 3: Recovery Time (0.20s to 0.38s)
-		elif _attack_timer >= ATTACK_RELEASE_TIME:
+		# Phase 3: Recovery Time
+		elif _attack_timer >= _current_release_time:
 			if scepter:
 				scepter.rotation.x = lerp_angle(scepter.rotation.x, 0.0, 14.0 * delta)
 		
-		# Minimum Total Animation Time (0.38s) reached
-		if _attack_timer >= TOTAL_ATTACK_ANIM_TIME:
+		# Animation complete
+		if _attack_timer >= _current_total_time:
 			_is_casting_attack = false
 			can_cast = true
 			if _buffered_attack and _buffered_spell_scene:
@@ -383,45 +392,60 @@ func _physics_process(delta: float) -> void:
 			visuals.scale = Vector3.ONE
 			visuals.rotation.x = 0.0
 
-	# Input: WASD / Arrow keys (Players can move during casting per specifications)
-	var input_dir := Vector2.ZERO
-	if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
-		input_dir.y -= 1
-	if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
-		input_dir.y += 1
-	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
-		input_dir.x -= 1
-	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
-		input_dir.x += 1
-	input_dir = input_dir.normalized()
+	# Gather Movement Input (Arrow keys, WASD, InputMap actions, Virtual Joystick)
+	var input_dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	if input_dir.length_squared() < 0.01:
+		if Input.is_key_pressed(KEY_UP) or Input.is_key_pressed(KEY_W): input_dir.y -= 1.0
+		if Input.is_key_pressed(KEY_DOWN) or Input.is_key_pressed(KEY_S): input_dir.y += 1.0
+		if Input.is_key_pressed(KEY_LEFT) or Input.is_key_pressed(KEY_A): input_dir.x -= 1.0
+		if Input.is_key_pressed(KEY_RIGHT) or Input.is_key_pressed(KEY_D): input_dir.x += 1.0
+	
+	# Mobile Virtual Joystick integration if available in scene
+	var hud_node: HUD = get_tree().current_scene.find_child("HUD", true, false) as HUD if get_tree() and get_tree().current_scene else null
+	if hud_node:
+		var joy_output: Variant = hud_node.get("joystick_output")
+		if joy_output != null and (joy_output is Vector2) and (joy_output as Vector2).length_squared() > 0.01:
+			input_dir += (joy_output as Vector2)
+	
+	# Diagonal normalization: diagonal movement is NEVER faster than straight movement
+	if input_dir.length_squared() > 1.0:
+		input_dir = input_dir.normalized()
 
-	var effective_speed: float = move_speed * _speed_modifier
 	var is_moving: bool = input_dir.length_squared() > 0.01
+	var effective_speed: float = move_speed * _speed_modifier
 
-	# Core Movement: Acceleration 35 units/s², Deceleration 45 units/s²
+	# Transform input direction relative to the camera horizontal yaw
+	var move_world_dir := Vector3.ZERO
 	if is_moving:
-		var target_vel := Vector3(input_dir.x, 0, input_dir.y) * effective_speed
+		var cam := get_viewport().get_camera_3d()
+		if cam:
+			var cam_forward: Vector3 = -cam.global_transform.basis.z
+			cam_forward.y = 0.0
+			cam_forward = cam_forward.normalized()
+			var cam_right: Vector3 = cam.global_transform.basis.x
+			cam_right.y = 0.0
+			cam_right = cam_right.normalized()
+			move_world_dir = (cam_right * input_dir.x + cam_forward * (-input_dir.y)).normalized()
+		else:
+			move_world_dir = Vector3(input_dir.x, 0.0, input_dir.y).normalized()
+
+		var target_vel: Vector3 = move_world_dir * effective_speed
 		velocity.x = move_toward(velocity.x, target_vel.x, acceleration * delta)
 		velocity.z = move_toward(velocity.z, target_vel.z, acceleration * delta)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, deceleration * delta)
 		velocity.z = move_toward(velocity.z, 0.0, deceleration * delta)
 
-	# Core Rotation: Rotation Speed (towards mouse): 720°/second
-	var aim_dir := _get_mouse_aim_direction()
-	var target_rot_y: float = visuals.rotation.y
-	if aim_dir.length_squared() > 0.01:
-		target_rot_y = atan2(-aim_dir.x, -aim_dir.z)
-	elif is_moving:
-		target_rot_y = atan2(-input_dir.x, -input_dir.y)
-
-	var angle_diff: float = wrapf(target_rot_y - visuals.rotation.y, -PI, PI)
-	var max_rot: float = deg_to_rad(rotation_speed) * delta
-	if absf(angle_diff) <= max_rot:
-		visuals.rotation.y = target_rot_y
-	else:
-		visuals.rotation.y += signf(angle_diff) * max_rot
-	visuals.rotation.y = wrapf(visuals.rotation.y, -PI, PI)
+	# Core Rotation: strictly driven by WASD / arrow movement keys (NOT mouse or cursor)
+	if is_moving:
+		var target_rot_y := atan2(-move_world_dir.x, -move_world_dir.z)
+		var angle_diff: float = wrapf(target_rot_y - visuals.rotation.y, -PI, PI)
+		var max_rot: float = deg_to_rad(rotation_speed) * delta
+		if absf(angle_diff) <= max_rot:
+			visuals.rotation.y = target_rot_y
+		else:
+			visuals.rotation.y += signf(angle_diff) * max_rot
+		visuals.rotation.y = wrapf(visuals.rotation.y, -PI, PI)
 
 	if is_moving:
 		var wobble_rate: float = 0.015 * _speed_modifier
@@ -429,7 +453,18 @@ func _physics_process(delta: float) -> void:
 	else:
 		visuals.rotation.z = move_toward(visuals.rotation.z, 0, 8.0 * delta)
 
+	# Physically move CharacterBody3D actual 3D world position
 	move_and_slide()
+	
+	# Arena Horizontal Boundary Clamp (keeps player inside playable arena circle)
+	var horiz_pos := Vector2(global_position.x, global_position.z)
+	const ARENA_RADIUS: float = 48.0
+	if horiz_pos.length() > ARENA_RADIUS:
+		var clamped := horiz_pos.normalized() * ARENA_RADIUS
+		global_position.x = clamped.x
+		global_position.z = clamped.y
+		velocity.x = 0.0
+		velocity.z = 0.0
 	
 	# Seraph Archangel Wing & Halo Animations
 	_animate_seraph(delta, is_moving)
@@ -625,22 +660,22 @@ func _animate_seraph(delta: float, is_moving: bool) -> void:
 func _cast_spell(spell_packed: PackedScene) -> void:
 	_request_spell(spell_packed)
 
-## Spawns projectile at exactly 0.20s Attack Release Time
+## Spawns projectile at Attack Release Time
 func _spawn_spell(spell_packed: PackedScene) -> void:
 	if not spell_packed:
 		return
 	
-	var aim_dir := _get_mouse_aim_direction()
+	var aim_dir := -visuals.global_transform.basis.z
+	aim_dir.y = 0.0
 	if aim_dir.length_squared() < 0.01:
-		aim_dir = -visuals.global_transform.basis.z
-		aim_dir.y = 0.0
-		if aim_dir.length_squared() < 0.01:
-			aim_dir = Vector3.FORWARD
+		aim_dir = Vector3.FORWARD
 	aim_dir = aim_dir.normalized()
 	
 	var proj: Node3D = spell_packed.instantiate() as Node3D
 	if proj:
 		proj.set("caster", self)
+		if spell_packed == fireball_scene:
+			proj.set("speed", 38.0)
 		get_tree().current_scene.add_child(proj)
 		
 		var cast_pt: Node3D = visuals.find_child("CastPoint", true, false) as Node3D
@@ -660,17 +695,15 @@ func _spawn_spell(spell_packed: PackedScene) -> void:
 func _cast_celestial_beam() -> void:
 	_request_celestial_beam()
 
-## Spawns Heaven's Ascendant Solar Beam at Beam Appear Time (0.20s after button press)
+## Spawns Heaven's Ascendant Solar Beam at Beam Appear Time
 func _spawn_celestial_beam() -> void:
 	if not celestial_beam_scene:
 		return
 	
-	var aim_dir := _get_mouse_aim_direction()
+	var aim_dir := -visuals.global_transform.basis.z
+	aim_dir.y = 0.0
 	if aim_dir.length_squared() < 0.01:
-		aim_dir = -visuals.global_transform.basis.z
-		aim_dir.y = 0.0
-		if aim_dir.length_squared() < 0.01:
-			aim_dir = Vector3.FORWARD
+		aim_dir = Vector3.FORWARD
 	aim_dir = aim_dir.normalized()
 	
 	var proj: Node3D = celestial_beam_scene.instantiate() as Node3D

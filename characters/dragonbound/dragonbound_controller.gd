@@ -7,10 +7,10 @@ extends CharacterBody3D
 ## Abyssal Dragon Breath [E], Obsidian Aegis [R], and Infernal Wing Dash [Q].
 
 @export_group("Movement")
-@export var move_speed: float = 7.5
-@export var acceleration: float = 35.0
-@export var deceleration: float = 45.0
-@export var rotation_speed: float = 720.0
+@export var move_speed: float = 8.8
+@export var acceleration: float = 52.0
+@export var deceleration: float = 65.0
+@export var rotation_speed: float = 900.0
 
 @export_group("Spells")
 @export var hellfire_slash_scene: PackedScene = preload("res://characters/dragonbound/skills/hellfire_slash.tscn")
@@ -19,6 +19,7 @@ extends CharacterBody3D
 @export var dragon_aegis_scene: PackedScene = preload("res://characters/dragonbound/skills/dragon_aegis.tscn")
 @export var dash_burst_scene: PackedScene = preload("res://characters/dragonbound/vfx/dragon_dash_burst.tscn")
 @export var dash_ghost_scene: PackedScene = preload("res://characters/dragonbound/vfx/dragon_dash_ghost.tscn")
+@export var fireball_scene: PackedScene = preload("res://scenes/spells/fireball.tscn")
 
 @export var slash_cooldown: float = 0.35
 @export var magma_cooldown: float = 0.65
@@ -33,6 +34,9 @@ const INPUT_BUFFER_WINDOW: float = 0.08
 const CAST_START_DELAY: float = 0.08
 const ATTACK_RELEASE_TIME: float = 0.16
 const TOTAL_ATTACK_ANIM_TIME: float = 0.35
+
+var _current_release_time: float = 0.16
+var _current_total_time: float = 0.35
 
 var display_name: String = "🐲 Dragonbound"
 var can_cast: bool = true
@@ -109,12 +113,14 @@ func _update_nameplate(curr: float, max_hp: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.is_pressed():
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			_request_attack("slash")
+			_request_attack("fireball")
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			_request_attack("magma")
 	elif event is InputEventKey and event.is_pressed() and not event.is_echo():
 		var keycode: int = event.keycode
-		if keycode == KEY_Q and _dash_cd_timer <= 0.0 and not _is_dashing:
+		if keycode == KEY_SPACE:
+			_request_attack("fireball")
+		elif keycode == KEY_Q and _dash_cd_timer <= 0.0 and not _is_dashing:
 			_perform_dash()
 		elif keycode == KEY_E and _breath_timer <= 0.0:
 			_cast_dragon_breath()
@@ -123,7 +129,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## UI Power Button Triggers
 func trigger_primary_attack() -> void:
-	_request_attack("slash")
+	_request_attack("fireball")
 
 func trigger_secondary_attack() -> void:
 	_request_attack("magma")
@@ -161,18 +167,20 @@ func _physics_process(delta: float) -> void:
 			_speed_modifier = 1.0
 			_refresh_nameplate()
 	
-	# Attack Pipeline processing
+	# Attack Pipeline processing with dynamic release time (0.9s for fireball)
 	if _is_casting_attack:
 		_attack_timer += delta
-		if _attack_timer >= ATTACK_RELEASE_TIME and not _attack_released:
+		if _attack_timer >= _current_release_time and not _attack_released:
 			_attack_released = true
 			_execute_attack_release()
-		if _attack_timer >= TOTAL_ATTACK_ANIM_TIME:
+		if _attack_timer >= _current_total_time:
 			_is_casting_attack = false
 			can_cast = true
 			if _buffered_attack:
+				var next_type := _buffered_spell_type
 				_buffered_attack = false
-				_start_attack_pipeline(_buffered_spell_type)
+				_buffered_spell_type = ""
+				_start_attack_pipeline(next_type)
 	
 	# Active Dash Processing
 	if _is_dashing:
@@ -192,41 +200,80 @@ func _physics_process(delta: float) -> void:
 			velocity = Vector3.ZERO
 		return
 	
-	# Standard Movement
-	var input_dir := Vector2.ZERO
-	if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP): input_dir.y -= 1
-	if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN): input_dir.y += 1
-	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT): input_dir.x -= 1
-	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT): input_dir.x += 1
-	input_dir = input_dir.normalized()
+	# Gather Movement Input (Arrow keys, WASD, InputMap actions, Virtual Joystick)
+	var input_dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	if input_dir.length_squared() < 0.01:
+		if Input.is_key_pressed(KEY_UP) or Input.is_key_pressed(KEY_W): input_dir.y -= 1.0
+		if Input.is_key_pressed(KEY_DOWN) or Input.is_key_pressed(KEY_S): input_dir.y += 1.0
+		if Input.is_key_pressed(KEY_LEFT) or Input.is_key_pressed(KEY_A): input_dir.x -= 1.0
+		if Input.is_key_pressed(KEY_RIGHT) or Input.is_key_pressed(KEY_D): input_dir.x += 1.0
 	
-	var effective_speed: float = move_speed * _speed_modifier
+	# Mobile Virtual Joystick integration if available in scene
+	var hud_node: HUD = get_tree().current_scene.find_child("HUD", true, false) as HUD if get_tree() and get_tree().current_scene else null
+	if hud_node:
+		var joy_output: Variant = hud_node.get("joystick_output")
+		if joy_output != null and (joy_output is Vector2) and (joy_output as Vector2).length_squared() > 0.01:
+			input_dir += (joy_output as Vector2)
+	
+	# Diagonal normalization: diagonal movement is NEVER faster than straight movement
+	if input_dir.length_squared() > 1.0:
+		input_dir = input_dir.normalized()
+	
 	var is_moving: bool = input_dir.length_squared() > 0.01
+	var effective_speed: float = move_speed * _speed_modifier
 	
+	# Transform input direction relative to the camera horizontal yaw if camera exists
+	var move_world_dir := Vector3.ZERO
 	if is_moving:
-		var target_vel := Vector3(input_dir.x, 0, input_dir.y) * effective_speed
+		var cam := get_viewport().get_camera_3d()
+		if cam:
+			var cam_forward: Vector3 = -cam.global_transform.basis.z
+			cam_forward.y = 0.0
+			cam_forward = cam_forward.normalized()
+			var cam_right: Vector3 = cam.global_transform.basis.x
+			cam_right.y = 0.0
+			cam_right = cam_right.normalized()
+			move_world_dir = (cam_right * input_dir.x + cam_forward * (-input_dir.y)).normalized()
+		else:
+			move_world_dir = Vector3(input_dir.x, 0.0, input_dir.y).normalized()
+		
+		var target_vel: Vector3 = move_world_dir * effective_speed
 		velocity.x = move_toward(velocity.x, target_vel.x, acceleration * delta)
 		velocity.z = move_toward(velocity.z, target_vel.z, acceleration * delta)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, deceleration * delta)
 		velocity.z = move_toward(velocity.z, 0.0, deceleration * delta)
 	
-	# Rotate towards mouse aim
-	var aim_dir := _get_mouse_aim_direction()
-	if aim_dir.length_squared() > 0.01:
-		var target_rot_y := atan2(-aim_dir.x, -aim_dir.z)
-		visuals.rotation.y = lerp_angle(visuals.rotation.y, target_rot_y, deg_to_rad(rotation_speed) * delta)
-	elif is_moving:
-		var move_rot_y := atan2(-input_dir.x, -input_dir.y)
-		visuals.rotation.y = lerp_angle(visuals.rotation.y, move_rot_y, deg_to_rad(rotation_speed) * delta)
+	# Character Rotation: Turn to face movement direction (WASD / Arrow keys), NOT mouse cursor!
+	if is_moving:
+		var target_rot_y := atan2(-move_world_dir.x, -move_world_dir.z)
+		var angle_diff := wrapf(target_rot_y - visuals.rotation.y, -PI, PI)
+		var max_rot := deg_to_rad(rotation_speed) * delta
+		if absf(angle_diff) <= max_rot:
+			visuals.rotation.y = target_rot_y
+		else:
+			visuals.rotation.y += signf(angle_diff) * max_rot
+		visuals.rotation.y = wrapf(visuals.rotation.y, -PI, PI)
 	
-	# Gravity - Grounded Dark Lord (Firmly on earth, never floating like a bird/angel)
+	# Gravity - Grounded Dark Lord
 	if not is_on_floor():
 		velocity.y -= 28.0 * delta
 	else:
 		velocity.y = 0.0
 	
+	# Physically move CharacterBody3D actual 3D world position
 	move_and_slide()
+	
+	# Arena Horizontal Boundary Clamp (keeps player inside playable arena circle)
+	var horiz_pos := Vector2(global_position.x, global_position.z)
+	const ARENA_RADIUS: float = 48.0
+	if horiz_pos.length() > ARENA_RADIUS:
+		var clamped := horiz_pos.normalized() * ARENA_RADIUS
+		global_position.x = clamped.x
+		global_position.z = clamped.y
+		velocity.x = 0.0
+		velocity.z = 0.0
+	
 	_animate_character(delta, is_moving)
 
 func _animate_character(delta: float, is_moving: bool) -> void:
@@ -322,7 +369,7 @@ func _request_attack(type: String) -> void:
 	if type == "magma" and _magma_timer > 0.0: return
 	
 	if _is_casting_attack:
-		var time_left: float = TOTAL_ATTACK_ANIM_TIME - _attack_timer
+		var time_left: float = _current_total_time - _attack_timer
 		if time_left <= INPUT_BUFFER_WINDOW:
 			_buffered_attack = true
 			_buffered_spell_type = type
@@ -336,7 +383,21 @@ func _start_attack_pipeline(type: String) -> void:
 	_pending_spell_type = type
 	can_cast = false
 	
-	if type == "slash":
+	if type == "fireball":
+		_current_release_time = 0.28
+		_current_total_time = 0.42
+		if right_arm:
+			var ft := create_tween()
+			ft.tween_property(right_arm, "rotation:x", -1.8, 0.14)
+			ft.tween_property(right_arm, "rotation:y", 0.5, 0.14)
+			ft.tween_property(right_arm, "rotation", _orig_right_arm_rot, 0.14)
+		if blade_light:
+			var lt := create_tween()
+			lt.tween_property(blade_light, "light_energy", 6.0, 0.28)
+			lt.tween_property(blade_light, "light_energy", 3.0, 0.14)
+	elif type == "slash":
+		_current_release_time = 0.16
+		_current_total_time = 0.35
 		_slash_timer = slash_cooldown
 		# Animate right arm blade slash
 		if right_arm:
@@ -345,6 +406,8 @@ func _start_attack_pipeline(type: String) -> void:
 			at.tween_property(right_arm, "rotation:y", 0.8, 0.08)
 			at.tween_property(right_arm, "rotation", _orig_right_arm_rot, 0.18)
 	elif type == "magma":
+		_current_release_time = 0.16
+		_current_total_time = 0.35
 		_magma_timer = magma_cooldown
 		# Animate left claw thrust
 		if left_arm:
@@ -353,13 +416,19 @@ func _start_attack_pipeline(type: String) -> void:
 			lt.tween_property(left_arm, "rotation", _orig_left_arm_rot, 0.18)
 
 func _execute_attack_release() -> void:
-	var aim_dir := _get_mouse_aim_direction()
-	if aim_dir.length_squared() < 0.01:
-		aim_dir = -visuals.global_transform.basis.z
-		aim_dir.y = 0.0
+	var aim_dir := -visuals.global_transform.basis.z
+	aim_dir.y = 0.0
 	aim_dir = aim_dir.normalized()
 	
-	if _pending_spell_type == "slash" and hellfire_slash_scene:
+	if _pending_spell_type == "fireball" and fireball_scene:
+		var fb: Projectile = fireball_scene.instantiate() as Projectile
+		if fb:
+			fb.caster = self
+			fb.speed = 38.0
+			get_tree().current_scene.add_child(fb)
+			fb.global_position = global_position + Vector3(0, 0.95, 0) + aim_dir * 0.8
+			fb.look_at(fb.global_position + aim_dir, Vector3.UP)
+	elif _pending_spell_type == "slash" and hellfire_slash_scene:
 		var slash: Projectile = hellfire_slash_scene.instantiate() as Projectile
 		if slash:
 			slash.caster = self
@@ -380,10 +449,8 @@ func _cast_dragon_breath() -> void:
 	_breath_timer = breath_cooldown
 	_refresh_nameplate()
 	
-	var aim_dir := _get_mouse_aim_direction()
-	if aim_dir.length_squared() < 0.01:
-		aim_dir = -visuals.global_transform.basis.z
-		aim_dir.y = 0.0
+	var aim_dir := -visuals.global_transform.basis.z
+	aim_dir.y = 0.0
 	aim_dir = aim_dir.normalized()
 	
 	# Spectral dragon spirit surges forward roaring!

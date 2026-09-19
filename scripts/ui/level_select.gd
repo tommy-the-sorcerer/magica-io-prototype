@@ -60,6 +60,8 @@ func _ready() -> void:
 	level_mgr = LevelManager.instance if LevelManager.instance else LevelManager.new()
 	if not LevelManager.instance:
 		add_child(level_mgr)
+	if level_mgr:
+		level_mgr.load_progression()
 		
 	var min_fit := _get_min_fit_zoom()
 	target_zoom = maxf(min_fit, 0.82)

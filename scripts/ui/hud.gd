@@ -36,6 +36,10 @@ var next_button_vic: Button = null
 var player_node: CharacterBody3D = null
 var current_kills: int = 0
 var _initialized: bool = false
+var joystick_output: Vector2 = Vector2.ZERO
+var _joy_touch_idx: int = -1
+var _joy_base: Control = null
+var _joy_handle: Control = null
 
 func _ready() -> void:
 	_ensure_initialized()
@@ -50,10 +54,19 @@ func _ready() -> void:
 	if settings_panel:
 		settings_panel.visible = false
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	_update_beam_status()
 	_update_shield_status()
 	_update_wind_status()
+	
+	# Smoothly return joystick handle to center if not being dragged
+	if _joy_touch_idx == -1 and _joy_handle and joystick_output.length_squared() > 0.001:
+		joystick_output = joystick_output.lerp(Vector2.ZERO, 15.0 * delta)
+		if joystick_output.length_squared() < 0.01:
+			joystick_output = Vector2.ZERO
+		var base_radius: float = 60.0
+		var knob_offset := joystick_output * base_radius
+		_joy_handle.position = Vector2(60.0 - 35.0, 60.0 - 35.0) + knob_offset
 
 func _ensure_initialized() -> void:
 	if _initialized:
@@ -135,7 +148,56 @@ func _ensure_initialized() -> void:
 		if menu_button_def:
 			menu_button_def.pressed.connect(_on_menu_pressed)
 
+	# Left Virtual Joystick interactive setup
+	_joy_base = find_child("LeftJoystickVisual", true, false) as Control
+	if _joy_base:
+		_joy_base.mouse_filter = Control.MOUSE_FILTER_STOP
+		_joy_handle = _joy_base.find_child("Handle", true, false) as Control
+		_joy_base.gui_input.connect(_on_joystick_gui_input)
+
 	call_deferred("_connect_world_manager")
+
+func _on_joystick_gui_input(event: InputEvent) -> void:
+	if not _joy_base or not _joy_handle:
+		return
+	var center := _joy_base.size * 0.5
+	var max_radius := center.x
+	
+	if event is InputEventScreenTouch:
+		var st := event as InputEventScreenTouch
+		if st.pressed:
+			if _joy_touch_idx == -1:
+				_joy_touch_idx = st.index
+				_update_joy_pos(st.position, center, max_radius)
+		elif st.index == _joy_touch_idx:
+			_joy_touch_idx = -1
+			joystick_output = Vector2.ZERO
+			_joy_handle.position = center - (_joy_handle.size * 0.5)
+	elif event is InputEventScreenDrag:
+		var sd := event as InputEventScreenDrag
+		if sd.index == _joy_touch_idx:
+			_update_joy_pos(sd.position, center, max_radius)
+	elif event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.button_index == MOUSE_BUTTON_LEFT:
+			if mb.pressed:
+				_joy_touch_idx = -2
+				_update_joy_pos(mb.position, center, max_radius)
+			elif _joy_touch_idx == -2:
+				_joy_touch_idx = -1
+				joystick_output = Vector2.ZERO
+				_joy_handle.position = center - (_joy_handle.size * 0.5)
+	elif event is InputEventMouseMotion and _joy_touch_idx == -2:
+		var mm := event as InputEventMouseMotion
+		_update_joy_pos(mm.position, center, max_radius)
+
+func _update_joy_pos(pos: Vector2, center: Vector2, max_radius: float) -> void:
+	var offset: Vector2 = pos - center
+	var dist: float = offset.length()
+	if dist > max_radius:
+		offset = offset.normalized() * max_radius
+	joystick_output = offset / max_radius
+	_joy_handle.position = center - (_joy_handle.size * 0.5) + offset
 
 func _setup_pause_and_settings() -> void:
 	if pause_button:
@@ -451,6 +513,9 @@ func add_kill_feed(killer_name: String, victim_name: String, is_player_killer: b
 
 func show_victory() -> void:
 	_ensure_initialized()
+	if LevelManager.instance:
+		LevelManager.instance.unlock_next_level()
+		LevelManager.instance.save_progression()
 	if victory_panel:
 		victory_panel.visible = true
 		var tween := create_tween()
@@ -480,4 +545,7 @@ func _on_menu_pressed() -> void:
 
 func _on_next_level_pressed() -> void:
 	get_tree().paused = false
+	if LevelManager.instance:
+		LevelManager.instance.unlock_next_level()
+		LevelManager.instance.save_progression()
 	get_tree().change_scene_to_file("res://scenes/ui/level_select.tscn")

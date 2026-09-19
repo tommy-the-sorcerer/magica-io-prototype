@@ -14,6 +14,11 @@ var target_players: int = 15
 var is_searching: bool = true
 
 func _ready() -> void:
+	if LevelManager.instance:
+		var diff: Dictionary = LevelManager.instance.scale_difficulty(LevelManager.instance.current_level_id)
+		target_players = diff.get("enemy_count", 14) + 1
+	if progress_bar:
+		progress_bar.max_value = target_players
 	# Randomize simulated ping
 	var ping: int = randi_range(18, 42)
 	ping_label.text = "🟢 Global Server | %d ms" % ping
@@ -21,7 +26,7 @@ func _ready() -> void:
 
 func _simulate_queue() -> void:
 	status_label.text = "SEARCHING FOR OPPONENTS..."
-	count_label.text = "1 / 15 Players"
+	count_label.text = "1 / %d Players" % target_players
 	progress_bar.value = 1
 	
 	# Rapidly simulate players joining the room
@@ -46,7 +51,7 @@ func _add_random_player() -> void:
 func _on_all_players_found() -> void:
 	is_searching = false
 	status_label.text = "MATCH FOUND! STARTING BATTLE..."
-	count_label.text = "15 / 15 Players Ready!"
+	count_label.text = "%d / %d Players Ready!" % [target_players, target_players]
 	
 	# Quick countdown
 	var tween := create_tween()
