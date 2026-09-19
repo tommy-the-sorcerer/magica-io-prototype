@@ -28,9 +28,6 @@ func _physics_process(delta: float) -> void:
 	if not target_player or not is_instance_valid(target_player):
 		_find_player()
 		
-	# Divine floating hover
-	visuals.position.y = 0.5 + sin(Time.get_ticks_msec() * 0.0035) * 0.3
-	
 	if halo:
 		halo.rotate_z(1.8 * delta)
 		
@@ -40,17 +37,11 @@ func _physics_process(delta: float) -> void:
 		
 	if target_player and is_instance_valid(target_player):
 		var dist := global_position.distance_to(target_player.global_position)
-		var dir := (target_player.global_position - global_position).normalized()
-		dir.y = 0
-		
 		look_at_target(target_player.global_position, delta)
 		
-		if dist > 4.5:
-			velocity.x = dir.x * move_speed
-			velocity.z = dir.z * move_speed
-		else:
-			velocity.x = move_toward(velocity.x, 0, delta * 10.0)
-			velocity.z = move_toward(velocity.z, 0, delta * 10.0)
+		var target_vel := calculate_unanticipated_velocity(target_player.global_position, 4.5, delta)
+		velocity.x = target_vel.x
+		velocity.z = target_vel.z
 			
 		attack_timer -= delta
 		sunburst_timer -= delta
@@ -80,12 +71,15 @@ func _physics_process(delta: float) -> void:
 		velocity.z = 0
 
 	move_and_slide()
+	base_visual_y = 0.5 + sin(Time.get_ticks_msec() * 0.0035) * 0.25
+	update_procedural_locomotion(delta)
 
 ## 1. Divine Retribution Sunburst (Massive 8m expanding blast)
 func _perform_sunburst() -> void:
 	can_act = false
 	is_charging_sunburst = true
 	velocity = Vector3.ZERO
+	set_facial_state(FacialState.ATTACK_ROAR, 1.8)
 	
 	# Massive 8.0m Red Danger Warning
 	create_telegraph_circle(global_position, 8.0, 1.4, Color(1.0, 0.8, 0.1, 0.85))
@@ -148,6 +142,7 @@ func _perform_spear_rain() -> void:
 	if not target_player or not is_instance_valid(target_player):
 		return
 	can_act = false
+	set_facial_state(FacialState.ATTACK_ROAR, 1.4)
 	
 	var base_pos: Vector3 = target_player.global_position
 	var count: int = 5 if current_phase < BossPhase.PHASE_4 else 8
@@ -203,6 +198,7 @@ func _drop_sacred_spear(pos: Vector3) -> void:
 func _perform_sacred_waves() -> void:
 	if not target_player or not is_instance_valid(target_player):
 		return
+	set_facial_state(FacialState.ATTACK_ROAR, 0.8)
 	var fwd := (target_player.global_position - global_position).normalized()
 	fwd.y = 0
 	
@@ -250,6 +246,7 @@ func _spawn_sacred_blade(dir: Vector3) -> void:
 
 func _perform_holy_cleave() -> void:
 	can_act = false
+	set_facial_state(FacialState.ATTACK_ROAR, 0.7)
 	var hit_pos := global_position + (-global_transform.basis.z * 3.2)
 	create_telegraph_circle(hit_pos, 4.0, 0.55, Color(1.0, 0.8, 0.1, 0.85))
 	
@@ -273,6 +270,7 @@ func _perform_holy_cleave() -> void:
 	)
 
 func _on_phase_entered(phase: int) -> void:
+	super._on_phase_entered(phase)
 	match phase:
 		2:
 			attack_cooldown = 1.8
@@ -285,6 +283,7 @@ func _on_phase_entered(phase: int) -> void:
 			attack_cooldown = 0.85
 			move_speed = 7.2
 			attack_damage = 75.0
+			set_facial_state(FacialState.ENRAGE_FLARE, 999.0)
 			if visuals:
 				var tw := create_tween()
 				tw.tween_property(visuals, "scale", Vector3(1.3, 1.3, 1.3), 0.4)

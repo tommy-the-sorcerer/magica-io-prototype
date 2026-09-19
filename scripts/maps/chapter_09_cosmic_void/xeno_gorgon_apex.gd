@@ -38,12 +38,9 @@ func _physics_process(delta: float) -> void:
 		
 		look_at_target(target_player.global_position, delta)
 		
-		if dist > 5.0:
-			velocity.x = dir.x * move_speed
-			velocity.z = dir.z * move_speed
-		else:
-			velocity.x = move_toward(velocity.x, 0, delta * 10.0)
-			velocity.z = move_toward(velocity.z, 0, delta * 10.0)
+		var target_vel := calculate_unanticipated_velocity(target_player.global_position, 5.0, delta)
+		velocity.x = target_vel.x
+		velocity.z = target_vel.z
 			
 		attack_timer -= delta
 		laser_timer -= delta
@@ -73,12 +70,14 @@ func _physics_process(delta: float) -> void:
 		velocity.z = 0
 
 	move_and_slide()
+	update_procedural_locomotion(delta)
 
 ## 1. Orbital Laser Strike (Targeted Beam from Sky)
 func _perform_orbital_laser() -> void:
 	if not target_player or not is_instance_valid(target_player):
 		return
 	can_act = false
+	set_facial_state(FacialState.ATTACK_ROAR, 1.4)
 	
 	var strike_pos: Vector3 = target_player.global_position
 	strike_pos.y = 0.1
@@ -132,6 +131,7 @@ func _perform_singularity() -> void:
 	if not target_player or not is_instance_valid(target_player):
 		return
 	can_act = false
+	set_facial_state(FacialState.ATTACK_ROAR, 1.2)
 	
 	var vortex_pos: Vector3 = target_player.global_position
 	vortex_pos.y = 0.1
@@ -185,6 +185,7 @@ func _spawn_singularity_field(pos: Vector3) -> void:
 func _perform_plasma_missiles() -> void:
 	if not target_player or not is_instance_valid(target_player):
 		return
+	set_facial_state(FacialState.ATTACK_ROAR, 1.0)
 	var count: int = 4 if current_phase < BossPhase.PHASE_4 else 7
 	var base_pos: Vector3 = target_player.global_position
 	
@@ -211,6 +212,7 @@ func _drop_plasma_blast(pos: Vector3) -> void:
 
 func _perform_plasma_slam() -> void:
 	can_act = false
+	set_facial_state(FacialState.ATTACK_ROAR, 0.8)
 	var hit_pos := global_position + (-global_transform.basis.z * 3.0)
 	create_telegraph_circle(hit_pos, 3.8, 0.6, Color(0.0, 0.9, 1.0, 0.85))
 	
@@ -228,6 +230,7 @@ func _perform_plasma_slam() -> void:
 	)
 
 func _on_phase_entered(phase: int) -> void:
+	super._on_phase_entered(phase)
 	match phase:
 		2:
 			attack_cooldown = 1.8
@@ -240,3 +243,4 @@ func _on_phase_entered(phase: int) -> void:
 			attack_cooldown = 0.9
 			move_speed = 7.0
 			attack_damage = 70.0
+			set_facial_state(FacialState.ENRAGE_FLARE, 999.0)

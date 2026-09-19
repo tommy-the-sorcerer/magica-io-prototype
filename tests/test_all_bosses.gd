@@ -100,6 +100,18 @@ func _init() -> void:
 			return
 		print("  ✓ Telegraph warning circle generated successfully")
 		
+		# Test Procedural Locomotion Kinematics & Erratic AI
+		var simulated_player_pos := Vector3(10, 0, 10)
+		var test_vel := b.calculate_unanticipated_velocity(simulated_player_pos, 3.0, 0.016)
+		b.velocity = test_vel
+		b.update_procedural_locomotion(0.016)
+		print("  ✓ Kinematics: stride_cycle=%.2f, leg/body procedural dip calculated" % b.stride_cycle)
+		
+		# Test Facial State Machine (Attack Roar & Jaw Flare)
+		b.set_facial_state(BaseBoss.FacialState.ATTACK_ROAR, 1.0)
+		b.update_procedural_locomotion(0.016)
+		print("  ✓ Facial Expression: ATTACK_ROAR & Jaw animation active")
+		
 		# Clean up instance
 		boss_inst.queue_free()
 		circle.queue_free()

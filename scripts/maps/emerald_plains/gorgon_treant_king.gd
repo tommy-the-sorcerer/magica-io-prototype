@@ -27,20 +27,15 @@ func _physics_process(delta: float) -> void:
 			
 	if target_player and is_instance_valid(target_player):
 		var dist := global_position.distance_to(target_player.global_position)
-		var dir := (target_player.global_position - global_position).normalized()
-		dir.y = 0
 		
-		# Face the player
-		if dir.length_squared() > 0.01:
-			look_at_target(target_player.global_position, delta)
-			
-		# Movement toward player if outside close melee range
-		if dist > melee_range:
-			velocity.x = dir.x * move_speed
-			velocity.z = dir.z * move_speed
-		else:
-			velocity.x = move_toward(velocity.x, 0, delta * 10.0)
-			velocity.z = move_toward(velocity.z, 0, delta * 10.0)
+		# Smoothly rotate toward player
+		look_at_target(target_player.global_position, delta)
+		
+		# Dynamic, erratic, unanticipated predator movement (circling, zig-zag, feints)
+		velocity = calculate_unanticipated_velocity(target_player.global_position, melee_range, delta)
+		
+		# Heavy footstep kinematics, leg swings, forward lean, banking
+		update_procedural_locomotion(delta)
 			
 		# Attack timer
 		attack_timer -= delta
@@ -50,6 +45,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = 0
 		velocity.z = 0
+		update_procedural_locomotion(delta)
 
 	move_and_slide()
 
@@ -57,16 +53,21 @@ func _perform_treant_attack() -> void:
 	if not target_player or not is_instance_valid(target_player):
 		return
 	
+	# Attack roar: opens jaw wide and flares eyes with high emission
+	set_facial_state(FacialState.ATTACK_ROAR, 0.8)
+	
 	# Telegraph ground impact ahead
 	var target_pos: Vector3 = target_player.global_position
 	create_telegraph_circle(target_pos, 3.5, 0.7, Color(0.95, 0.2, 0.1, 0.7))
 	
 	# Arm windup animation
+	is_attacking_anim = true
 	if right_arm:
 		var tween := create_tween()
 		tween.tween_property(right_arm, "rotation:x", -1.5, 0.3)
 		tween.tween_property(right_arm, "rotation:x", 0.3, 0.15)
 		tween.tween_property(right_arm, "rotation:x", 0.0, 0.25)
+		tween.tween_callback(func(): is_attacking_anim = false)
 		
 	get_tree().create_timer(0.7).timeout.connect(func(): _on_slam_impact(target_pos))
 

@@ -28,18 +28,15 @@ func _physics_process(delta: float) -> void:
 		
 	if target_player and is_instance_valid(target_player):
 		var dist := global_position.distance_to(target_player.global_position)
-		var dir := (target_player.global_position - global_position).normalized()
-		dir.y = 0
 		
+		# Rotate smoothly to target
 		look_at_target(target_player.global_position, delta)
 		
-		# Movement toward player
-		if dist > 3.8:
-			velocity.x = dir.x * move_speed
-			velocity.z = dir.z * move_speed
-		else:
-			velocity.x = move_toward(velocity.x, 0, delta * 12.0)
-			velocity.z = move_toward(velocity.z, 0, delta * 12.0)
+		# Dynamic erratic movement (orbiting, zig-zag rushes, feint steps)
+		velocity = calculate_unanticipated_velocity(target_player.global_position, 3.8, delta)
+		
+		# Procedural footstep strides, pendulum legs, forward sprint lean, and banking
+		update_procedural_locomotion(delta)
 			
 		# Ability Timers
 		attack_timer -= delta
@@ -64,12 +61,16 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = 0
 		velocity.z = 0
+		update_procedural_locomotion(delta)
 
 	move_and_slide()
 
 ## 1. Scythe Cleave with Red Crescent Telegraph
 func _perform_scythe_cleave() -> void:
 	can_act = false
+	is_attacking_anim = true
+	set_facial_state(FacialState.ATTACK_ROAR, 0.7)
+	
 	var strike_pos := global_position + (-global_transform.basis.z * 2.5)
 	create_telegraph_circle(strike_pos, 3.2, 0.6, Color(1.0, 0.25, 0.1, 0.75))
 	
@@ -79,6 +80,7 @@ func _perform_scythe_cleave() -> void:
 		tw.tween_property(scythe_arm, "rotation:y", 1.8, 0.25)
 		tw.tween_property(scythe_arm, "rotation:y", -1.8, 0.18)
 		tw.tween_property(scythe_arm, "rotation:y", 0.0, 0.2)
+		tw.tween_callback(func(): is_attacking_anim = false)
 		
 	get_tree().create_timer(0.45).timeout.connect(func():
 		_execute_scythe_damage(strike_pos)

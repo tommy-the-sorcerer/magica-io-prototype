@@ -101,9 +101,19 @@ mesh = SubResource("BoxMesh_head")
 surface_material_override/0 = SubResource("StandardMaterial3D_obsidian")
 
 [node name="Snout" type="MeshInstance3D" parent="Visuals/Head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, -0.9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -0.9)
 mesh = SubResource("BoxMesh_snout")
 surface_material_override/0 = SubResource("StandardMaterial3D_obsidian")
+
+[node name="Jaw" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, -0.8)
+mesh = SubResource("BoxMesh_snout")
+surface_material_override/0 = SubResource("StandardMaterial3D_obsidian")
+
+[node name="Fangs" type="MeshInstance3D" parent="Visuals/Head/Jaw"]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0.2, -0.4)
+mesh = SubResource("BoxMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold")
 
 [node name="LeftEar" type="MeshInstance3D" parent="Visuals/Head"]
 transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, -0.45, 0.9, 0)

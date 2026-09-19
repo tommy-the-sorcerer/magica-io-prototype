@@ -27,17 +27,15 @@ func _physics_process(delta: float) -> void:
 		
 	if target_player and is_instance_valid(target_player):
 		var dist := global_position.distance_to(target_player.global_position)
-		var dir := (target_player.global_position - global_position).normalized()
-		dir.y = 0
 		
+		# Rotate smoothly to target
 		look_at_target(target_player.global_position, delta)
 		
-		if dist > 4.5:
-			velocity.x = dir.x * move_speed
-			velocity.z = dir.z * move_speed
-		else:
-			velocity.x = move_toward(velocity.x, 0, delta * 10.0)
-			velocity.z = move_toward(velocity.z, 0, delta * 10.0)
+		# Erratic unpredictable navigation (circling, zig-zag weaves, feints)
+		velocity = calculate_unanticipated_velocity(target_player.global_position, 4.5, delta)
+		
+		# Heavy volcanic stomp kinematics, leg swinging, forward sprint lean, and banking
+		update_procedural_locomotion(delta)
 			
 		attack_timer -= delta
 		bombard_timer -= delta
@@ -73,6 +71,7 @@ func _perform_caldera_bombardment() -> void:
 	if not target_player or not is_instance_valid(target_player):
 		return
 	can_act = false
+	set_facial_state(FacialState.ATTACK_ROAR, 0.9)
 	
 	# Pulse chest core
 	if core_chest:

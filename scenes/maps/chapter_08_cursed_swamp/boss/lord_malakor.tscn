@@ -100,6 +100,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 0.1, -0.52)
 mesh = SubResource("BoxMesh_eye")
 surface_material_override/0 = SubResource("StandardMaterial3D_violet_flame")
 
+[node name="Jaw" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.8, 0, 0, 0, 0.4, 0, 0, 0, 0.7, 0, -0.4, -0.2)
+mesh = SubResource("BoxMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_bone")
+
 [node name="LeftArmPivot" type="Node3D" parent="Visuals"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0, 2.9, 0)
 

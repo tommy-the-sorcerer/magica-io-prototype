@@ -27,17 +27,15 @@ func _physics_process(delta: float) -> void:
 		
 	if target_player and is_instance_valid(target_player):
 		var dist := global_position.distance_to(target_player.global_position)
-		var dir := (target_player.global_position - global_position).normalized()
-		dir.y = 0
 		
+		# Rotate smoothly to target
 		look_at_target(target_player.global_position, delta)
 		
-		if dist > 4.5:
-			velocity.x = dir.x * move_speed
-			velocity.z = dir.z * move_speed
-		else:
-			velocity.x = move_toward(velocity.x, 0, delta * 10.0)
-			velocity.z = move_toward(velocity.z, 0, delta * 10.0)
+		# Erratic unpredictable pirate pathing (circling, zig-zag approaches, sudden lunge bursts)
+		velocity = calculate_unanticipated_velocity(target_player.global_position, 4.5, delta)
+		
+		# Peg-leg swagger stride kinematics, pendulum swings, forward lean, banking
+		update_procedural_locomotion(delta)
 			
 		attack_timer -= delta
 		anchor_timer -= delta

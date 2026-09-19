@@ -4,6 +4,7 @@ extends Node3D
 ## Master Controller for Chapter 1: Emerald Plains (Levels 1-10)
 
 @export var current_level: int = 1
+@export var is_boss_level: bool = false
 @export var level_data: ChapterLevelData
 
 @onready var world_env: WorldEnvironment = $WorldEnvironment
@@ -26,7 +27,7 @@ func _ready() -> void:
 	_apply_environment_settings()
 	_spawn_player()
 	
-	if level_data and level_data.is_boss_level:
+	if is_boss_level or current_level == 10 or (level_data and level_data.is_boss_level):
 		_setup_boss_arena()
 	else:
 		_spawn_enemies()

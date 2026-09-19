@@ -33,6 +33,12 @@ size = Vector3(1.0, 1.2, 0.4)
 [sub_resource type="BoxMesh" id="BoxMesh_head"]
 size = Vector3(1.3, 1.1, 1.4)
 
+[sub_resource type="BoxMesh" id="BoxMesh_jaw"]
+size = Vector3(1.1, 0.35, 1.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mandible"]
+size = Vector3(0.2, 0.5, 0.4)
+
 [sub_resource type="BoxMesh" id="BoxMesh_sensor_eye"]
 size = Vector3(0.9, 0.15, 0.1)
 
@@ -96,6 +102,24 @@ surface_material_override/0 = SubResource("StandardMaterial3D_void_armor")
 [node name="SensorVisor" type="MeshInstance3D" parent="Visuals/Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.72)
 mesh = SubResource("BoxMesh_sensor_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_plasma_magenta")
+
+[node name="Jaw" type="Node3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0.1)
+
+[node name="JawMesh" type="MeshInstance3D" parent="Visuals/Head/Jaw"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
+mesh = SubResource("BoxMesh_jaw")
+surface_material_override/0 = SubResource("StandardMaterial3D_void_armor")
+
+[node name="LeftMandible" type="MeshInstance3D" parent="Visuals/Head/Jaw"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 0.15, -0.6)
+mesh = SubResource("BoxMesh_mandible")
+surface_material_override/0 = SubResource("StandardMaterial3D_plasma_magenta")
+
+[node name="RightMandible" type="MeshInstance3D" parent="Visuals/Head/Jaw"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0.15, -0.6)
+mesh = SubResource("BoxMesh_mandible")
 surface_material_override/0 = SubResource("StandardMaterial3D_plasma_magenta")
 
 [node name="LeftCannon" type="MeshInstance3D" parent="Visuals"]
