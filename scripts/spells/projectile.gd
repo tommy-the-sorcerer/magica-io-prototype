@@ -239,3 +239,7 @@ func _is_caster_or_self(node: Node) -> bool:
 	if is_instance_valid(caster) and (caster.is_ancestor_of(node) or node.is_ancestor_of(caster)):
 		return true
 	return false
+
+## Alias for backward compatibility
+func _explode() -> void:
+	explode()

@@ -7,7 +7,7 @@ signal match_found
 @onready var count_label: Label = $VBox/CountLabel
 @onready var ping_label: Label = $TopBar/PingLabel
 @onready var progress_bar: ProgressBar = $VBox/ProgressBar
-@onready var start_button: Button = $VBox/StartButton
+@onready var start_button: Button = $VBox/StartButton if has_node("VBox/StartButton") else null
 
 var current_players: int = 1
 var target_players: int = 15
@@ -61,7 +61,9 @@ func _on_all_players_found() -> void:
 
 func _start_game() -> void:
 	match_found.emit()
-	# Smooth fade out
+	# Smooth fade out and transition to gameplay arena
 	var tween := create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, 0.4)
-	tween.tween_callback(queue_free)
+	tween.tween_callback(func():
+		get_tree().change_scene_to_file("res://scenes/arena/arena.tscn")
+	)

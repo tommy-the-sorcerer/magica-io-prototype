@@ -1,0 +1,1183 @@
+[gd_scene load_steps=28 format=3 uid="uid://74s0xju4ki11"]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dvw8psh4wpwdx" path="res://assets/kenney/fantasy_ui_borders/PNG/Default/Panel/panel-000.png" id="2_panel"]
+[ext_resource type="Texture2D" uid="uid://dri4anw7dec68" path="res://assets/kenney/fantasy_ui_borders/PNG/Default/Border/panel-border-000.png" id="3_border"]
+[ext_resource type="Texture2D" uid="uid://c4ctai1uw8a8k" path="res://assets/kenney/fantasy_ui_borders/PNG/Default/Divider/divider-000.png" id="4_divider"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
+sky_top_color = Color(0.18, 0.08, 0.28, 1)
+sky_horizon_color = Color(0.35, 0.15, 0.45, 1)
+ground_bottom_color = Color(0.08, 0.05, 0.12, 1)
+
+[sub_resource type="Sky" id="Sky_1"]
+sky_material = SubResource("ProceduralSkyMaterial_1")
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 2
+sky = SubResource("Sky_1")
+ambient_light_color = Color(0.5, 0.35, 0.65, 1)
+ambient_light_energy = 1.2
+glow_enabled = true
+glow_intensity = 0.8
+glow_bloom = 0.25
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_stone"]
+albedo_color = Color(0.15, 0.12, 0.18, 1)
+roughness = 0.7
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pedestal"]
+top_radius = 0.95
+bottom_radius = 1.1
+height = 0.16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rune"]
+albedo_color = Color(0.35, 0.15, 0.55, 1)
+emission_enabled = true
+emission = Color(0.65, 0.22, 0.95, 1)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_rune"]
+top_radius = 0.82
+bottom_radius = 0.84
+height = 0.17
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gold_ring"]
+albedo_color = Color(0.9, 0.6, 0.15, 1)
+emission_enabled = true
+emission = Color(1, 0.65, 0.1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_gold_ring"]
+top_radius = 0.68
+bottom_radius = 0.7
+height = 0.18
+
+[sub_resource type="PrismMesh" id="PrismMesh_island"]
+size = Vector3(3.5, 2.5, 2.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_castle"]
+size = Vector3(1.2, 3.2, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0.1, 0.08, 0.16, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.48, 0.28, 0.72, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gold_card"]
+bg_color = Color(0.14, 0.1, 0.18, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.92, 0.68, 0.22, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp_bg"]
+bg_color = Color(0.06, 0.04, 0.09, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp_fill"]
+bg_color = Color(0.92, 0.68, 0.22, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_currency"]
+bg_color = Color(0.12, 0.08, 0.18, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.55, 0.32, 0.8, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav_btn"]
+bg_color = Color(0.18, 0.1, 0.28, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.62, 0.35, 0.88, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0.2, 0.05, 0.3, 0.4)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_portal_btn"]
+bg_color = Color(0.15, 0.08, 0.25, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.75, 0.38, 0.98, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0.6, 0.2, 0.9, 0.5)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ad_btn"]
+bg_color = Color(0.08, 0.35, 0.65, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.68, 0.98, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_equip_slot"]
+bg_color = Color(0.12, 0.09, 0.18, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.45, 0.28, 0.65, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_play_normal"]
+bg_color = Color(0.92, 0.58, 0.08, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.85, 0.35, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(1, 0.5, 0, 0.6)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_play_hover"]
+bg_color = Color(0.98, 0.68, 0.12, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.92, 0.45, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(1, 0.65, 0.1, 0.8)
+shadow_size = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_play_pressed"]
+bg_color = Color(0.78, 0.46, 0.05, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.9, 0.7, 0.2, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_badge"]
+bg_color = Color(0.9, 0.15, 0.15, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal_bg"]
+bg_color = Color(0, 0, 0, 0.78)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal_action"]
+bg_color = Color(0.92, 0.58, 0.08, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.85, 0.35, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(1, 0.5, 0, 0.5)
+shadow_size = 6
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="ShowcaseWorld" type="Node3D" parent="SubViewportContainer/SubViewport"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+environment = SubResource("Environment_1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 2, 4, 3)
+light_color = Color(1, 0.9, 0.8, 1)
+light_energy = 1.6
+shadow_enabled = true
+
+[node name="PurpleRimLight" type="OmniLight3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1.2, -1.0)
+light_color = Color(0.7, 0.25, 0.95, 1)
+light_energy = 3.0
+omni_range = 6.0
+
+[node name="GoldFrontLight" type="OmniLight3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0.8, 1.5)
+light_color = Color(1, 0.7, 0.2, 1)
+light_energy = 2.2
+omni_range = 5.0
+
+[node name="ShowcaseCamera" type="Camera3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 1.45, 4.2)
+current = true
+fov = 38.0
+
+[node name="HeroPlatform" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.08, 0)
+
+[node name="StoneBase" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
+mesh = SubResource("CylinderMesh_pedestal")
+surface_material_override/0 = SubResource("StandardMaterial3D_stone")
+
+[node name="RuneRing" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
+mesh = SubResource("CylinderMesh_rune")
+surface_material_override/0 = SubResource("StandardMaterial3D_rune")
+
+[node name="GoldRing" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
+mesh = SubResource("CylinderMesh_gold_ring")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold_ring")
+
+[node name="HeroAnchor" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+
+[node name="BackgroundScenery" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+
+[node name="FloatingIsland1" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/BackgroundScenery"]
+transform = Transform3D(1, 0, 0, 0, -0.866025, 0.5, 0, -0.5, -0.866025, -4.5, 0.5, -5.5)
+mesh = SubResource("PrismMesh_island")
+surface_material_override/0 = SubResource("StandardMaterial3D_stone")
+
+[node name="FloatingIsland2" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/BackgroundScenery"]
+transform = Transform3D(1, 0, 0, 0, -0.866025, 0.5, 0, -0.5, -0.866025, 4.8, 1.2, -6.0)
+mesh = SubResource("PrismMesh_island")
+surface_material_override/0 = SubResource("StandardMaterial3D_stone")
+
+[node name="CastleTower" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/BackgroundScenery"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 1.8, -7.5)
+mesh = SubResource("BoxMesh_castle")
+surface_material_override/0 = SubResource("StandardMaterial3D_stone")
+
+[node name="TopLeftProfile" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 320.0
+offset_bottom = 90.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_gold_card")
+
+[node name="HBox" type="HBoxContainer" parent="TopLeftProfile"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="AvatarBox" type="ColorRect" parent="TopLeftProfile/HBox"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+color = Color(0.28, 0.18, 0.42, 1)
+
+[node name="Icon" type="Label" parent="TopLeftProfile/HBox/AvatarBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_left_right = 0.5
+anchor_top_bottom = 0.5
+offset_left = -15.0
+offset_top = -18.0
+offset_right = 15.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "🧙‍♂️"
+horizontal_alignment = 1
+
+[node name="VBox" type="VBoxContainer" parent="TopLeftProfile/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="NameHBox" type="HBoxContainer" parent="TopLeftProfile/HBox/VBox"]
+layout_mode = 2
+
+[node name="PlayerName" type="Label" parent="TopLeftProfile/HBox/VBox/NameHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Player#5139"
+
+[node name="LvlBadge" type="Label" parent="TopLeftProfile/HBox/VBox/NameHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.25, 1)
+theme_override_font_sizes/font_size = 14
+text = "LVL 2"
+
+[node name="XPBar" type="ProgressBar" parent="TopLeftProfile/HBox/VBox"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_xp_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_xp_fill")
+value = 40.0
+show_percentage = false
+
+[node name="XPText" type="Label" parent="TopLeftProfile/HBox/VBox/XPBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_left_right = 0.5
+anchor_top_bottom = 0.5
+offset_left = -40.0
+offset_top = -8.0
+offset_right = 40.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 9
+text = "120 / 300 XP"
+horizontal_alignment = 1
+
+[node name="TopCenterLogo" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -160.0
+offset_top = 16.0
+offset_right = 160.0
+offset_bottom = 96.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="CrownIcon" type="Label" parent="TopCenterLogo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.2, 1)
+theme_override_font_sizes/font_size = 22
+text = "👑"
+horizontal_alignment = 1
+
+[node name="Title" type="Label" parent="TopCenterLogo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.85, 0.35, 1)
+theme_override_colors/font_shadow_color = Color(0.2, 0.05, 0.3, 0.8)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 32
+text = "LUDUSFORGE"
+horizontal_alignment = 1
+
+[node name="TopRightCurrencies" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -380.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = 68.0
+grow_horizontal = 0
+theme_override_constants/separation = 12
+alignment = 2
+
+[node name="GoldCard" type="PanelContainer" parent="TopRightCurrencies"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_currency")
+
+[node name="HBox" type="HBoxContainer" parent="TopRightCurrencies/GoldCard"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="Label" parent="TopRightCurrencies/GoldCard/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "🪙"
+
+[node name="Amount" type="Label" parent="TopRightCurrencies/GoldCard/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "1126"
+
+[node name="AddBtn" type="Button" parent="TopRightCurrencies/GoldCard/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.78, 0.25, 1)
+theme_override_font_sizes/font_size = 16
+text = " + "
+flat = true
+
+[node name="GemsCard" type="PanelContainer" parent="TopRightCurrencies"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_currency")
+
+[node name="HBox" type="HBoxContainer" parent="TopRightCurrencies/GemsCard"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="Label" parent="TopRightCurrencies/GemsCard/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "💎"
+
+[node name="Amount" type="Label" parent="TopRightCurrencies/GemsCard/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "0"
+
+[node name="AddBtn" type="Button" parent="TopRightCurrencies/GemsCard/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.78, 0.98, 1)
+theme_override_font_sizes/font_size = 16
+text = " + "
+flat = true
+
+[node name="SettingsBtn" type="Button" parent="TopRightCurrencies"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
+text = "⚙️"
+
+[node name="LeftNav" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 110.0
+offset_right = 160.0
+offset_bottom = -240.0
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="SpellbookBtn" type="Button" parent="LeftNav"]
+custom_minimum_size = Vector2(136, 76)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
+alignment = 1
+
+[node name="VBox" type="VBoxContainer" parent="LeftNav/SpellbookBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="LeftNav/SpellbookBtn/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "📖"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="LeftNav/SpellbookBtn/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.98, 1)
+theme_override_font_sizes/font_size = 12
+text = "SPELLBOOK"
+horizontal_alignment = 1
+
+[node name="RewardsBtn" type="Button" parent="LeftNav"]
+custom_minimum_size = Vector2(136, 76)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
+alignment = 1
+
+[node name="VBox" type="VBoxContainer" parent="LeftNav/RewardsBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="LeftNav/RewardsBtn/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "🎁"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="LeftNav/RewardsBtn/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.98, 1)
+theme_override_font_sizes/font_size = 12
+text = "REWARDS"
+horizontal_alignment = 1
+
+[node name="MissionsBtn" type="Button" parent="LeftNav"]
+custom_minimum_size = Vector2(136, 76)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
+alignment = 1
+
+[node name="VBox" type="VBoxContainer" parent="LeftNav/MissionsBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="LeftNav/MissionsBtn/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "📜"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="LeftNav/MissionsBtn/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.98, 1)
+theme_override_font_sizes/font_size = 12
+text = "MISSIONS"
+horizontal_alignment = 1
+
+[node name="Badge" type="Panel" parent="LeftNav/MissionsBtn"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -16.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = 16.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+
+[node name="Exclamation" type="Label" parent="LeftNav/MissionsBtn/Badge"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_left_right = 0.5
+anchor_top_bottom = 0.5
+offset_left = -4.0
+offset_top = -8.0
+offset_right = 4.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "!"
+horizontal_alignment = 1
+
+[node name="LowerLeftNav" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -140.0
+offset_right = 380.0
+offset_bottom = -24.0
+grow_vertical = 0
+theme_override_constants/separation = 14
+
+[node name="HeroesPortalBtn" type="Button" parent="LowerLeftNav"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_portal_btn")
+
+[node name="VBox" type="VBoxContainer" parent="LowerLeftNav/HeroesPortalBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="LowerLeftNav/HeroesPortalBtn/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "🌀"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="LowerLeftNav/HeroesPortalBtn/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "HEROES\nPORTAL"
+horizontal_alignment = 1
+
+[node name="HeroesBtn" type="Button" parent="LowerLeftNav"]
+custom_minimum_size = Vector2(100, 110)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
+
+[node name="VBox" type="VBoxContainer" parent="LowerLeftNav/HeroesBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="LowerLeftNav/HeroesBtn/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "🛡️"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="LowerLeftNav/HeroesBtn/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.98, 1)
+theme_override_font_sizes/font_size = 12
+text = "HEROES"
+horizontal_alignment = 1
+
+[node name="ShopBtn" type="Button" parent="LowerLeftNav"]
+custom_minimum_size = Vector2(100, 110)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
+
+[node name="VBox" type="VBoxContainer" parent="LowerLeftNav/ShopBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="LowerLeftNav/ShopBtn/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "📦"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="LowerLeftNav/ShopBtn/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.98, 1)
+theme_override_font_sizes/font_size = 12
+text = "SHOP"
+horizontal_alignment = 1
+
+[node name="Badge" type="Panel" parent="LowerLeftNav/ShopBtn"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -16.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = 16.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+
+[node name="CenterOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_left_right = 0.5
+anchor_top_bottom = 0.5
+offset_left = -200.0
+offset_top = 140.0
+offset_right = 200.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DragHint" type="HBoxContainer" parent="CenterOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_left_right = 0.5
+anchor_top_bottom = 0.5
+offset_left = -80.0
+offset_top = -14.0
+offset_right = 80.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="Label" parent="CenterOverlay/DragHint"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "🔄"
+
+[node name="Text" type="Label" parent="CenterOverlay/DragHint"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "DRAG TO ROTATE"
+
+[node name="RightPromotions" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -240.0
+offset_right = -24.0
+offset_bottom = 120.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 14
+
+[node name="CommunityCard" type="PanelContainer" parent="RightPromotions"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="HBox" type="HBoxContainer" parent="RightPromotions/CommunityCard"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="VBox" type="VBoxContainer" parent="RightPromotions/CommunityCard/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="RightPromotions/CommunityCard/HBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.75, 0.95, 1)
+theme_override_font_sizes/font_size = 11
+text = "Follow us!"
+
+[node name="IconsHBox" type="HBoxContainer" parent="RightPromotions/CommunityCard/HBox/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Discord" type="Label" parent="RightPromotions/CommunityCard/HBox/VBox/IconsHBox"]
+layout_mode = 2
+text = "💬"
+
+[node name="Insta" type="Label" parent="RightPromotions/CommunityCard/HBox/VBox/IconsHBox"]
+layout_mode = 2
+text = "📷"
+
+[node name="YT" type="Label" parent="RightPromotions/CommunityCard/HBox/VBox/IconsHBox"]
+layout_mode = 2
+text = "▶️"
+
+[node name="X" type="Label" parent="RightPromotions/CommunityCard/HBox/VBox/IconsHBox"]
+layout_mode = 2
+text = "✖️"
+
+[node name="JoinBtn" type="Button" parent="RightPromotions/CommunityCard/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "JOIN OUR\nCOMMUNITY"
+
+[node name="WatchAdsCard" type="PanelContainer" parent="RightPromotions"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ad_btn")
+
+[node name="HBox" type="HBoxContainer" parent="RightPromotions/WatchAdsCard"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="Label" parent="RightPromotions/WatchAdsCard/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "📺"
+
+[node name="VBox" type="VBoxContainer" parent="RightPromotions/WatchAdsCard/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Title" type="Label" parent="RightPromotions/WatchAdsCard/HBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "WATCH ADS"
+
+[node name="Sub" type="Label" parent="RightPromotions/WatchAdsCard/HBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "Get 400 Coins"
+
+[node name="RewardBox" type="HBoxContainer" parent="RightPromotions/WatchAdsCard/HBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="Coin" type="Label" parent="RightPromotions/WatchAdsCard/HBox/RewardBox"]
+layout_mode = 2
+text = "🪙"
+
+[node name="Amt" type="Label" parent="RightPromotions/WatchAdsCard/HBox/RewardBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 16
+text = "400"
+
+[node name="SpecialOfferCard" type="PanelContainer" parent="RightPromotions"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="VBox" type="VBoxContainer" parent="RightPromotions/SpecialOfferCard"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HeaderHBox" type="HBoxContainer" parent="RightPromotions/SpecialOfferCard/VBox"]
+layout_mode = 2
+
+[node name="LeftBtn" type="Button" parent="RightPromotions/SpecialOfferCard/VBox/HeaderHBox"]
+layout_mode = 2
+text = "◀"
+flat = true
+
+[node name="Title" type="Label" parent="RightPromotions/SpecialOfferCard/VBox/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.8, 0.3, 1)
+theme_override_font_sizes/font_size = 13
+text = "SPECIAL OFFER"
+horizontal_alignment = 1
+
+[node name="RightBtn" type="Button" parent="RightPromotions/SpecialOfferCard/VBox/HeaderHBox"]
+layout_mode = 2
+text = "▶"
+flat = true
+
+[node name="BodyHBox" type="HBoxContainer" parent="RightPromotions/SpecialOfferCard/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="CoinBadge" type="Label" parent="RightPromotions/SpecialOfferCard/VBox/BodyHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 13
+text = "🪙 +50,000"
+
+[node name="PriceBtn" type="Button" parent="RightPromotions/SpecialOfferCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "₹150.00"
+
+[node name="BottomCenterEquipment" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -120.0
+offset_right = 60.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="WeaponSlot" type="PanelContainer" parent="BottomCenterEquipment"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_equip_slot")
+
+[node name="Icon" type="Label" parent="BottomCenterEquipment/WeaponSlot"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "⚔️"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Label" parent="BottomCenterEquipment/WeaponSlot"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.9, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "1"
+
+[node name="ArmorSlot" type="PanelContainer" parent="BottomCenterEquipment"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_equip_slot")
+
+[node name="Icon" type="Label" parent="BottomCenterEquipment/ArmorSlot"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "🛡️"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Badge" type="Label" parent="BottomCenterEquipment/ArmorSlot"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.9, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "1"
+
+[node name="RingSlot" type="PanelContainer" parent="BottomCenterEquipment"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_equip_slot")
+
+[node name="Icon" type="Label" parent="BottomCenterEquipment/RingSlot"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "💍"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomRightArea" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -140.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="PlayButton" type="Button" parent="BottomRightArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 38
+theme_override_styles/normal = SubResource("StyleBoxFlat_play_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_play_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_play_pressed")
+text = "⚔️ PLAY"
+
+[node name="ModalOverlay" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal_bg")
+
+[node name="ModalCard" type="NinePatchRect" parent="ModalOverlay"]
+custom_minimum_size = Vector2(640, 520)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -260.0
+offset_right = 320.0
+offset_bottom = 260.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(320, 260)
+mouse_filter = 0
+texture = ExtResource("2_panel")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="BorderFrame" type="NinePatchRect" parent="ModalOverlay/ModalCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_border")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="CloseBtn" type="Button" parent="ModalOverlay/ModalCard"]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -54.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = 52.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.95, 0.45, 0.45, 1)
+theme_override_colors/font_hover_color = Color(1, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 24
+text = "✕"
+flat = true
+
+[node name="ContentVBox" type="VBoxContainer" parent="ModalOverlay/ModalCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 28.0
+offset_right = -32.0
+offset_bottom = -28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="ModalTitle" type="Label" parent="ModalOverlay/ModalCard/ContentVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "SPELLBOOK"
+horizontal_alignment = 1
+
+[node name="Divider" type="TextureRect" parent="ModalOverlay/ModalCard/ContentVBox"]
+custom_minimum_size = Vector2(320, 14)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("4_divider")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BodyScroll" type="ScrollContainer" parent="ModalOverlay/ModalCard/ContentVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="DynamicContent" type="VBoxContainer" parent="ModalOverlay/ModalCard/ContentVBox/BodyScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="ActionBtn" type="Button" parent="ModalOverlay/ModalCard/ContentVBox"]
+custom_minimum_size = Vector2(220, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_modal_action")
+text = "CONFIRM"
+
+[node name="ToastNotification" type="NinePatchRect" parent="."]
+visible = false
+custom_minimum_size = Vector2(420, 52)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -210.0
+offset_top = -120.0
+offset_right = 210.0
+offset_bottom = -68.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(210, 26)
+texture = ExtResource("2_panel")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="Border" type="NinePatchRect" parent="ToastNotification"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_border")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="ToastLabel" type="Label" parent="ToastNotification"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 15
+text = "+400 COINS CLAIMED!"
+horizontal_alignment = 1
+vertical_alignment = 1
+

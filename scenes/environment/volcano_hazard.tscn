@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://c8volcanohazard"]
+[gd_scene format=3 uid="uid://fvav6xad7tbp"]
 
 [ext_resource type="Script" path="res://scripts/environment/hazard_zone.gd" id="1_hz"]
 
