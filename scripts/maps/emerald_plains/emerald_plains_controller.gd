@@ -7,16 +7,16 @@ extends Node3D
 @export var is_boss_level: bool = false
 @export var level_data: ChapterLevelData
 
-@onready var world_env: WorldEnvironment = $WorldEnvironment
-@onready var sun: DirectionalLight3D = $DirectionalLight3D
-@onready var camera: Camera3D = $Camera3D
-@onready var storm: ForestStorm = $Storm/ForestStorm
-@onready var hud: HUD = $HUD
+@onready var world_env: WorldEnvironment = get_node_or_null("WorldEnvironment")
+@onready var sun: DirectionalLight3D = get_node_or_null("DirectionalLight3D")
+@onready var camera: Camera3D = get_node_or_null("Camera3D")
+@onready var storm: ForestStorm = get_node_or_null("Storm/ForestStorm")
+@onready var hud: HUD = get_node_or_null("HUD")
 
 # Spawn Groups
-@onready var player_spawns: Node3D = $Gameplay/PlayerSpawns
-@onready var enemy_spawns: Node3D = $Gameplay/EnemySpawns
-@onready var coin_locations: Node3D = $Gameplay/CoinLocations
+@onready var player_spawns: Node3D = get_node_or_null("Gameplay/PlayerSpawns")
+@onready var enemy_spawns: Node3D = get_node_or_null("Gameplay/EnemySpawns")
+@onready var coin_locations: Node3D = get_node_or_null("Gameplay/CoinLocations")
 
 var player_instance: Node3D = null
 var active_combatants: int = 1
