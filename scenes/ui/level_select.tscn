@@ -1,0 +1,536 @@
+[gd_scene load_steps=12 format=3 uid="uid://c6ludusforgelevelselect"]
+
+[ext_resource type="Script" path="res://scripts/ui/level_select.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://di3xc1khk5o16" path="res://assets/textures/fantasy_world_clean.jpg" id="2_mapbg"]
+[ext_resource type="Texture2D" uid="uid://dvw8psh4wpwdx" path="res://assets/kenney/fantasy_ui_borders/PNG/Default/Panel/panel-000.png" id="3_panel"]
+[ext_resource type="Texture2D" uid="uid://dri4anw7dec68" path="res://assets/kenney/fantasy_ui_borders/PNG/Default/Border/panel-border-000.png" id="4_border"]
+[ext_resource type="Texture2D" uid="uid://c4ctai1uw8a8k" path="res://assets/kenney/fantasy_ui_borders/PNG/Default/Divider/divider-000.png" id="5_divider"]
+[ext_resource type="Script" path="res://scripts/ui/map_atmosphere.gd" id="6_atmosphere"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar"]
+bg_color = Color(0.08, 0.05, 0.12, 0.95)
+border_width_bottom = 2
+border_color = Color(0.7, 0.45, 0.9, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_legend"]
+bg_color = Color(0.07, 0.05, 0.1, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.55, 0.35, 0.75, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal_bg"]
+bg_color = Color(0, 0, 0, 0.75)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_start_btn"]
+bg_color = Color(0.92, 0.58, 0.08, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.85, 0.35, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(1, 0.5, 0, 0.5)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_start_btn_hover"]
+bg_color = Color(1, 0.68, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.95, 0.55, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(1, 0.6, 0.1, 0.7)
+shadow_size = 12
+
+[node name="LevelSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="MapViewport" type="Control" parent="."]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 68.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MapWorld" type="Control" parent="MapViewport"]
+custom_minimum_size = Vector2(2400, 1350)
+layout_mode = 1
+offset_right = 2400.0
+offset_bottom = 1350.0
+mouse_filter = 2
+
+[node name="MapBackground" type="TextureRect" parent="MapViewport/MapWorld"]
+custom_minimum_size = Vector2(2400, 1350)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_mapbg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="LandmarksContainer" type="Control" parent="MapViewport/MapWorld"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="RegionLabelsContainer" type="Control" parent="MapViewport/MapWorld"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="AtmosphereContainer" type="Control" parent="MapViewport/MapWorld"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_atmosphere")
+
+[node name="SparkLineGlow" type="Line2D" parent="MapViewport/MapWorld"]
+width = 22.0
+default_color = Color(1, 0.65, 0.1, 0.4)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+
+[node name="SparkLineCore" type="Line2D" parent="MapViewport/MapWorld"]
+width = 7.0
+default_color = Color(1, 0.95, 0.55, 0.95)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+
+[node name="NodesContainer" type="Control" parent="MapViewport/MapWorld"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MapFrame" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 68.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_border")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="TopBar" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 68.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_topbar")
+
+[node name="BackBtn" type="Button" parent="TopBar"]
+custom_minimum_size = Vector2(140, 42)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 18.0
+offset_top = -21.0
+offset_right = 158.0
+offset_bottom = 21.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.95, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "🏠 MAIN MENU"
+
+[node name="Currencies" type="HBoxContainer" parent="TopBar"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -20.0
+offset_right = -60.0
+offset_bottom = 20.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 2
+
+[node name="Gold" type="Label" parent="TopBar/Currencies"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 16
+text = "🪙 1126"
+
+[node name="Gems" type="Label" parent="TopBar/Currencies"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.78, 0.98, 1)
+theme_override_font_sizes/font_size = 16
+text = "💎 0"
+
+[node name="CloseMapBtn" type="Button" parent="TopBar"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -20.0
+offset_right = -10.0
+offset_bottom = 20.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.95, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 20
+text = "✕"
+
+[node name="RegionHUD" type="NinePatchRect" parent="."]
+custom_minimum_size = Vector2(380, 44)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -190.0
+offset_top = 78.0
+offset_right = 190.0
+offset_bottom = 122.0
+grow_horizontal = 2
+texture = ExtResource("3_panel")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="RegionLabel" type="Label" parent="RegionHUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 14
+text = "🌲 REGION 1: THE WHISPERING WOODS (1-15)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CompassRose" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -130.0
+offset_top = -140.0
+offset_right = -20.0
+offset_bottom = -30.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="CompassCircle" type="Panel" parent="CompassRose"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_legend")
+
+[node name="CompassN" type="Label" parent="CompassRose"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -10.0
+offset_top = 6.0
+offset_right = 10.0
+offset_bottom = 26.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 14
+text = "N"
+horizontal_alignment = 1
+
+[node name="CompassStar" type="Label" parent="CompassRose"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -14.0
+offset_right = 20.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.95, 0.9)
+theme_override_font_sizes/font_size = 20
+text = "🧭"
+horizontal_alignment = 1
+
+[node name="BottomLegend" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -270.0
+offset_top = -45.0
+offset_right = 270.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_legend")
+
+[node name="HBox" type="HBoxContainer" parent="BottomLegend"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="MainItem" type="Label" parent="BottomLegend/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.95, 1)
+theme_override_font_sizes/font_size = 13
+text = "✦ Right-Click / Drag to Move Map • Wheel to Zoom"
+
+[node name="BossItem" type="Label" parent="BottomLegend/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 13
+text = "⭐ Boss Battles"
+
+[node name="SecretItem" type="Label" parent="BottomLegend/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 13
+text = "💀 Citadel (100)"
+
+[node name="Toast" type="NinePatchRect" parent="."]
+visible = false
+custom_minimum_size = Vector2(420, 52)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -210.0
+offset_top = -115.0
+offset_right = 210.0
+offset_bottom = -63.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("3_panel")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="ToastLabel" type="Label" parent="Toast"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 14
+text = "🔒 Complete Level 24 to unlock Level 25."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LevelInfoModal" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal_bg")
+
+[node name="Card" type="NinePatchRect" parent="LevelInfoModal"]
+custom_minimum_size = Vector2(460, 420)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -210.0
+offset_right = 230.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_panel")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="BorderFrame" type="NinePatchRect" parent="LevelInfoModal/Card"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_border")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="CloseBtn" type="Button" parent="LevelInfoModal/Card"]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -52.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 52.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.95, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 22
+text = "✕"
+flat = true
+
+[node name="VBox" type="VBoxContainer" parent="LevelInfoModal/Card"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 28.0
+offset_right = -32.0
+offset_bottom = -28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="LevelTitle" type="Label" parent="LevelInfoModal/Card/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.85, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 28
+text = "LEVEL 25"
+horizontal_alignment = 1
+
+[node name="RegionName" type="Label" parent="LevelInfoModal/Card/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "The Forgotten Graveyard"
+horizontal_alignment = 1
+
+[node name="Divider" type="TextureRect" parent="LevelInfoModal/Card/VBox"]
+custom_minimum_size = Vector2(280, 14)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("5_divider")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DifficultyLabel" type="Label" parent="LevelInfoModal/Card/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "DIFFICULTY: ⭐⭐⭐"
+horizontal_alignment = 1
+
+[node name="ObjectiveText" type="Label" parent="LevelInfoModal/Card/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.95, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 14
+text = "OBJECTIVE:
+Defeat all arena combatants and survive the storm!"
+horizontal_alignment = 1
+
+[node name="RewardText" type="Label" parent="LevelInfoModal/Card/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "REWARDS:
+🪙 500 Coins  |  ⭐ 250 XP"
+horizontal_alignment = 1
+
+[node name="StartLevelBtn" type="Button" parent="LevelInfoModal/Card/VBox"]
+custom_minimum_size = Vector2(240, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_start_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_start_btn_hover")
+text = "⚔️ START LEVEL"

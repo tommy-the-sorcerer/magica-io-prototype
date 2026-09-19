@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://c8playerherodetail"]
+[gd_scene load_steps=32 format=3 uid="uid://c8playerherodetail"]
 
 [ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_script"]
 [ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
@@ -8,8 +8,8 @@ radius = 0.45
 height = 1.4
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_skin"]
-albedo_color = Color(0.96, 0.75, 0.56, 1)
-roughness = 0.6
+albedo_color = Color(0.96, 0.75, 0.58, 1)
+roughness = 0.55
 
 [sub_resource type="BoxMesh" id="BoxMesh_head"]
 size = Vector3(0.52, 0.48, 0.45)
@@ -18,8 +18,8 @@ size = Vector3(0.52, 0.48, 0.45)
 size = Vector3(0.08, 0.16, 0.12)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hair"]
-albedo_color = Color(0.42, 0.21, 0.1, 1)
-roughness = 0.8
+albedo_color = Color(0.36, 0.20, 0.09, 1)
+roughness = 0.75
 
 [sub_resource type="PrismMesh" id="PrismMesh_hair_center"]
 size = Vector3(0.24, 0.38, 0.4)
@@ -27,14 +27,17 @@ size = Vector3(0.24, 0.38, 0.4)
 [sub_resource type="PrismMesh" id="PrismMesh_hair_side"]
 size = Vector3(0.18, 0.28, 0.35)
 
+[sub_resource type="PrismMesh" id="PrismMesh_hair_back"]
+size = Vector3(0.22, 0.32, 0.25)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eye_black"]
-albedo_color = Color(0.09, 0.08, 0.1, 1)
+albedo_color = Color(0.08, 0.07, 0.09, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_eye"]
 size = Vector3(0.12, 0.12, 0.02)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_white"]
-albedo_color = Color(1, 1, 1, 1)
+albedo_color = Color(0.96, 0.96, 0.98, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_eye_glint"]
 size = Vector3(0.04, 0.04, 0.025)
@@ -45,26 +48,61 @@ size = Vector3(0.13, 0.04, 0.025)
 [sub_resource type="BoxMesh" id="BoxMesh_mouth"]
 size = Vector3(0.14, 0.03, 0.025)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_scar"]
+albedo_color = Color(0.82, 0.52, 0.40, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_scar"]
+size = Vector3(0.12, 0.02, 0.01)
+
 [sub_resource type="BoxMesh" id="BoxMesh_torso"]
 size = Vector3(0.48, 0.52, 0.32)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vest"]
-albedo_color = Color(0.18, 0.16, 0.18, 1)
+albedo_color = Color(0.14, 0.14, 0.17, 1)
+roughness = 0.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_vest"]
 size = Vector3(0.14, 0.54, 0.34)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gold"]
+albedo_color = Color(0.88, 0.65, 0.22, 1)
+metallic = 0.7
+roughness = 0.3
+
+[sub_resource type="BoxMesh" id="BoxMesh_rivet"]
+size = Vector3(0.04, 0.04, 0.04)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_emblem"]
+albedo_color = Color(0.92, 0.68, 0.25, 1)
+emission_enabled = true
+emission = Color(0.95, 0.55, 0.1, 1)
+emission_energy_multiplier = 1.8
+
+[sub_resource type="PrismMesh" id="PrismMesh_emblem"]
+size = Vector3(0.18, 0.22, 0.03)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shorts"]
-albedo_color = Color(0.48, 0.55, 0.61, 1)
+albedo_color = Color(0.28, 0.36, 0.44, 1)
+roughness = 0.6
 
 [sub_resource type="BoxMesh" id="BoxMesh_shorts"]
-size = Vector3(0.18, 0.22, 0.22)
+size = Vector3(0.25, 0.24, 0.25)
+
+[sub_resource type="BoxMesh" id="BoxMesh_belt"]
+size = Vector3(0.50, 0.06, 0.34)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flame"]
 albedo_color = Color(1, 0.55, 0, 1)
 emission_enabled = true
 emission = Color(1, 0.45, 0, 1)
-emission_energy_multiplier = 2.0
+emission_energy_multiplier = 2.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_boot"]
+albedo_color = Color(0.12, 0.12, 0.14, 1)
+roughness = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_shoe"]
+size = Vector3(0.20, 0.14, 0.28)
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
@@ -84,7 +122,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, 0)
 billboard = 1
 double_sided = false
 text = "[ 149 / 149 ]
-Player#51393"
+Player#5139"
 font_size = 28
 outline_size = 8
 outline_color = Color(0, 0, 0, 1)
@@ -123,6 +161,11 @@ transform = Transform3D(0.965926, -0.258819, 0, 0.258819, 0.965926, 0, 0, 0, 1, 
 mesh = SubResource("PrismMesh_hair_side")
 surface_material_override/0 = SubResource("StandardMaterial3D_hair")
 
+[node name="HairBack" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, -0.866025, 0.5, 0, -0.5, -0.866025, 0, 0.22, 0.18)
+mesh = SubResource("PrismMesh_hair_back")
+surface_material_override/0 = SubResource("StandardMaterial3D_hair")
+
 [node name="LeftEye" type="MeshInstance3D" parent="Visuals/Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 0.05, -0.23)
 mesh = SubResource("BoxMesh_eye")
@@ -158,6 +201,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.12, -0.23)
 mesh = SubResource("BoxMesh_mouth")
 surface_material_override/0 = SubResource("StandardMaterial3D_eye_black")
 
+[node name="ChestScar" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0, 1, 0.05, -0.42, -0.17)
+mesh = SubResource("BoxMesh_scar")
+surface_material_override/0 = SubResource("StandardMaterial3D_scar")
+
+[node name="ChestScar2" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0.05, -0.42, -0.17)
+mesh = SubResource("BoxMesh_scar")
+surface_material_override/0 = SubResource("StandardMaterial3D_scar")
+
 [node name="Torso" type="Node3D" parent="Visuals"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 
@@ -174,6 +227,31 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vest")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 0, 0)
 mesh = SubResource("BoxMesh_vest")
 surface_material_override/0 = SubResource("StandardMaterial3D_vest")
+
+[node name="VestRivetLeft" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22, 0.18, -0.17)
+mesh = SubResource("BoxMesh_rivet")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold")
+
+[node name="VestRivetRight" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 0.18, -0.17)
+mesh = SubResource("BoxMesh_rivet")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold")
+
+[node name="Belt" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.23, 0)
+mesh = SubResource("BoxMesh_belt")
+surface_material_override/0 = SubResource("StandardMaterial3D_vest")
+
+[node name="BeltBuckle" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.23, -0.18)
+mesh = SubResource("BoxMesh_rivet")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold")
+
+[node name="BackEmblem" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0.17)
+mesh = SubResource("PrismMesh_emblem")
+surface_material_override/0 = SubResource("StandardMaterial3D_emblem")
 
 [node name="LeftArmPivot" type="Node3D" parent="Visuals"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 0.65, 0)
@@ -196,10 +274,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.22, 0)
 mesh = SubResource("BoxMesh_vest")
 surface_material_override/0 = SubResource("StandardMaterial3D_skin")
 
-[node name="Wristband" type="MeshInstance3D" parent="Visuals/RightArmPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, 0)
+[node name="GauntletBase" type="MeshInstance3D" parent="Visuals/RightArmPivot"]
+transform = Transform3D(1.15, 0, 0, 0, 1.15, 0, 0, 0, 1.15, 0, -0.32, 0)
 mesh = SubResource("BoxMesh_vest")
-surface_material_override/0 = SubResource("StandardMaterial3D_white")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold")
 
 [node name="Wand" type="MeshInstance3D" parent="Visuals/RightArmPivot"]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0.05, -0.35, -0.25)
@@ -234,8 +312,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_white")
 
 [node name="Shoe" type="MeshInstance3D" parent="Visuals/LeftLegPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, -0.04)
-mesh = SubResource("BoxMesh_vest")
-surface_material_override/0 = SubResource("StandardMaterial3D_vest")
+mesh = SubResource("BoxMesh_shoe")
+surface_material_override/0 = SubResource("StandardMaterial3D_boot")
 
 [node name="RightLegPivot" type="Node3D" parent="Visuals"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.14, 0.28, 0)
@@ -257,5 +335,5 @@ surface_material_override/0 = SubResource("StandardMaterial3D_white")
 
 [node name="Shoe" type="MeshInstance3D" parent="Visuals/RightLegPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, -0.04)
-mesh = SubResource("BoxMesh_vest")
-surface_material_override/0 = SubResource("StandardMaterial3D_vest")
+mesh = SubResource("BoxMesh_shoe")
+surface_material_override/0 = SubResource("StandardMaterial3D_boot")

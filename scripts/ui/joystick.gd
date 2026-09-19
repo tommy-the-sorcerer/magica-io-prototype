@@ -1,4 +1,4 @@
-class_name VirtualJoystick
+class_name MobileVirtualJoystick
 extends Control
 
 ## Reusable Multi-Touch & Desktop Virtual Analog Joystick for Godot 4.3 Mobile Games

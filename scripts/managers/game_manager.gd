@@ -1,7 +1,8 @@
 class_name GameManager
 extends Node
 
-## Manages Match Spawns, Combatant Tracking, Kill Feed, and Victory/Defeat Conditions
+## Manages Match Spawns, Combatant Tracking, Surrounding Forest Environment,
+## Kill Feed, and Victory/Defeat Conditions.
 
 @export var bot_scene: PackedScene
 @export var bot_spawn_count: int = 14
@@ -13,6 +14,10 @@ var player_node: Node3D = null
 var hud: HUD = null
 
 func _ready() -> void:
+	if LevelManager.instance:
+		var cfg: Dictionary = LevelManager.instance.get_level_config(LevelManager.instance.current_level_id)
+		bot_spawn_count = cfg.get("enemy_count", bot_spawn_count)
+		
 	total_combatants = bot_spawn_count + 1
 	alive_combatants = total_combatants
 	
@@ -29,8 +34,56 @@ func _ready() -> void:
 			hp_comp.died.connect(_on_player_died)
 			hp_comp.health_changed.connect(func(curr, max_hp): if hud: hud.update_player_hp(curr, max_hp))
 	
-	# Spawn Bots
+	call_deferred("_spawn_surrounding_trees")
 	call_deferred("_spawn_bots")
+
+func _spawn_surrounding_trees() -> void:
+	var arena_root := get_tree().current_scene
+	if not arena_root:
+		return
+		
+	var trees_parent := arena_root.find_child("Trees", true, false)
+	if not trees_parent:
+		trees_parent = Node3D.new()
+		trees_parent.name = "Trees"
+		arena_root.add_child(trees_parent)
+		
+	var trunk_mesh := CylinderMesh.new()
+	trunk_mesh.top_radius = 0.22
+	trunk_mesh.bottom_radius = 0.28
+	trunk_mesh.height = 1.4
+	var trunk_mat := StandardMaterial3D.new()
+	trunk_mat.albedo_color = Color(0.4, 0.25, 0.15)
+	
+	var leaves_mesh := PrismMesh.new()
+	leaves_mesh.size = Vector3(2.6, 3.4, 2.6)
+	var leaves_mat := StandardMaterial3D.new()
+	leaves_mat.albedo_color = Color(0.25, 0.62, 0.38)
+	
+	# Create ring of 24 surrounding trees around perimeter
+	for i in range(24):
+		var angle: float = (float(i) / 24.0) * TAU
+		var dist: float = randf_range(22.0, 36.0)
+		var pos := Vector3(cos(angle) * dist, 0.0, sin(angle) * dist)
+		
+		var tree_node := Node3D.new()
+		tree_node.position = pos
+		var s := randf_range(0.85, 1.35)
+		tree_node.scale = Vector3(s, s, s)
+		
+		var trunk := MeshInstance3D.new()
+		trunk.mesh = trunk_mesh
+		trunk.position = Vector3(0, 0.7, 0)
+		trunk.set_surface_override_material(0, trunk_mat)
+		tree_node.add_child(trunk)
+		
+		var leaves := MeshInstance3D.new()
+		leaves.mesh = leaves_mesh
+		leaves.position = Vector3(0, 2.4, 0)
+		leaves.set_surface_override_material(0, leaves_mat)
+		tree_node.add_child(leaves)
+		
+		trees_parent.add_child(tree_node)
 
 func _spawn_bots() -> void:
 	if not bot_scene:
@@ -46,8 +99,8 @@ func _spawn_bots() -> void:
 		
 		# Place in a ring around the map
 		var angle: float = (float(i) / float(bot_spawn_count)) * TAU
-		var dist: float = randf_range(spawn_radius * 0.5, spawn_radius)
-		var spawn_pos := Vector3(cos(angle) * dist, 1.0, sin(angle) * dist)
+		var dist: float = randf_range(10.0, spawn_radius)
+		var spawn_pos := Vector3(cos(angle) * dist, 0.8, sin(angle) * dist)
 		bot.global_position = spawn_pos
 		
 		# Listen to bot death
@@ -68,6 +121,8 @@ func _on_bot_died(killer: Node, bot: BotAI) -> void:
 		
 	if alive_combatants == 1:
 		# Player is the last one standing!
+		if LevelManager.instance:
+			LevelManager.instance.unlock_next_level()
 		if hud:
 			hud.show_victory()
 

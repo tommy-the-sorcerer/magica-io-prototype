@@ -1,7 +1,8 @@
 class_name HUD
 extends CanvasLayer
 
-## Exact Magica.io Style Mobile HUD with 9-World Selection Carousel
+## LudusForge Complete Mobile Gameplay HUD Controller
+## Manages Player HP/XP, Kills, Alive Counter, Pause Menu, Settings, Victory, and Defeat overlays.
 
 var alive_label: Label
 var kills_label: Label
@@ -14,25 +15,34 @@ var world_title_label: Label = null
 var prev_world_btn: Button = null
 var next_world_btn: Button = null
 
-var victory_panel: Control
-var defeat_panel: Control
-var rank_label: Label
-var restart_button_vic: Button
-var restart_button_def: Button
+var pause_button: Button = null
+var pause_panel: Control = null
+var settings_panel: Control = null
+
+var victory_panel: Control = null
+var defeat_panel: Control = null
+var rank_label: Label = null
+var restart_button_vic: Button = null
+var restart_button_def: Button = null
+var menu_button_vic: Button = null
+var menu_button_def: Button = null
+var next_button_vic: Button = null
 
 var current_kills: int = 0
 var _initialized: bool = false
 
 func _ready() -> void:
 	_ensure_initialized()
+	_setup_pause_and_settings()
+	
 	if victory_panel:
 		victory_panel.visible = false
 	if defeat_panel:
 		defeat_panel.visible = false
-	if restart_button_vic:
-		restart_button_vic.pressed.connect(_on_restart_pressed)
-	if restart_button_def:
-		restart_button_def.pressed.connect(_on_restart_pressed)
+	if pause_panel:
+		pause_panel.visible = false
+	if settings_panel:
+		settings_panel.visible = false
 
 func _ensure_initialized() -> void:
 	if _initialized:
@@ -48,17 +58,66 @@ func _ensure_initialized() -> void:
 	prev_world_btn = find_child("PrevWorldBtn", true, false) as Button
 	next_world_btn = find_child("NextWorldBtn", true, false) as Button
 	
+	pause_button = find_child("PauseBtn", true, false) as Button
+	pause_panel = find_child("PausePanel", true, false) as Control
+	settings_panel = find_child("SettingsPanel", true, false) as Control
+	
 	victory_panel = find_child("VictoryPanel", true, false) as Control
 	defeat_panel = find_child("DefeatPanel", true, false) as Control
 	rank_label = find_child("RankLabel", true, false) as Label
 	
 	if victory_panel:
 		restart_button_vic = victory_panel.find_child("RestartButton", true, false) as Button
+		menu_button_vic = victory_panel.find_child("MenuButton", true, false) as Button
+		next_button_vic = victory_panel.find_child("NextButton", true, false) as Button
+		if restart_button_vic:
+			restart_button_vic.pressed.connect(_on_restart_pressed)
+		if menu_button_vic:
+			menu_button_vic.pressed.connect(_on_menu_pressed)
+		if next_button_vic:
+			next_button_vic.pressed.connect(_on_next_level_pressed)
+			
 	if defeat_panel:
 		restart_button_def = defeat_panel.find_child("RestartButton", true, false) as Button
+		menu_button_def = defeat_panel.find_child("MenuButton", true, false) as Button
+		if restart_button_def:
+			restart_button_def.pressed.connect(_on_restart_pressed)
+		if menu_button_def:
+			menu_button_def.pressed.connect(_on_menu_pressed)
 
-	# Connect World Manager
 	call_deferred("_connect_world_manager")
+
+func _setup_pause_and_settings() -> void:
+	if pause_button:
+		pause_button.pressed.connect(toggle_pause)
+		
+	if pause_panel:
+		var resume_btn := pause_panel.find_child("ResumeBtn", true, false) as Button
+		var restart_btn := pause_panel.find_child("RestartBtn", true, false) as Button
+		var settings_btn := pause_panel.find_child("SettingsBtn", true, false) as Button
+		var menu_btn := pause_panel.find_child("MenuBtn", true, false) as Button
+		
+		if resume_btn:
+			resume_btn.pressed.connect(func(): toggle_pause())
+		if restart_btn:
+			restart_btn.pressed.connect(_on_restart_pressed)
+		if settings_btn:
+			settings_btn.pressed.connect(func(): if settings_panel: settings_panel.visible = true)
+		if menu_btn:
+			menu_btn.pressed.connect(_on_menu_pressed)
+			
+	if settings_panel:
+		var close_settings := settings_panel.find_child("CloseSettingsBtn", true, false) as Button
+		if close_settings:
+			close_settings.pressed.connect(func(): settings_panel.visible = false)
+
+func toggle_pause() -> void:
+	_ensure_initialized()
+	if not pause_panel:
+		return
+	var is_paused := not pause_panel.visible
+	pause_panel.visible = is_paused
+	get_tree().paused = is_paused
 
 func _connect_world_manager() -> void:
 	world_manager = get_tree().current_scene.find_child("WorldManager", true, false) as WorldManager
@@ -74,20 +133,6 @@ func _connect_world_manager() -> void:
 func _on_world_changed(_idx: int, wname: String) -> void:
 	if world_title_label:
 		world_title_label.text = wname
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo:
-		var keycode := (event as InputEventKey).keycode
-		if keycode >= KEY_1 and keycode <= KEY_9:
-			var target_index: int = keycode - KEY_1
-			if world_manager:
-				world_manager.apply_world(target_index)
-		elif keycode == KEY_BRACKETLEFT or keycode == KEY_COMMA:
-			if world_manager:
-				world_manager.prev_world()
-		elif keycode == KEY_BRACKETRIGHT or keycode == KEY_PERIOD:
-			if world_manager:
-				world_manager.next_world()
 
 func update_alive_count(alive: int, _total: int = 15) -> void:
 	_ensure_initialized()
@@ -150,4 +195,13 @@ func show_defeat(final_rank: int) -> void:
 		tween.tween_property(defeat_panel, "modulate:a", 1.0, 0.5)
 
 func _on_restart_pressed() -> void:
+	get_tree().paused = false
 	get_tree().reload_current_scene()
+
+func _on_menu_pressed() -> void:
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+func _on_next_level_pressed() -> void:
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://scenes/ui/level_select.tscn")

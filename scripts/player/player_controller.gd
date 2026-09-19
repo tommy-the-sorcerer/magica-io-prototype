@@ -1,7 +1,10 @@
 class_name PlayerController
 extends CharacterBody3D
 
-## High-Detail Voxel Hero with Dual Mobile Joysticks, WASD movement, Spacebar/Joystick spellcasting, Right-Click/Shift Dash, and animated limbs
+const AntigravityScript = preload("res://scripts/player/antigravity.gd")
+
+## High-Detail Voxel Hero with Dual Mobile Joysticks, WASD movement, 360° Aiming,
+## Spacebar Flip Jump, Right-Click/Shift Dash, and Animated Limbs.
 
 signal spell_cast(spell_scene: PackedScene, origin_position: Vector3, forward_direction: Vector3)
 
@@ -16,14 +19,17 @@ signal spell_cast(spell_scene: PackedScene, origin_position: Vector3, forward_di
 @export var aim_threshold: float = 0.3
 
 @export_group("Node References")
-@export var move_joystick: VirtualJoystick
-@export var aim_joystick: VirtualJoystick
+@export var move_joystick: MobileVirtualJoystick
+@export var aim_joystick: MobileVirtualJoystick
 @export var cast_point: Marker3D
 
-var display_name: String = "Player#51393"
+@export_group("Antigravity Settings")
+@export var antigravity_enabled: bool = true
+
+var display_name: String = "Player#5139"
 var walk_cycle_time: float = 0.0
 
-# Spellcasting & Dash
+# Spellcasting, Dash & Flip State
 var can_shoot: bool = true
 var shoot_cooldown: float = 0.35
 var can_dash: bool = true
@@ -32,13 +38,18 @@ var is_dashing: bool = false
 var dash_time_left: float = 0.0
 var dash_direction: Vector3 = Vector3.FORWARD
 
+# 360 Flip State
+var can_flip: bool = true
+var is_flipping: bool = false
+var flip_cooldown: float = 1.0
+
 @onready var visuals: Node3D = $Visuals if has_node("Visuals") else null
 @onready var health_component: HealthComponent = $HealthComponent if has_node("HealthComponent") else null
 @onready var nameplate: Label3D = $Nameplate3D if has_node("Nameplate3D") else null
 
 var _mouse_aim_start: Vector2 = Vector2.ZERO
 var _is_mouse_aiming: bool = false
-var _last_mouse_aim_dir: Vector3 = Vector3.ZERO
+var _last_mouse_aim_dir: Vector3 = Vector3.FORWARD
 
 # Animated Limbs
 @onready var left_leg_pivot: Node3D = $Visuals/LeftLegPivot if has_node("Visuals/LeftLegPivot") else null
@@ -81,14 +92,14 @@ func _connect_hud_touch_buttons() -> void:
 
 func _setup_joysticks() -> void:
 	if not move_joystick:
-		move_joystick = get_tree().current_scene.find_child("MoveJoystick", true, false) as VirtualJoystick
+		move_joystick = get_tree().current_scene.find_child("MoveJoystick", true, false) as MobileVirtualJoystick
 		if not move_joystick:
-			move_joystick = get_tree().current_scene.find_child("LeftJoystick", true, false) as VirtualJoystick
+			move_joystick = get_tree().current_scene.find_child("LeftJoystick", true, false) as MobileVirtualJoystick
 
 	if not aim_joystick:
-		aim_joystick = get_tree().current_scene.find_child("AimJoystick", true, false) as VirtualJoystick
+		aim_joystick = get_tree().current_scene.find_child("AimJoystick", true, false) as MobileVirtualJoystick
 		if not aim_joystick:
-			aim_joystick = get_tree().current_scene.find_child("RightJoystick", true, false) as VirtualJoystick
+			aim_joystick = get_tree().current_scene.find_child("RightJoystick", true, false) as MobileVirtualJoystick
 
 	if aim_joystick and not aim_joystick.joystick_released.is_connected(_on_aim_joystick_released):
 		aim_joystick.joystick_released.connect(_on_aim_joystick_released)
@@ -100,8 +111,10 @@ func _update_nameplate(curr: float, max_hp: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_SPACE:
+		if event.keycode == KEY_SPACE or event.keycode == KEY_K or event.keycode == KEY_ENTER:
 			shoot_spell()
+		elif event.keycode == KEY_F:
+			perform_flip()
 		elif event.keycode == KEY_SHIFT:
 			dash()
 
@@ -122,6 +135,39 @@ func _unhandled_input(event: InputEvent) -> void:
 						if cast_dir.length_squared() > 0.01:
 							_trigger_spell_cast(cast_dir)
 
+## Reusable 360° Movement Flip Action (SPACEBAR / Mobile Button)
+func perform_flip() -> void:
+	if not can_flip or is_flipping or not visuals:
+		return
+	can_flip = false
+	is_flipping = true
+	
+	var tween := create_tween()
+	# 1. Prepare / Anticipation Bend
+	tween.tween_property(visuals, "position:y", -0.15, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(visuals, "scale", Vector3(1.15, 0.82, 1.15), 0.15)
+	
+	# 2. Jump & Air Movement
+	tween.chain().tween_property(visuals, "position:y", 0.85, 0.22).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(visuals, "scale", Vector3(0.9, 1.15, 0.9), 0.18)
+	
+	# 3. 360° Pitch Rotation through air
+	tween.parallel().tween_property(visuals, "rotation:x", -TAU, 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	
+	# 4. Land & Squash
+	tween.chain().tween_property(visuals, "position:y", 0.0, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.parallel().tween_property(visuals, "rotation:x", 0.0, 0.15)
+	tween.parallel().tween_property(visuals, "scale", Vector3(1.2, 0.8, 1.2), 0.10)
+	
+	# 5. Recovery to Idle
+	tween.chain().tween_property(visuals, "scale", Vector3.ONE, 0.15)
+	
+	await tween.finished
+	is_flipping = false
+	
+	await get_tree().create_timer(flip_cooldown).timeout
+	can_flip = true
+
 func shoot_spell() -> void:
 	if not can_shoot or is_dashing:
 		return
@@ -132,9 +178,9 @@ func shoot_spell() -> void:
 	
 	_trigger_spell_cast(forward_dir)
 	
-	var fireball_scene := spell_scene if spell_scene else load("res://scenes/spells/fireball.tscn")
+	var fireball_scene: PackedScene = spell_scene if spell_scene else (load("res://scenes/spells/fireball.tscn") as PackedScene)
 	if fireball_scene:
-		var proj := fireball_scene.instantiate() as Projectile
+		var proj: Projectile = fireball_scene.instantiate() as Projectile
 		if proj:
 			proj.caster = self
 			get_tree().current_scene.add_child(proj)
@@ -170,7 +216,9 @@ func _physics_process(delta: float) -> void:
 	if not move_joystick or not aim_joystick:
 		_setup_joysticks()
 
-	if not is_on_floor():
+	if antigravity_enabled:
+		AntigravityScript.apply_antigravity(self, antigravity_enabled, delta)
+	elif not is_on_floor():
 		velocity.y -= 9.8 * delta
 
 	if is_dashing:
@@ -246,7 +294,7 @@ func _physics_process(delta: float) -> void:
 			is_aiming = true
 
 	# Rotation & Animations
-	if visuals:
+	if visuals and not is_flipping:
 		if is_aiming and active_aim_dir.length_squared() > 0.01:
 			var target_angle := atan2(active_aim_dir.x, active_aim_dir.z)
 			visuals.rotation.y = lerp_angle(visuals.rotation.y, target_angle, rotation_speed * delta)
