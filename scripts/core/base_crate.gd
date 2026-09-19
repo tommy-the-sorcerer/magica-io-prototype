@@ -8,9 +8,9 @@ extends StaticBody3D
 @export var max_coins_dropped: int = 4
 @export var coin_scene: PackedScene
 
-@onready var health_component: HealthComponent = find_child("HealthComponent", true, false) as HealthComponent
-@onready var mesh_instance: Node3D = (find_child("MeshInstance3D", true, false) if find_child("MeshInstance3D", true, false) else find_child("Model", true, false)) as Node3D
-@onready var collision_shape: CollisionShape3D = find_child("CollisionShape3D", true, false) as CollisionShape3D
+@onready var health_component: HealthComponent = $HealthComponent
+@onready var mesh_instance: MeshInstance3D = $MeshInstance3D
+@onready var collision_shape: CollisionShape3D = $CollisionShape3D
 
 func _ready() -> void:
 	add_to_group("destructibles")

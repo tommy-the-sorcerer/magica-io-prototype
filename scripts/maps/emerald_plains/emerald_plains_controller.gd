@@ -4,18 +4,19 @@ extends Node3D
 ## Master Controller for Chapter 1: Emerald Plains (Levels 1-10)
 
 @export var current_level: int = 1
+@export var is_boss_level: bool = false
 @export var level_data: ChapterLevelData
 
-@onready var world_env: WorldEnvironment = find_child("WorldEnvironment", true, false) as WorldEnvironment
-@onready var sun: DirectionalLight3D = find_child("DirectionalLight3D", true, false) as DirectionalLight3D
-@onready var camera: Camera3D = find_child("Camera3D", true, false) as Camera3D
-@onready var storm: ForestStorm = find_child("ForestStorm", true, false) as ForestStorm
-@onready var hud: HUD = find_child("HUD", true, false) as HUD
+@onready var world_env: WorldEnvironment = $WorldEnvironment
+@onready var sun: DirectionalLight3D = $DirectionalLight3D
+@onready var camera: Camera3D = $Camera3D
+@onready var storm: ForestStorm = $Storm/ForestStorm
+@onready var hud: HUD = $HUD
 
 # Spawn Groups
-@onready var player_spawns: Node3D = find_child("PlayerSpawns", true, false) as Node3D
-@onready var enemy_spawns: Node3D = find_child("EnemySpawns", true, false) as Node3D
-@onready var coin_locations: Node3D = find_child("CoinLocations", true, false) as Node3D
+@onready var player_spawns: Node3D = $Gameplay/PlayerSpawns
+@onready var enemy_spawns: Node3D = $Gameplay/EnemySpawns
+@onready var coin_locations: Node3D = $Gameplay/CoinLocations
 
 var player_instance: Node3D = null
 var active_combatants: int = 1
@@ -26,7 +27,7 @@ func _ready() -> void:
 	_apply_environment_settings()
 	_spawn_player()
 	
-	if level_data and level_data.is_boss_level:
+	if is_boss_level or current_level == 10 or (level_data and level_data.is_boss_level):
 		_setup_boss_arena()
 	else:
 		_spawn_enemies()
@@ -61,11 +62,7 @@ func _apply_environment_settings() -> void:
 		env.volumetric_fog_density = level_data.fog_density
 
 func _spawn_player() -> void:
-	var player_scene := load("res://characters/dragonbound/dragonbound_character.tscn")
-	if not player_scene:
-		player_scene = load("res://characters/celestial/celestial_character.tscn")
-	if not player_scene:
-		player_scene = load("res://scenes/player/player.tscn")
+	var player_scene := load("res://scenes/player/player.tscn")
 	if not player_scene:
 		return
 		
@@ -160,7 +157,7 @@ func _check_fall_bounds() -> void:
 			if hp and not hp.is_dead:
 				hp.take_damage(99999, null)
 				if hud:
-					hud.show_defeat(active_combatants)
+					hud.show_defeat(active_combatants, "☁️ FELL FROM THE CLOUDS ☁️")
 	
 	var combatants: Array[Node] = get_tree().get_nodes_in_group("combatants")
 	for c in combatants:
