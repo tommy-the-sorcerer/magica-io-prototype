@@ -17,7 +17,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="Magica IO Mobile"
 config/description="3D Voxel Battle Royale Mobile Arena Game"
 config/version="0.1.0"
-run/main_scene="res://scenes/maps/emerald_plains/emerald_plains.tscn"
+run/main_scene="res://scenes/ui/map_selector.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 
 [display]
