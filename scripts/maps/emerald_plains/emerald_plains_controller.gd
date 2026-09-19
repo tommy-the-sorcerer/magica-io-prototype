@@ -4,6 +4,7 @@ extends Node3D
 ## Master Controller for Chapter 1: Emerald Plains (Levels 1-10)
 
 @export var current_level: int = 1
+@export var is_boss_level: bool = false
 @export var level_data: ChapterLevelData
 
 @onready var world_env: WorldEnvironment = find_child("WorldEnvironment", true, false) as WorldEnvironment
@@ -26,7 +27,7 @@ func _ready() -> void:
 	_apply_environment_settings()
 	_spawn_player()
 	
-	if level_data and level_data.is_boss_level:
+	if is_boss_level or current_level == 10 or (level_data and level_data.is_boss_level):
 		_setup_boss_arena()
 	else:
 		_spawn_enemies()
@@ -61,9 +62,9 @@ func _apply_environment_settings() -> void:
 		env.volumetric_fog_density = level_data.fog_density
 
 func _spawn_player() -> void:
-	var player_scene := load("res://characters/dragonbound/dragonbound_character.tscn")
+	var player_scene := load("res://characters/celestial/celestial_character.tscn")
 	if not player_scene:
-		player_scene = load("res://characters/celestial/celestial_character.tscn")
+		player_scene = load("res://characters/dragonbound/dragonbound_character.tscn")
 	if not player_scene:
 		player_scene = load("res://scenes/player/player.tscn")
 	if not player_scene:
@@ -160,7 +161,7 @@ func _check_fall_bounds() -> void:
 			if hp and not hp.is_dead:
 				hp.take_damage(99999, null)
 				if hud:
-					hud.show_defeat(active_combatants)
+					hud.show_defeat(active_combatants, "☁️ FELL FROM THE CLOUDS ☁️")
 	
 	var combatants: Array[Node] = get_tree().get_nodes_in_group("combatants")
 	for c in combatants:

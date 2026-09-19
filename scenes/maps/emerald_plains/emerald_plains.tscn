@@ -1,31 +1,30 @@
-[gd_scene load_steps=36 format=3 uid="uid://d4e8emeraldgodlevel"]
+[gd_scene format=3 uid="uid://ctal4rlf3agr4"]
 
-[ext_resource type="Script" path="res://scripts/maps/emerald_plains/emerald_plains_controller.gd" id="1_ctrl"]
-[ext_resource type="Script" path="res://scripts/camera/camera_follow.gd" id="2_cam"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/pine_tree.tscn" id="3_pine"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/oak_tree.tscn" id="4_oak"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/large_boulder.tscn" id="5_boulder"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/medium_rock.tscn" id="6_medrock"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/small_rock.tscn" id="7_smallrock"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/emerald_crate.tscn" id="8_crate"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/crate_stack.tscn" id="9_cratestack"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/wooden_barrel.tscn" id="10_barrel"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/fallen_log.tscn" id="11_log"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/antigravity_pad.tscn" id="12_pad"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/wooden_bridge.tscn" id="13_bridge"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/pink_gem.tscn" id="14_gem"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/flower_patch.tscn" id="15_flower"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/bush.tscn" id="16_bush"]
-[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="18_hud"]
-[ext_resource type="Texture2D" path="res://assets/textures/grass/grass_diffuse.jpg" id="19_grass_diff"]
-[ext_resource type="Texture2D" path="res://assets/textures/grass/grass_normal.jpg" id="20_grass_norm"]
-[ext_resource type="Texture2D" path="res://assets/textures/grass/grass_roughness.jpg" id="21_grass_rough"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/cliff_waterfall_overlook.tscn" id="22_waterfall"]
+[ext_resource type="Script" uid="uid://c4jtcjjtr4vxn" path="res://scripts/maps/emerald_plains/emerald_plains_controller.gd" id="1_ctrl"]
+[ext_resource type="Script" uid="uid://hk34qrajqsor" path="res://scripts/camera/camera_follow.gd" id="2_cam"]
+[ext_resource type="PackedScene" uid="uid://7v02dutpk1mr" path="res://scenes/maps/emerald_plains/props/pine_tree.tscn" id="3_pine"]
+[ext_resource type="PackedScene" uid="uid://c8oaktreetscn" path="res://scenes/maps/emerald_plains/props/oak_tree.tscn" id="4_oak"]
+[ext_resource type="PackedScene" uid="uid://vk5ieq3i1afh" path="res://scenes/maps/emerald_plains/props/large_boulder.tscn" id="5_boulder"]
+[ext_resource type="PackedScene" uid="uid://cpiyxlwtjq72l" path="res://scenes/maps/emerald_plains/props/medium_rock.tscn" id="6_medrock"]
+[ext_resource type="PackedScene" uid="uid://4chmf3ingaj6" path="res://scenes/maps/emerald_plains/props/emerald_crate.tscn" id="8_crate"]
+[ext_resource type="PackedScene" uid="uid://d33bvsd5xg71n" path="res://scenes/maps/emerald_plains/props/crate_stack.tscn" id="9_cratestack"]
+[ext_resource type="PackedScene" uid="uid://b0dyhivbwpku0" path="res://scenes/maps/emerald_plains/props/wooden_barrel.tscn" id="10_barrel"]
+[ext_resource type="PackedScene" uid="uid://dcwvyhgqd2pnt" path="res://scenes/maps/emerald_plains/props/fallen_log.tscn" id="11_log"]
+[ext_resource type="PackedScene" uid="uid://cndqs2dwvr8x4" path="res://scenes/maps/emerald_plains/props/antigravity_pad.tscn" id="12_pad"]
+[ext_resource type="PackedScene" uid="uid://bw1cfcqbxfi6l" path="res://scenes/maps/emerald_plains/props/wooden_bridge.tscn" id="13_bridge"]
+[ext_resource type="PackedScene" uid="uid://r44bi44smdv5" path="res://scenes/maps/emerald_plains/props/pink_gem.tscn" id="14_gem"]
+[ext_resource type="PackedScene" uid="uid://dwbk6e4bh6gu0" path="res://scenes/maps/emerald_plains/props/flower_patch.tscn" id="15_flower"]
+[ext_resource type="PackedScene" uid="uid://c8bushtscn" path="res://scenes/maps/emerald_plains/props/bush.tscn" id="16_bush"]
+[ext_resource type="PackedScene" uid="uid://ivu0oyuwssd8" path="res://scenes/ui/hud.tscn" id="18_hud"]
+[ext_resource type="Texture2D" uid="uid://b3pg7ukfwgmjp" path="res://assets/textures/grass/grass_diffuse.jpg" id="19_grass_diff"]
+[ext_resource type="Texture2D" uid="uid://bpccgqfuti04x" path="res://assets/textures/grass/grass_normal.jpg" id="20_grass_norm"]
+[ext_resource type="Texture2D" uid="uid://bv5r21cb0l87l" path="res://assets/textures/grass/grass_roughness.jpg" id="21_grass_rough"]
+[ext_resource type="PackedScene" uid="uid://d22062uo70ixq" path="res://scenes/maps/emerald_plains/props/cliff_waterfall_overlook.tscn" id="22_waterfall"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_celestial"]
 sky_top_color = Color(0.24, 0.54, 0.94, 1)
 sky_horizon_color = Color(0.74, 0.86, 0.98, 1)
-ground_bottom_color = Color(0.82, 0.90, 0.98, 1)
+ground_bottom_color = Color(0.82, 0.9, 0.98, 1)
 ground_horizon_color = Color(0.74, 0.86, 0.98, 1)
 
 [sub_resource type="Sky" id="Sky_celestial"]
@@ -38,17 +37,13 @@ ambient_light_source = 2
 ambient_light_color = Color(0.75, 0.88, 0.96, 1)
 ambient_light_energy = 0.45
 tonemap_mode = 3
-tonemap_exposure = 1.0
 ssao_enabled = true
 ssao_radius = 2.5
 ssao_intensity = 3.2
-ssao_power = 1.5
 ssil_enabled = true
-ssil_radius = 5.0
 ssil_intensity = 1.2
 glow_enabled = true
 glow_intensity = 0.8
-glow_bloom = 0.0
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_godlevel"]
 
@@ -56,11 +51,6 @@ glow_bloom = 0.0
 top_radius = 50.0
 bottom_radius = 52.0
 height = 1.0
-radial_segments = 64
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_ground_col"]
-height = 1.0
-radius = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lush_grass"]
 albedo_color = Color(0.85, 1.15, 0.75, 1)
@@ -70,25 +60,28 @@ normal_enabled = true
 normal_texture = ExtResource("20_grass_norm")
 uv1_scale = Vector3(14, 14, 14)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dirt_trail"]
-albedo_color = Color(0.78, 0.68, 0.48, 1)
-roughness = 0.92
-
-[sub_resource type="BoxMesh" id="BoxMesh_dirt_trail_long"]
-size = Vector3(4.8, 0.05, 52.0)
-
-[sub_resource type="BoxMesh" id="BoxMesh_dirt_trail_cross"]
-size = Vector3(46.0, 0.05, 4.4)
-
 [sub_resource type="CylinderMesh" id="CylinderMesh_rocky_underbelly"]
 top_radius = 50.0
 bottom_radius = 5.0
 height = 16.0
-radial_segments = 64
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rocky_underbelly"]
 albedo_color = Color(0.28, 0.22, 0.16, 1)
 roughness = 0.96
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ground_col"]
+height = 1.0
+radius = 50.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_dirt_trail_long"]
+size = Vector3(4.8, 0.05, 52)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dirt_trail"]
+albedo_color = Color(0.78, 0.68, 0.48, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="BoxMesh_dirt_trail_cross"]
+size = Vector3(46, 0.05, 4.4)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_cloud_sea"]
 size = Vector2(450, 450)
@@ -96,10 +89,10 @@ size = Vector2(450, 450)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cloud_sea"]
 transparency = 1
 albedo_color = Color(0.96, 0.98, 1, 0.88)
+roughness = 0.8
 emission_enabled = true
 emission = Color(0.85, 0.92, 1, 1)
 emission_energy_multiplier = 0.45
-roughness = 0.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cloud_puff"]
 transparency = 1
@@ -114,273 +107,274 @@ particles_anim_loop = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_cloud_puff"]
 material = SubResource("StandardMaterial3D_cloud_puff")
-size = Vector2(24.0, 24.0)
+size = Vector2(24, 24)
 
-[node name="EmeraldPlains" type="Node3D"]
+[node name="EmeraldPlains" type="Node3D" unique_id=445623397]
 script = ExtResource("1_ctrl")
+is_boss_level = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1289754971]
 environment = SubResource("Environment_emerald_god")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=190691409]
 transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 35, 0)
 light_color = Color(1, 0.96, 0.86, 1)
 light_energy = 1.1
 shadow_enabled = true
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=550356033]
 transform = Transform3D(1, 0, 0, 0, 0.694658, 0.71934, 0, -0.71934, 0.694658, 0, 14, 13)
 fov = 42.0
 script = ExtResource("2_cam")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1140414498]
 navigation_mesh = SubResource("NavigationMesh_godlevel")
 
-[node name="GroundTerrain" type="StaticBody3D" parent="NavigationRegion3D"]
+[node name="GroundTerrain" type="StaticBody3D" parent="NavigationRegion3D" unique_id=261962890]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain" unique_id=55878205]
 mesh = SubResource("CylinderMesh_lush_ground")
 surface_material_override/0 = SubResource("StandardMaterial3D_lush_grass")
 
-[node name="UnderbellyMesh" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain"]
+[node name="UnderbellyMesh" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain" unique_id=1433813085]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.5, 0)
 mesh = SubResource("CylinderMesh_rocky_underbelly")
 surface_material_override/0 = SubResource("StandardMaterial3D_rocky_underbelly")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/GroundTerrain"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/GroundTerrain" unique_id=756183139]
 shape = SubResource("CylinderShape3D_ground_col")
 
-[node name="Trails" type="Node3D" parent="."]
+[node name="Trails" type="Node3D" parent="." unique_id=1693180484]
 
-[node name="MainTrailNorthSouth" type="MeshInstance3D" parent="Trails"]
+[node name="MainTrailNorthSouth" type="MeshInstance3D" parent="Trails" unique_id=635356151]
 transform = Transform3D(0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, 0.984808, 0, 0.03, 0)
 mesh = SubResource("BoxMesh_dirt_trail_long")
 surface_material_override/0 = SubResource("StandardMaterial3D_dirt_trail")
 
-[node name="CrossTrailEastWest" type="MeshInstance3D" parent="Trails"]
+[node name="CrossTrailEastWest" type="MeshInstance3D" parent="Trails" unique_id=1969951294]
 transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 0, 0.03, 0)
 mesh = SubResource("BoxMesh_dirt_trail_cross")
 surface_material_override/0 = SubResource("StandardMaterial3D_dirt_trail")
 
-[node name="AntigravityZones" type="Node3D" parent="."]
+[node name="AntigravityZones" type="Node3D" parent="." unique_id=750715830]
 
-[node name="PadNorth" parent="AntigravityZones" instance=ExtResource("12_pad")]
+[node name="PadNorth" parent="AntigravityZones" unique_id=544327929 instance=ExtResource("12_pad")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -22)
 
-[node name="PadWest" parent="AntigravityZones" instance=ExtResource("12_pad")]
+[node name="PadWest" parent="AntigravityZones" unique_id=1524785150 instance=ExtResource("12_pad")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0, -4)
 
-[node name="PadEast" parent="AntigravityZones" instance=ExtResource("12_pad")]
+[node name="PadEast" parent="AntigravityZones" unique_id=196712456 instance=ExtResource("12_pad")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0, -4)
 
-[node name="PadSouthEast" parent="AntigravityZones" instance=ExtResource("12_pad")]
+[node name="PadSouthEast" parent="AntigravityZones" unique_id=171003758 instance=ExtResource("12_pad")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 18)
 
-[node name="FloatingIslandCenterStep" parent="AntigravityZones" instance=ExtResource("12_pad")]
+[node name="FloatingIslandCenterStep" parent="AntigravityZones" unique_id=2130311741 instance=ExtResource("12_pad")]
 transform = Transform3D(0.85, 0, 0, 0, 0.85, 0, 0, 0, 0.85, -2, 0, 15)
 
-[node name="WaterAndBridge" type="Node3D" parent="."]
+[node name="WaterAndBridge" type="Node3D" parent="." unique_id=1453953470]
 transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -24, 0, 20)
 
-[node name="WoodenBridgePond" parent="WaterAndBridge" instance=ExtResource("13_bridge")]
+[node name="WoodenBridgePond" parent="WaterAndBridge" unique_id=822491635 instance=ExtResource("13_bridge")]
 
-[node name="BridgeRock1" parent="WaterAndBridge" instance=ExtResource("5_boulder")]
+[node name="BridgeRock1" parent="WaterAndBridge" unique_id=1025521653 instance=ExtResource("5_boulder")]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -4, 0, 2)
 
-[node name="BridgeRock2" parent="WaterAndBridge" instance=ExtResource("6_medrock")]
+[node name="BridgeRock2" parent="WaterAndBridge" unique_id=677330084 instance=ExtResource("6_medrock")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, -2)
 
-[node name="TacticalCover" type="Node3D" parent="."]
+[node name="TacticalCover" type="Node3D" parent="." unique_id=1096175122]
 
-[node name="CrateStack1" parent="TacticalCover" instance=ExtResource("9_cratestack")]
+[node name="CrateStack1" parent="TacticalCover" unique_id=1455059090 instance=ExtResource("9_cratestack")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, -12)
 
-[node name="CrateStack2" parent="TacticalCover" instance=ExtResource("9_cratestack")]
+[node name="CrateStack2" parent="TacticalCover" unique_id=470620922 instance=ExtResource("9_cratestack")]
 transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 12, 0, 14)
 
-[node name="CrateStack3" parent="TacticalCover" instance=ExtResource("9_cratestack")]
+[node name="CrateStack3" parent="TacticalCover" unique_id=1931376508 instance=ExtResource("9_cratestack")]
 transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -14, 0, 8)
 
-[node name="CrateStack4" parent="TacticalCover" instance=ExtResource("9_cratestack")]
+[node name="CrateStack4" parent="TacticalCover" unique_id=1805283983 instance=ExtResource("9_cratestack")]
 transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -8, 0, -14)
 
-[node name="DestructibleCrate1" parent="TacticalCover" instance=ExtResource("8_crate")]
+[node name="DestructibleCrate1" parent="TacticalCover" unique_id=958703621 instance=ExtResource("8_crate")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -5)
 
-[node name="DestructibleCrate2" parent="TacticalCover" instance=ExtResource("8_crate")]
+[node name="DestructibleCrate2" parent="TacticalCover" unique_id=432394779 instance=ExtResource("8_crate")]
 transform = Transform3D(0.9, 0, 0.3, 0, 1, 0, -0.3, 0, 0.9, 6, 0, 4)
 
-[node name="DestructibleCrate3" parent="TacticalCover" instance=ExtResource("8_crate")]
+[node name="DestructibleCrate3" parent="TacticalCover" unique_id=1931628960 instance=ExtResource("8_crate")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 2)
 
-[node name="FallenLog1" parent="TacticalCover" instance=ExtResource("11_log")]
+[node name="FallenLog1" parent="TacticalCover" unique_id=2123681915 instance=ExtResource("11_log")]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 6, 0, -24)
 
-[node name="FallenLog2" parent="TacticalCover" instance=ExtResource("11_log")]
+[node name="FallenLog2" parent="TacticalCover" unique_id=67393130 instance=ExtResource("11_log")]
 transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, -16, 0, -18)
 
-[node name="Barrel1" parent="TacticalCover" instance=ExtResource("10_barrel")]
+[node name="Barrel1" parent="TacticalCover" unique_id=1658488157 instance=ExtResource("10_barrel")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 11)
 
-[node name="Barrel2" parent="TacticalCover" instance=ExtResource("10_barrel")]
+[node name="Barrel2" parent="TacticalCover" unique_id=581643378 instance=ExtResource("10_barrel")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -14)
 
-[node name="BoulderNorth" parent="TacticalCover" instance=ExtResource("5_boulder")]
+[node name="BoulderNorth" parent="TacticalCover" unique_id=173200042 instance=ExtResource("5_boulder")]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, -10, 0, -26)
 
-[node name="BoulderEast" parent="TacticalCover" instance=ExtResource("5_boulder")]
+[node name="BoulderEast" parent="TacticalCover" unique_id=994426483 instance=ExtResource("5_boulder")]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 28, 0, -12)
 
-[node name="BoulderSouth" parent="TacticalCover" instance=ExtResource("5_boulder")]
+[node name="BoulderSouth" parent="TacticalCover" unique_id=2015733032 instance=ExtResource("5_boulder")]
 transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 6, 0, 26)
 
-[node name="TreesAndFoliage" type="Node3D" parent="."]
+[node name="TreesAndFoliage" type="Node3D" parent="." unique_id=1120632036]
 
-[node name="PineNorth1" parent="TreesAndFoliage" instance=ExtResource("3_pine")]
+[node name="PineNorth1" parent="TreesAndFoliage" unique_id=1063152882 instance=ExtResource("3_pine")]
 transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, -6, 0, -32)
 
-[node name="PineNorth2" parent="TreesAndFoliage" instance=ExtResource("3_pine")]
+[node name="PineNorth2" parent="TreesAndFoliage" unique_id=1793986012 instance=ExtResource("3_pine")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 8, 0, -30)
 
-[node name="PineNorth3" parent="TreesAndFoliage" instance=ExtResource("3_pine")]
+[node name="PineNorth3" parent="TreesAndFoliage" unique_id=1416177434 instance=ExtResource("3_pine")]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, -18, 0, -28)
 
-[node name="PineWest1" parent="TreesAndFoliage" instance=ExtResource("3_pine")]
+[node name="PineWest1" parent="TreesAndFoliage" unique_id=1214891531 instance=ExtResource("3_pine")]
 transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, -32, 0, -10)
 
-[node name="PineWest2" parent="TreesAndFoliage" instance=ExtResource("3_pine")]
+[node name="PineWest2" parent="TreesAndFoliage" unique_id=2017519557 instance=ExtResource("3_pine")]
 transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, -34, 0, 6)
 
-[node name="PineEast1" parent="TreesAndFoliage" instance=ExtResource("3_pine")]
+[node name="PineEast1" parent="TreesAndFoliage" unique_id=232605069 instance=ExtResource("3_pine")]
 transform = Transform3D(1.35, 0, 0, 0, 1.35, 0, 0, 0, 1.35, 32, 0, -8)
 
-[node name="PineEast2" parent="TreesAndFoliage" instance=ExtResource("3_pine")]
+[node name="PineEast2" parent="TreesAndFoliage" unique_id=782799238 instance=ExtResource("3_pine")]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 30, 0, 10)
 
-[node name="PineSouth1" parent="TreesAndFoliage" instance=ExtResource("3_pine")]
+[node name="PineSouth1" parent="TreesAndFoliage" unique_id=498705048 instance=ExtResource("3_pine")]
 transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 16, 0, 30)
 
-[node name="PineSouth2" parent="TreesAndFoliage" instance=ExtResource("3_pine")]
+[node name="PineSouth2" parent="TreesAndFoliage" unique_id=1855915110 instance=ExtResource("3_pine")]
 transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, -12, 0, 32)
 
-[node name="OakNorth" parent="TreesAndFoliage" instance=ExtResource("4_oak")]
+[node name="OakNorth" parent="TreesAndFoliage" unique_id=483155468 instance=ExtResource("4_oak")]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, -30)
 
-[node name="OakEast" parent="TreesAndFoliage" instance=ExtResource("4_oak")]
+[node name="OakEast" parent="TreesAndFoliage" unique_id=943582904 instance=ExtResource("4_oak")]
 transform = Transform3D(1.15, 0, 0, 0, 1.15, 0, 0, 0, 1.15, 26, 0, 6)
 
-[node name="OakWest" parent="TreesAndFoliage" instance=ExtResource("4_oak")]
+[node name="OakWest" parent="TreesAndFoliage" unique_id=1072092176 instance=ExtResource("4_oak")]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, -28, 0, -18)
 
-[node name="OakCenterLeft" parent="TreesAndFoliage" instance=ExtResource("4_oak")]
+[node name="OakCenterLeft" parent="TreesAndFoliage" unique_id=798032103 instance=ExtResource("4_oak")]
 transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, -15, 0, -2)
 
-[node name="OakCenterRight" parent="TreesAndFoliage" instance=ExtResource("4_oak")]
+[node name="OakCenterRight" parent="TreesAndFoliage" unique_id=548042612 instance=ExtResource("4_oak")]
 transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 14, 0, 4)
 
-[node name="Bush1" parent="TreesAndFoliage" instance=ExtResource("16_bush")]
+[node name="Bush1" parent="TreesAndFoliage" unique_id=2123208266 instance=ExtResource("16_bush")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 8)
 
-[node name="Bush2" parent="TreesAndFoliage" instance=ExtResource("16_bush")]
+[node name="Bush2" parent="TreesAndFoliage" unique_id=714918960 instance=ExtResource("16_bush")]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 8, 0, -8)
 
-[node name="Flower1" parent="TreesAndFoliage" instance=ExtResource("15_flower")]
+[node name="Flower1" parent="TreesAndFoliage" unique_id=1241634000 instance=ExtResource("15_flower")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 2)
 
-[node name="Flower2" parent="TreesAndFoliage" instance=ExtResource("15_flower")]
+[node name="Flower2" parent="TreesAndFoliage" unique_id=555172027 instance=ExtResource("15_flower")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -3)
 
-[node name="Flower3" parent="TreesAndFoliage" instance=ExtResource("15_flower")]
+[node name="Flower3" parent="TreesAndFoliage" unique_id=971707524 instance=ExtResource("15_flower")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 6)
 
-[node name="Flower4" parent="TreesAndFoliage" instance=ExtResource("15_flower")]
+[node name="Flower4" parent="TreesAndFoliage" unique_id=2006691869 instance=ExtResource("15_flower")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 10)
 
-[node name="PinkDiamonds" type="Node3D" parent="."]
+[node name="PinkDiamonds" type="Node3D" parent="." unique_id=263001451]
 
-[node name="DiamondCenter" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondCenter" parent="PinkDiamonds" unique_id=1911668144 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
 
-[node name="DiamondTrailN1" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondTrailN1" parent="PinkDiamonds" unique_id=950828132 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -8)
 
-[node name="DiamondTrailN2" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondTrailN2" parent="PinkDiamonds" unique_id=1739048983 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -15)
 
-[node name="DiamondTrailW1" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondTrailW1" parent="PinkDiamonds" unique_id=964948183 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.35, -1)
 
-[node name="DiamondTrailW2" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondTrailW2" parent="PinkDiamonds" unique_id=1391682135 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.35, -2)
 
-[node name="DiamondTrailE1" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondTrailE1" parent="PinkDiamonds" unique_id=742964629 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.35, -1)
 
-[node name="DiamondTrailE2" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondTrailE2" parent="PinkDiamonds" unique_id=1719692198 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.35, -2)
 
-[node name="DiamondPadNorth" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondPadNorth" parent="PinkDiamonds" unique_id=2104771058 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -22)
 
-[node name="DiamondPadWest" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondPadWest" parent="PinkDiamonds" unique_id=69165094 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0.45, -4)
 
-[node name="DiamondPadEast" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondPadEast" parent="PinkDiamonds" unique_id=1875921237 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0.45, -4)
 
-[node name="DiamondPadSouthEast" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondPadSouthEast" parent="PinkDiamonds" unique_id=1822959826 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0.45, 18)
 
-[node name="DiamondBridge1" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondBridge1" parent="PinkDiamonds" unique_id=2136950351 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 0.35, 18)
 
-[node name="DiamondBridge2" parent="PinkDiamonds" instance=ExtResource("14_gem")]
+[node name="DiamondBridge2" parent="PinkDiamonds" unique_id=1638819110 instance=ExtResource("14_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 0.35, 22)
 
-[node name="Gameplay" type="Node3D" parent="."]
+[node name="Gameplay" type="Node3D" parent="." unique_id=2137099238]
 
-[node name="PlayerSpawns" type="Node3D" parent="Gameplay"]
+[node name="PlayerSpawns" type="Node3D" parent="Gameplay" unique_id=2034311604]
 
-[node name="PlayerSpawn_01" type="Marker3D" parent="Gameplay/PlayerSpawns"]
+[node name="PlayerSpawn_01" type="Marker3D" parent="Gameplay/PlayerSpawns" unique_id=625880152]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 
-[node name="EnemySpawns" type="Node3D" parent="Gameplay"]
+[node name="EnemySpawns" type="Node3D" parent="Gameplay" unique_id=1358135333]
 
-[node name="EnemySpawn_North" type="Marker3D" parent="Gameplay/EnemySpawns"]
+[node name="EnemySpawn_North" type="Marker3D" parent="Gameplay/EnemySpawns" unique_id=1194237091]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -26)
 
-[node name="EnemySpawn_West" type="Marker3D" parent="Gameplay/EnemySpawns"]
+[node name="EnemySpawn_West" type="Marker3D" parent="Gameplay/EnemySpawns" unique_id=324867957]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 0.2, -4)
 
-[node name="EnemySpawn_East" type="Marker3D" parent="Gameplay/EnemySpawns"]
+[node name="EnemySpawn_East" type="Marker3D" parent="Gameplay/EnemySpawns" unique_id=1654200698]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0.2, -4)
 
-[node name="EnemySpawn_South" type="Marker3D" parent="Gameplay/EnemySpawns"]
+[node name="EnemySpawn_South" type="Marker3D" parent="Gameplay/EnemySpawns" unique_id=1403285407]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 22)
 
-[node name="EnemySpawn_Center" type="Marker3D" parent="Gameplay/EnemySpawns"]
+[node name="EnemySpawn_Center" type="Marker3D" parent="Gameplay/EnemySpawns" unique_id=1199455516]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.2, 10)
 
-[node name="HUD" parent="." instance=ExtResource("18_hud")]
+[node name="HUD" parent="." unique_id=359472333 instance=ExtResource("18_hud")]
 
-[node name="Waterfalls" type="Node3D" parent="."]
+[node name="Waterfalls" type="Node3D" parent="." unique_id=1218212861]
 
-[node name="WaterfallWestOverlook" parent="Waterfalls" instance=ExtResource("22_waterfall")]
-transform = Transform3D(0.642788, 0, -0.766044, 0, 1, 0, 0.766044, 0, 0.642788, -38, 0.0, 31)
+[node name="WaterfallWestOverlook" parent="Waterfalls" unique_id=1000972779 instance=ExtResource("22_waterfall")]
+transform = Transform3D(0.642788, 0, -0.766044, 0, 1, 0, 0.766044, 0, 0.642788, -38, 0, 31)
 
-[node name="WaterfallNorthWestOverlook" parent="Waterfalls" instance=ExtResource("22_waterfall")]
-transform = Transform3D(-0.34202, 0, -0.939693, 0, 1, 0, 0.939693, 0, -0.34202, -47, 0.0, -14)
+[node name="WaterfallNorthWestOverlook" parent="Waterfalls" unique_id=2070865310 instance=ExtResource("22_waterfall")]
+transform = Transform3D(-0.34202, 0, -0.939693, 0, 1, 0, 0.939693, 0, -0.34202, -47, 0, -14)
 
-[node name="CloudSea" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -18.0, 0)
+[node name="CloudSea" type="Node3D" parent="." unique_id=1703558553]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -18, 0)
 
-[node name="CloudSeaPlane" type="MeshInstance3D" parent="CloudSea"]
+[node name="CloudSeaPlane" type="MeshInstance3D" parent="CloudSea" unique_id=251552252]
 mesh = SubResource("PlaneMesh_cloud_sea")
 surface_material_override/0 = SubResource("StandardMaterial3D_cloud_sea")
 
-[node name="DriftingCloudPuffs" type="CPUParticles3D" parent="CloudSea"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0, 0)
+[node name="DriftingCloudPuffs" type="CPUParticles3D" parent="CloudSea" unique_id=342115878]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 amount = 32
 lifetime = 12.0
 mesh = SubResource("QuadMesh_cloud_puff")

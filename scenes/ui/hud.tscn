@@ -400,6 +400,29 @@ text = "🔥\n[LMB]"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="OrbitControlHint" type="PanelContainer" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -230.0
+offset_top = -54.0
+offset_right = 230.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pill")
+
+[node name="HintLabel" type="Label" parent="OrbitControlHint"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+theme_override_font_sizes/font_size = 13
+text = "🎮 WASD: Move | SPACE: Shoot Fireball | RIGHT-CLICK: Dash | LEFT-CLICK Drag: 360° Orbit | Wheel: Zoom"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="EndGameOverlay" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15

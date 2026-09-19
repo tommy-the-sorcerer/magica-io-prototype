@@ -323,10 +323,13 @@ func show_victory() -> void:
 		victory_panel.modulate.a = 0.0
 		tween.tween_property(victory_panel, "modulate:a", 1.0, 0.5)
 
-func show_defeat(final_rank: int, _reason: String = "") -> void:
+func show_defeat(final_rank: int, subtitle: String = "") -> void:
 	_ensure_initialized()
 	if rank_label:
-		rank_label.text = "RANK #%d" % final_rank
+		if subtitle != "":
+			rank_label.text = "RANK #%d\n%s" % [final_rank, subtitle]
+		else:
+			rank_label.text = "RANK #%d" % final_rank
 	if defeat_panel:
 		defeat_panel.visible = true
 		var tween := create_tween()

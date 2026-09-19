@@ -22,6 +22,9 @@ signal impacted(impact_position: Vector3, hit_node: Node)
 @export var is_aoe: bool = true
 ## Blast radius in meters for AoE damage
 @export var aoe_radius: float = 3.0
+var blast_radius: float:
+	get: return aoe_radius
+	set(v): aoe_radius = v
 ## Magnitude of impulse applied to targets away from blast center
 @export var knockback_force: float = 12.0
 ## Movement speed reduction fraction (e.g., 0.4 = 40% slow)

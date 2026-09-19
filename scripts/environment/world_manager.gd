@@ -300,4 +300,59 @@ func apply_world(index: int) -> void:
 			if gem_mesh:
 				gem_mesh.set_surface_override_material(0, gem_mat)
 
+	# 7. Update Volcano Hazard
+	var volcano := get_parent().find_child("VolcanoHazard", true, false) as Node3D
+	if volcano:
+		var crater := volcano.find_child("CraterMesh", true, false) as MeshInstance3D
+		var lava := volcano.find_child("LavaMesh", true, false) as MeshInstance3D
+		var lava_light := volcano.find_child("LavaLight", true, false) as OmniLight3D
+		var lava_area := volcano.find_child("LavaArea", true, false) as HazardZone
+		
+		if crater:
+			var crat_mat := StandardMaterial3D.new()
+			crat_mat.albedo_color = data["rock_color"]
+			crat_mat.roughness = 0.9
+			crater.set_surface_override_material(0, crat_mat)
+			
+		if lava:
+			var lmat := StandardMaterial3D.new()
+			if current_world_index == 3: # Magma Core
+				lmat.albedo_color = Color(1.0, 0.2, 0.0)
+				lmat.emission_enabled = true
+				lmat.emission = Color(1.0, 0.15, 0.0)
+				lmat.emission_energy_multiplier = 3.5
+				if lava_light:
+					lava_light.light_color = Color(1.0, 0.35, 0.05)
+					lava_light.light_energy = 3.5
+				if lava_area:
+					lava_area.damage_per_second = 30.0
+			elif current_world_index == 2: # Frostbite Frozen Crater
+				lmat.albedo_color = Color(0.4, 0.75, 0.95)
+				lmat.emission_enabled = true
+				lmat.emission = Color(0.2, 0.6, 0.9)
+				lmat.emission_energy_multiplier = 1.2
+				if lava_light:
+					lava_light.light_color = Color(0.4, 0.8, 1.0)
+					lava_light.light_energy = 1.5
+				if lava_area:
+					lava_area.damage_per_second = 10.0 # Freezing cold damage
+			elif current_world_index == 7: # Cursed Toxic Pit
+				lmat.albedo_color = Color(0.25, 0.85, 0.2)
+				lmat.emission_enabled = true
+				lmat.emission = Color(0.2, 0.8, 0.15)
+				lmat.emission_energy_multiplier = 2.0
+				if lava_light:
+					lava_light.light_color = Color(0.3, 0.9, 0.2)
+					lava_light.light_energy = 2.0
+				if lava_area:
+					lava_area.damage_per_second = 15.0 # Poison damage
+			else:
+				lmat.albedo_color = data["path_color"]
+				lmat.emission_enabled = false
+				if lava_light:
+					lava_light.light_energy = 0.5
+				if lava_area:
+					lava_area.damage_per_second = 5.0
+			lava.set_surface_override_material(0, lmat)
+
 	world_changed.emit(current_world_index, data["name"])

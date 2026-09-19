@@ -1,0 +1,159 @@
+[gd_scene format=3 uid="uid://vvl1m5032gnx"]
+
+[ext_resource type="Script" path="res://scripts/maps/chapter_07_pirate_cove/captain_davy_blood_tide.gd" id="1_boss"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pirate"]
+radius = 1.1
+height = 4.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_coat"]
+albedo_color = Color(0.12, 0.18, 0.22, 1)
+roughness = 0.6
+
+[sub_resource type="BoxMesh" id="BoxMesh_torso"]
+size = Vector3(1.7, 2.2, 1.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ghost_glow"]
+albedo_color = Color(0.2, 0.95, 0.55, 1)
+emission_enabled = true
+emission = Color(0.15, 0.9, 0.5, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_belt"]
+size = Vector3(1.8, 0.35, 1.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_head"]
+size = Vector3(0.9, 1.0, 1.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tricorn_brim"]
+size = Vector3(2.0, 0.25, 2.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tricorn_top"]
+size = Vector3(1.2, 0.6, 1.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_eye"]
+size = Vector3(0.2, 0.12, 0.08)
+
+[sub_resource type="BoxMesh" id="BoxMesh_arm"]
+size = Vector3(0.55, 1.9, 0.55)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cutlass"]
+size = Vector3(0.1, 2.4, 0.4)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_flintlock"]
+top_radius = 0.18
+bottom_radius = 0.22
+height = 1.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wood"]
+albedo_color = Color(0.35, 0.22, 0.12, 1)
+roughness = 0.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pegleg"]
+top_radius = 0.12
+bottom_radius = 0.1
+height = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_boot"]
+size = Vector3(0.55, 2.0, 0.55)
+
+[node name="CaptainDavyBloodTide" type="CharacterBody3D"]
+collision_layer = 3
+collision_mask = 7
+script = ExtResource("1_boss")
+max_health = 1250.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+shape = SubResource("CapsuleShape3D_pirate")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 1250.0
+
+[node name="Nameplate3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.4, 0)
+billboard = 1
+font_size = 28
+outline_size = 8
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="Torso" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
+mesh = SubResource("BoxMesh_torso")
+surface_material_override/0 = SubResource("StandardMaterial3D_coat")
+
+[node name="Sash" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
+mesh = SubResource("BoxMesh_belt")
+surface_material_override/0 = SubResource("StandardMaterial3D_ghost_glow")
+
+[node name="Head" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, 0)
+
+[node name="HeadMesh" type="MeshInstance3D" parent="Visuals/Head"]
+mesh = SubResource("BoxMesh_head")
+surface_material_override/0 = SubResource("StandardMaterial3D_coat")
+
+[node name="TricornBrim" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+mesh = SubResource("BoxMesh_tricorn_brim")
+surface_material_override/0 = SubResource("StandardMaterial3D_coat")
+
+[node name="TricornTop" type="MeshInstance3D" parent="Visuals/Head/TricornBrim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+mesh = SubResource("BoxMesh_tricorn_top")
+surface_material_override/0 = SubResource("StandardMaterial3D_coat")
+
+[node name="LeftEye" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.28, 0.1, -0.52)
+mesh = SubResource("BoxMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_ghost_glow")
+
+[node name="RightEye" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.28, 0.1, -0.52)
+mesh = SubResource("BoxMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_ghost_glow")
+
+[node name="Jaw" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.9, 0, 0, 0, 0.45, 0, 0, 0, 0.85, 0, -0.4, -0.2)
+mesh = SubResource("BoxMesh_head")
+surface_material_override/0 = SubResource("StandardMaterial3D_coat")
+
+[node name="LeftArmPivot" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 3.1, 0)
+
+[node name="ArmMesh" type="MeshInstance3D" parent="Visuals/LeftArmPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8, 0)
+mesh = SubResource("BoxMesh_arm")
+surface_material_override/0 = SubResource("StandardMaterial3D_coat")
+
+[node name="Flintlock" type="MeshInstance3D" parent="Visuals/LeftArmPivot"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, -1.2, -0.6)
+mesh = SubResource("CylinderMesh_flintlock")
+surface_material_override/0 = SubResource("StandardMaterial3D_coat")
+
+[node name="RightArmPivot" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 3.1, 0)
+
+[node name="ArmMesh" type="MeshInstance3D" parent="Visuals/RightArmPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8, 0)
+mesh = SubResource("BoxMesh_arm")
+surface_material_override/0 = SubResource("StandardMaterial3D_coat")
+
+[node name="Cutlass" type="MeshInstance3D" parent="Visuals/RightArmPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, -0.9, -0.8)
+mesh = SubResource("BoxMesh_cutlass")
+surface_material_override/0 = SubResource("StandardMaterial3D_ghost_glow")
+
+[node name="LeftLeg" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 1.0, 0)
+mesh = SubResource("BoxMesh_boot")
+surface_material_override/0 = SubResource("StandardMaterial3D_coat")
+
+[node name="PegLeg" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.0, 0)
+mesh = SubResource("CylinderMesh_pegleg")
+surface_material_override/0 = SubResource("StandardMaterial3D_wood")

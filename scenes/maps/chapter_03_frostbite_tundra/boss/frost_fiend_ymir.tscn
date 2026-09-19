@@ -1,0 +1,166 @@
+[gd_scene format=3 uid="uid://ofnh3x0dmupd"]
+
+[ext_resource type="Script" path="res://scripts/maps/chapter_03_frostbite_tundra/frost_fiend_ymir.gd" id="1_boss"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ymir"]
+height = 4.8
+radius = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glacial_body"]
+albedo_color = Color(0.45, 0.72, 0.88, 1)
+roughness = 0.4
+metallic = 0.1
+
+[sub_resource type="BoxMesh" id="BoxMesh_torso"]
+size = Vector3(2.2, 2.4, 1.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ice_crystal"]
+albedo_color = Color(0.7, 0.92, 1.0, 0.9)
+transparency = 1
+emission_enabled = true
+emission = Color(0.4, 0.8, 1.0, 1)
+emission_energy_multiplier = 3.5
+
+[sub_resource type="PrismMesh" id="PrismMesh_horn"]
+size = Vector3(0.5, 1.4, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_head"]
+size = Vector3(1.2, 1.2, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_frost_eyes"]
+albedo_color = Color(0.9, 0.98, 1.0, 1)
+emission_enabled = true
+emission = Color(0.8, 0.95, 1.0, 1)
+emission_energy_multiplier = 5.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_eye"]
+size = Vector3(0.22, 0.14, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_arm"]
+size = Vector3(0.75, 2.2, 0.75)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_mace_handle"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 2.8
+
+[sub_resource type="SphereMesh" id="SphereMesh_mace_head"]
+radius = 0.85
+height = 1.7
+
+[sub_resource type="BoxMesh" id="BoxMesh_leg"]
+size = Vector3(0.8, 2.0, 0.8)
+
+[sub_resource type="PrismMesh" id="PrismMesh_shoulder_spike"]
+size = Vector3(0.6, 1.1, 0.6)
+
+[node name="FrostFiendYmir" type="CharacterBody3D"]
+collision_layer = 3
+collision_mask = 7
+script = ExtResource("1_boss")
+max_health = 950.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
+shape = SubResource("CylinderShape3D_ymir")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 950.0
+
+[node name="Nameplate3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, 0)
+billboard = 1
+font_size = 28
+outline_size = 8
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="Torso" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
+mesh = SubResource("BoxMesh_torso")
+surface_material_override/0 = SubResource("StandardMaterial3D_glacial_body")
+
+[node name="LeftShoulderSpike" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0, 1, -1.2, 1.1, 0)
+mesh = SubResource("PrismMesh_shoulder_spike")
+surface_material_override/0 = SubResource("StandardMaterial3D_ice_crystal")
+
+[node name="RightShoulderSpike" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 1.2, 1.1, 0)
+mesh = SubResource("PrismMesh_shoulder_spike")
+surface_material_override/0 = SubResource("StandardMaterial3D_ice_crystal")
+
+[node name="Head" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0, 0)
+
+[node name="HeadMesh" type="MeshInstance3D" parent="Visuals/Head"]
+mesh = SubResource("BoxMesh_head")
+surface_material_override/0 = SubResource("StandardMaterial3D_glacial_body")
+
+[node name="LeftHorn" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0, 0, 1, -0.6, 0.85, 0)
+mesh = SubResource("PrismMesh_horn")
+surface_material_override/0 = SubResource("StandardMaterial3D_ice_crystal")
+
+[node name="RightHorn" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0, 0, 1, 0.6, 0.85, 0)
+mesh = SubResource("PrismMesh_horn")
+surface_material_override/0 = SubResource("StandardMaterial3D_ice_crystal")
+
+[node name="LeftEye" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.1, -0.6)
+mesh = SubResource("BoxMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_frost_eyes")
+
+[node name="RightEye" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 0.1, -0.6)
+mesh = SubResource("BoxMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_frost_eyes")
+
+[node name="Jaw" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.9, 0, 0, 0, 0.5, 0, 0, 0, 0.8, 0, -0.45, -0.25)
+mesh = SubResource("BoxMesh_head")
+surface_material_override/0 = SubResource("StandardMaterial3D_glacial_body")
+
+[node name="IceFangs" type="MeshInstance3D" parent="Visuals/Head/Jaw"]
+transform = Transform3D(0.8, 0, 0, 0, 0.5, 0, 0, 0, 0.3, 0, 0.5, -0.4)
+mesh = SubResource("PrismMesh_horn")
+surface_material_override/0 = SubResource("StandardMaterial3D_ice_crystal")
+
+[node name="LeftArmPivot" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4, 3.2, 0)
+
+[node name="ArmMesh" type="MeshInstance3D" parent="Visuals/LeftArmPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0)
+mesh = SubResource("BoxMesh_arm")
+surface_material_override/0 = SubResource("StandardMaterial3D_glacial_body")
+
+[node name="RightArmPivot" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 3.2, 0)
+
+[node name="ArmMesh" type="MeshInstance3D" parent="Visuals/RightArmPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0)
+mesh = SubResource("BoxMesh_arm")
+surface_material_override/0 = SubResource("StandardMaterial3D_glacial_body")
+
+[node name="MaceHandle" type="MeshInstance3D" parent="Visuals/RightArmPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, -0.8, -0.6)
+mesh = SubResource("CylinderMesh_mace_handle")
+surface_material_override/0 = SubResource("StandardMaterial3D_ice_crystal")
+
+[node name="MaceHead" type="MeshInstance3D" parent="Visuals/RightArmPivot/MaceHandle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+mesh = SubResource("SphereMesh_mace_head")
+surface_material_override/0 = SubResource("StandardMaterial3D_ice_crystal")
+
+[node name="LeftLeg" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 1.0, 0)
+mesh = SubResource("BoxMesh_leg")
+surface_material_override/0 = SubResource("StandardMaterial3D_glacial_body")
+
+[node name="RightLeg" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 1.0, 0)
+mesh = SubResource("BoxMesh_leg")
+surface_material_override/0 = SubResource("StandardMaterial3D_glacial_body")

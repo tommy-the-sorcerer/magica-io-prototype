@@ -18,22 +18,47 @@ extends Node3D
 @onready var player_spawns: Node3D = $Gameplay/PlayerSpawns
 @onready var enemy_spawns: Node3D = $Gameplay/EnemySpawns
 
+const CHAPTER_BOSS_PATHS := {
+	"chapter_02": "res://scenes/maps/chapter_02_desert_mirage/boss/anubis_scythe_lord.tscn",
+	"chapter_03": "res://scenes/maps/chapter_03_frostbite_tundra/boss/frost_fiend_ymir.tscn",
+	"chapter_04": "res://scenes/maps/chapter_04_magma_core/boss/ignis_molten_overlord.tscn",
+	"chapter_05": "res://scenes/maps/chapter_05_mystic_grove/boss/spore_queen_nightshade.tscn",
+	"chapter_06": "res://scenes/maps/chapter_06_castle_ruins/boss/warlord_iron_bane.tscn",
+	"chapter_07": "res://scenes/maps/chapter_07_pirate_cove/boss/captain_davy_blood_tide.tscn",
+	"chapter_08": "res://scenes/maps/chapter_08_cursed_swamp/boss/lord_malakor.tscn",
+	"chapter_09": "res://scenes/maps/chapter_09_cosmic_void/boss/xeno_gorgon_apex.tscn",
+	"chapter_10": "res://scenes/maps/chapter_10_celestial_peak/boss/judgment_seraph.tscn",
+	"emerald_plains": "res://scenes/maps/emerald_plains/boss/gorgon_treant_king.tscn",
+}
+
 var player_instance: Node3D = null
 var active_combatants: int = 1
 var total_combatants: int = 1
 
 func _ready() -> void:
+	_resolve_boss_scene()
 	_spawn_player()
 	
-	if is_boss_level and boss_scene:
+	if (is_boss_level or current_level == 10) and boss_scene:
 		_setup_boss_encounter()
 	else:
 		_spawn_enemies()
 
+func _resolve_boss_scene() -> void:
+	if boss_scene:
+		return
+	var scene_path: String = scene_file_path.to_lower()
+	for key in CHAPTER_BOSS_PATHS:
+		if key in scene_path or key in chapter_name.to_lower():
+			var p: String = CHAPTER_BOSS_PATHS[key]
+			if ResourceLoader.exists(p):
+				boss_scene = load(p) as PackedScene
+				break
+
 func _spawn_player() -> void:
-	var player_scene := load("res://characters/dragonbound/dragonbound_character.tscn")
+	var player_scene := load("res://characters/celestial/celestial_character.tscn")
 	if not player_scene:
-		player_scene = load("res://characters/celestial/celestial_character.tscn")
+		player_scene = load("res://characters/dragonbound/dragonbound_character.tscn")
 	if not player_scene:
 		player_scene = load("res://scenes/player/player.tscn")
 	if not player_scene:
@@ -116,7 +141,7 @@ func _check_fall_bounds() -> void:
 			if hp and not hp.is_dead:
 				hp.take_damage(99999, null)
 				if hud:
-					hud.show_defeat(active_combatants)
+					hud.show_defeat(active_combatants, "☁️ FELL INTO THE VOID ☁️")
 	
 	var combatants: Array[Node] = get_tree().get_nodes_in_group("combatants")
 	for c in combatants:

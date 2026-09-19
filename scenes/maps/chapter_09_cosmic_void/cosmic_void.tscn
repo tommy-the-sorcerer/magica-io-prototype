@@ -1,17 +1,17 @@
-[gd_scene load_steps=20 format=3 uid="uid://bjd4oulcyhagt"]
+[gd_scene format=3 uid="uid://bjd4oulcyhagt"]
 
-[ext_resource type="Script" path="res://scripts/core/chapter_map_controller.gd" id="1_ctrl"]
-[ext_resource type="Script" path="res://scripts/camera/camera_follow.gd" id="2_cam"]
-[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/pink_gem.tscn" id="3_gem"]
-[ext_resource type="PackedScene" path="res://scenes/maps/chapter_09_cosmic_void/props/cosmic_crate.tscn" id="4_crate"]
-[ext_resource type="PackedScene" path="res://scenes/maps/chapter_09_cosmic_void/props/asteroid_chunk.tscn" id="5_asteroid"]
-[ext_resource type="PackedScene" path="res://scenes/maps/chapter_09_cosmic_void/props/cosmic_pylon.tscn" id="6_pylon"]
-[ext_resource type="PackedScene" path="res://scenes/maps/chapter_09_cosmic_void/props/void_crystal.tscn" id="7_crystal"]
-[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="8_hud"]
-[ext_resource type="PackedScene" path="res://scenes/maps/chapter_09_cosmic_void/props/starfield_3d.tscn" id="9_starfield"]
-[ext_resource type="PackedScene" path="res://scenes/maps/chapter_09_cosmic_void/props/cosmic_speeder.tscn" id="10_speeder"]
-[ext_resource type="PackedScene" path="res://scenes/maps/chapter_09_cosmic_void/props/cosmic_generator.tscn" id="11_generator"]
-[ext_resource type="PackedScene" path="res://scenes/maps/chapter_09_cosmic_void/props/cosmic_rover.tscn" id="12_rover"]
+[ext_resource type="Script" uid="uid://tq36s3t1lesy" path="res://scripts/core/chapter_map_controller.gd" id="1_ctrl"]
+[ext_resource type="Script" uid="uid://hk34qrajqsor" path="res://scripts/camera/camera_follow.gd" id="2_cam"]
+[ext_resource type="PackedScene" uid="uid://r44bi44smdv5" path="res://scenes/maps/emerald_plains/props/pink_gem.tscn" id="3_gem"]
+[ext_resource type="PackedScene" uid="uid://cvcrate01" path="res://scenes/maps/chapter_09_cosmic_void/props/cosmic_crate.tscn" id="4_crate"]
+[ext_resource type="PackedScene" uid="uid://cvasteroid01" path="res://scenes/maps/chapter_09_cosmic_void/props/asteroid_chunk.tscn" id="5_asteroid"]
+[ext_resource type="PackedScene" uid="uid://cvpylon01" path="res://scenes/maps/chapter_09_cosmic_void/props/cosmic_pylon.tscn" id="6_pylon"]
+[ext_resource type="PackedScene" uid="uid://cvcrystal01" path="res://scenes/maps/chapter_09_cosmic_void/props/void_crystal.tscn" id="7_crystal"]
+[ext_resource type="PackedScene" uid="uid://ivu0oyuwssd8" path="res://scenes/ui/hud.tscn" id="8_hud"]
+[ext_resource type="PackedScene" uid="uid://crph1yf3bsx1j" path="res://scenes/maps/chapter_09_cosmic_void/props/starfield_3d.tscn" id="9_starfield"]
+[ext_resource type="PackedScene" uid="uid://cvspeeder01" path="res://scenes/maps/chapter_09_cosmic_void/props/cosmic_speeder.tscn" id="10_speeder"]
+[ext_resource type="PackedScene" uid="uid://cvgenerator01" path="res://scenes/maps/chapter_09_cosmic_void/props/cosmic_generator.tscn" id="11_generator"]
+[ext_resource type="PackedScene" uid="uid://cvrover01" path="res://scenes/maps/chapter_09_cosmic_void/props/cosmic_rover.tscn" id="12_rover"]
 
 [sub_resource type="Environment" id="Environment_cosmic"]
 background_mode = 1
@@ -22,7 +22,6 @@ ambient_light_energy = 0.45
 tonemap_mode = 3
 glow_enabled = true
 glow_intensity = 0.8
-glow_bloom = 0.0
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_cosmic"]
 
@@ -30,30 +29,31 @@ glow_bloom = 0.0
 top_radius = 50.0
 bottom_radius = 52.0
 height = 1.0
-radial_segments = 64
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_cosmic_col"]
-height = 1.0
-radius = 50.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_void_surface"]
 albedo_color = Color(0.1, 0.08, 0.18, 1)
-roughness = 0.5
 metallic = 0.4
+roughness = 0.5
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_void_underbelly"]
 top_radius = 50.0
 bottom_radius = 5.0
 height = 18.0
-radial_segments = 64
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_void_underbelly"]
 albedo_color = Color(0.04, 0.03, 0.08, 1)
-roughness = 0.4
 metallic = 0.8
+roughness = 0.4
 emission_enabled = true
 emission = Color(0.12, 0.04, 0.25, 1)
 emission_energy_multiplier = 0.5
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_cosmic_col"]
+height = 1.0
+radius = 50.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_laser_line"]
+size = Vector3(4.5, 0.05, 52)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_neon_grid"]
 albedo_color = Color(0, 0.95, 1, 1)
@@ -61,176 +61,174 @@ emission_enabled = true
 emission = Color(0, 0.9, 1, 1)
 emission_energy_multiplier = 3.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_laser_line"]
-size = Vector3(4.5, 0.05, 52.0)
-
-[node name="CosmicVoid" type="Node3D"]
+[node name="CosmicVoid" type="Node3D" unique_id=409579676]
 script = ExtResource("1_ctrl")
 chapter_name = "Chapter 9: Cosmic Void"
+is_boss_level = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2099520665]
 environment = SubResource("Environment_cosmic")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=61469427]
 transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 35, 0)
 light_color = Color(0.75, 0.55, 1, 1)
 light_energy = 1.1
 shadow_enabled = true
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1411949067]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 16, 16)
 fov = 42.0
 script = ExtResource("2_cam")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1063254335]
 navigation_mesh = SubResource("NavigationMesh_cosmic")
 
-[node name="GroundTerrain" type="StaticBody3D" parent="NavigationRegion3D"]
+[node name="GroundTerrain" type="StaticBody3D" parent="NavigationRegion3D" unique_id=1686141413]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain" unique_id=643672412]
 mesh = SubResource("CylinderMesh_cosmic_void")
 surface_material_override/0 = SubResource("StandardMaterial3D_void_surface")
 
-[node name="UnderbellyMesh" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain"]
+[node name="UnderbellyMesh" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain" unique_id=1466583758]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.5, 0)
 mesh = SubResource("CylinderMesh_void_underbelly")
 surface_material_override/0 = SubResource("StandardMaterial3D_void_underbelly")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/GroundTerrain"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/GroundTerrain" unique_id=1974255042]
 shape = SubResource("CylinderShape3D_cosmic_col")
 
-[node name="GridLines" type="Node3D" parent="."]
+[node name="GridLines" type="Node3D" parent="." unique_id=1655459596]
 
-[node name="Grid1" type="MeshInstance3D" parent="GridLines"]
+[node name="Grid1" type="MeshInstance3D" parent="GridLines" unique_id=762785668]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
 mesh = SubResource("BoxMesh_laser_line")
 surface_material_override/0 = SubResource("StandardMaterial3D_neon_grid")
 
-[node name="Grid2" type="MeshInstance3D" parent="GridLines"]
+[node name="Grid2" type="MeshInstance3D" parent="GridLines" unique_id=816404616]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.03, 0)
 mesh = SubResource("BoxMesh_laser_line")
 surface_material_override/0 = SubResource("StandardMaterial3D_neon_grid")
 
-[node name="Pylons" type="Node3D" parent="."]
+[node name="Pylons" type="Node3D" parent="." unique_id=540600244]
 
-[node name="Pylon1" parent="Pylons" instance=ExtResource("6_pylon")]
+[node name="Pylon1" parent="Pylons" unique_id=419182320 instance=ExtResource("6_pylon")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -12)
 
-[node name="Pylon2" parent="Pylons" instance=ExtResource("6_pylon")]
+[node name="Pylon2" parent="Pylons" unique_id=1809419343 instance=ExtResource("6_pylon")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -12)
 
-[node name="Pylon3" parent="Pylons" instance=ExtResource("6_pylon")]
+[node name="Pylon3" parent="Pylons" unique_id=1778168484 instance=ExtResource("6_pylon")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 12)
 
-[node name="Pylon4" parent="Pylons" instance=ExtResource("6_pylon")]
+[node name="Pylon4" parent="Pylons" unique_id=1231421570 instance=ExtResource("6_pylon")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 12)
 
-[node name="Crystals" type="Node3D" parent="."]
+[node name="Crystals" type="Node3D" parent="." unique_id=1684628883]
 
-[node name="Crystal1" parent="Crystals" instance=ExtResource("7_crystal")]
+[node name="Crystal1" parent="Crystals" unique_id=1423972472 instance=ExtResource("7_crystal")]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, -18, 0, 0)
 
-[node name="Crystal2" parent="Crystals" instance=ExtResource("7_crystal")]
+[node name="Crystal2" parent="Crystals" unique_id=535927925 instance=ExtResource("7_crystal")]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 18, 0, 0)
 
-[node name="Crystal3" parent="Crystals" instance=ExtResource("7_crystal")]
+[node name="Crystal3" parent="Crystals" unique_id=798624821 instance=ExtResource("7_crystal")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -18)
 
-[node name="OutpostTech" type="Node3D" parent="."]
+[node name="OutpostTech" type="Node3D" parent="." unique_id=1550845175]
 
-[node name="SpeederNorth" parent="OutpostTech" instance=ExtResource("10_speeder")]
+[node name="SpeederNorth" parent="OutpostTech" unique_id=166153726 instance=ExtResource("10_speeder")]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -16, 0, -18)
 
-[node name="SpeederSouth" parent="OutpostTech" instance=ExtResource("10_speeder")]
+[node name="SpeederSouth" parent="OutpostTech" unique_id=1219065666 instance=ExtResource("10_speeder")]
 transform = Transform3D(-0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, -0.866025, 16, 0, 18)
 
-[node name="GeneratorEast" parent="OutpostTech" instance=ExtResource("11_generator")]
+[node name="GeneratorEast" parent="OutpostTech" unique_id=213118609 instance=ExtResource("11_generator")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, -6)
 
-[node name="GeneratorWest" parent="OutpostTech" instance=ExtResource("11_generator")]
+[node name="GeneratorWest" parent="OutpostTech" unique_id=1822643527 instance=ExtResource("11_generator")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, 6)
 
-[node name="Rover1" parent="OutpostTech" instance=ExtResource("12_rover")]
+[node name="Rover1" parent="OutpostTech" unique_id=1035722500 instance=ExtResource("12_rover")]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 0, 16)
 
-[node name="Asteroids" type="Node3D" parent="."]
+[node name="Asteroids" type="Node3D" parent="." unique_id=477691333]
 
-[node name="Asteroid1" parent="Asteroids" instance=ExtResource("5_asteroid")]
+[node name="Asteroid1" parent="Asteroids" unique_id=374021836 instance=ExtResource("5_asteroid")]
 transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, -22, 0, 14)
 
-[node name="Asteroid2" parent="Asteroids" instance=ExtResource("5_asteroid")]
+[node name="Asteroid2" parent="Asteroids" unique_id=119402728 instance=ExtResource("5_asteroid")]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 22, 0, -14)
 
-[node name="TacticalCover" type="Node3D" parent="."]
+[node name="TacticalCover" type="Node3D" parent="." unique_id=401450896]
 
-[node name="CosmicCrate1" parent="TacticalCover" instance=ExtResource("4_crate")]
+[node name="CosmicCrate1" parent="TacticalCover" unique_id=119291858 instance=ExtResource("4_crate")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 5)
 
-[node name="CosmicCrate2" parent="TacticalCover" instance=ExtResource("4_crate")]
+[node name="CosmicCrate2" parent="TacticalCover" unique_id=1678974324 instance=ExtResource("4_crate")]
 transform = Transform3D(0.9, 0, 0.4, 0, 1, 0, -0.4, 0, 0.9, 5, 0, -5)
 
-[node name="CosmicCrate3" parent="TacticalCover" instance=ExtResource("4_crate")]
+[node name="CosmicCrate3" parent="TacticalCover" unique_id=345549671 instance=ExtResource("4_crate")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
 
-[node name="PinkDiamonds" type="Node3D" parent="."]
+[node name="PinkDiamonds" type="Node3D" parent="." unique_id=1872876297]
 
-[node name="GemCenter" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+[node name="GemCenter" parent="PinkDiamonds" unique_id=580283770 instance=ExtResource("3_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
 
-[node name="GemN" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+[node name="GemN" parent="PinkDiamonds" unique_id=1509439372 instance=ExtResource("3_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -12)
 
-[node name="GemS" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+[node name="GemS" parent="PinkDiamonds" unique_id=102269123 instance=ExtResource("3_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 12)
 
-[node name="GemE" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+[node name="GemE" parent="PinkDiamonds" unique_id=1083925926 instance=ExtResource("3_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.35, 0)
 
-[node name="GemW" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+[node name="GemW" parent="PinkDiamonds" unique_id=2033401313 instance=ExtResource("3_gem")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.35, 0)
 
-[node name="Gameplay" type="Node3D" parent="."]
+[node name="Gameplay" type="Node3D" parent="." unique_id=378160502]
 
-[node name="PlayerSpawns" type="Node3D" parent="Gameplay"]
+[node name="PlayerSpawns" type="Node3D" parent="Gameplay" unique_id=824042662]
 
-[node name="PlayerSpawn_01" type="Marker3D" parent="Gameplay/PlayerSpawns"]
+[node name="PlayerSpawn_01" type="Marker3D" parent="Gameplay/PlayerSpawns" unique_id=267985951]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 8)
 
-[node name="EnemySpawns" type="Node3D" parent="Gameplay"]
+[node name="EnemySpawns" type="Node3D" parent="Gameplay" unique_id=1922855507]
 
-[node name="EnemySpawn_North" type="Marker3D" parent="Gameplay/EnemySpawns"]
+[node name="EnemySpawn_North" type="Marker3D" parent="Gameplay/EnemySpawns" unique_id=587367053]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -22)
 
-[node name="EnemySpawn_South" type="Marker3D" parent="Gameplay/EnemySpawns"]
+[node name="EnemySpawn_South" type="Marker3D" parent="Gameplay/EnemySpawns" unique_id=1924795427]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 22)
 
-[node name="EnemySpawn_East" type="Marker3D" parent="Gameplay/EnemySpawns"]
+[node name="EnemySpawn_East" type="Marker3D" parent="Gameplay/EnemySpawns" unique_id=1231364476]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0.2, 0)
 
-[node name="EnemySpawn_West" type="Marker3D" parent="Gameplay/EnemySpawns"]
+[node name="EnemySpawn_West" type="Marker3D" parent="Gameplay/EnemySpawns" unique_id=1532850676]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0.2, 0)
 
-[node name="HUD" parent="." instance=ExtResource("8_hud")]
+[node name="HUD" parent="." unique_id=878731645 instance=ExtResource("8_hud")]
 
-[node name="Starfield3D" parent="." instance=ExtResource("9_starfield")]
+[node name="Starfield3D" parent="." unique_id=1854198108 instance=ExtResource("9_starfield")]
 
-[node name="OuterAsteroidBelt" type="Node3D" parent="."]
+[node name="OuterAsteroidBelt" type="Node3D" parent="." unique_id=658672470]
 
-[node name="BeltAsteroid1" parent="OuterAsteroidBelt" instance=ExtResource("5_asteroid")]
+[node name="BeltAsteroid1" parent="OuterAsteroidBelt" unique_id=2003281906 instance=ExtResource("5_asteroid")]
 transform = Transform3D(3.2, 0, 1.5, 0, 3.5, 0, -1.5, 0, 3.2, -68, -4, 25)
 
-[node name="BeltAsteroid2" parent="OuterAsteroidBelt" instance=ExtResource("5_asteroid")]
+[node name="BeltAsteroid2" parent="OuterAsteroidBelt" unique_id=1798952905 instance=ExtResource("5_asteroid")]
 transform = Transform3D(2.5, 1.2, 0, -1.2, 2.5, 0, 0, 0, 2.8, 65, 6, -35)
 
-[node name="BeltAsteroid3" parent="OuterAsteroidBelt" instance=ExtResource("5_asteroid")]
-transform = Transform3D(4.0, 0, 0, 0, 4.0, 0, 0, 0, 4.0, 15, -12, 70)
+[node name="BeltAsteroid3" parent="OuterAsteroidBelt" unique_id=1693061073 instance=ExtResource("5_asteroid")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 15, -12, 70)
 
-[node name="BeltAsteroid4" parent="OuterAsteroidBelt" instance=ExtResource("5_asteroid")]
-transform = Transform3D(2.8, -1.0, 0, 1.0, 2.8, 0, 0, 0, 3.0, -45, 8, -62)
+[node name="BeltAsteroid4" parent="OuterAsteroidBelt" unique_id=1192830715 instance=ExtResource("5_asteroid")]
+transform = Transform3D(2.8, -1, 0, 1, 2.8, 0, 0, 0, 3, -45, 8, -62)
 
-[node name="BeltCrystal1" parent="OuterAsteroidBelt" instance=ExtResource("7_crystal")]
+[node name="BeltCrystal1" parent="OuterAsteroidBelt" unique_id=172350428 instance=ExtResource("7_crystal")]
 transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -62, -2, -18)
 
-[node name="BeltCrystal2" parent="OuterAsteroidBelt" instance=ExtResource("7_crystal")]
+[node name="BeltCrystal2" parent="OuterAsteroidBelt" unique_id=1448194066 instance=ExtResource("7_crystal")]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 58, -6, 42)
