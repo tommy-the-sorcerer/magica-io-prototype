@@ -5,12 +5,13 @@ extends Camera3D
 @export var follow_speed: float = 6.0
 
 func _ready() -> void:
-	if not target:
+	if not target and get_tree() and get_tree().current_scene:
 		target = get_tree().current_scene.find_child("Player", true, false) as Node3D
 
 func _physics_process(delta: float) -> void:
 	if not target or not is_instance_valid(target):
-		target = get_tree().current_scene.find_child("Player", true, false) as Node3D
+		if get_tree() and get_tree().current_scene:
+			target = get_tree().current_scene.find_child("Player", true, false) as Node3D
 		return
 	
 	var desired_pos := target.global_position + offset

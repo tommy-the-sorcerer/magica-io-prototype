@@ -1,0 +1,80 @@
+[gd_scene format=3 uid="uid://cwv6plwxmnogs"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_water_mat"]
+transparency = 1
+albedo_color = Color(0.08, 0.68, 0.88, 0.75)
+roughness = 0.06
+metallic = 0.15
+emission_enabled = true
+emission = Color(0.04, 0.38, 0.52, 1)
+emission_energy_multiplier = 0.6
+rim_enabled = true
+rim = 0.6
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_water_surface"]
+top_radius = 5.2
+bottom_radius = 4.8
+height = 0.2
+radial_segments = 24
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pond_bed"]
+albedo_color = Color(0.2, 0.32, 0.35, 1)
+roughness = 0.95
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pond_bed"]
+top_radius = 5.5
+bottom_radius = 4.2
+height = 0.35
+radial_segments = 24
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lilypad"]
+albedo_color = Color(0.2, 0.72, 0.32, 1)
+roughness = 0.7
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pad"]
+top_radius = 0.45
+bottom_radius = 0.45
+height = 0.02
+radial_segments = 8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flower"]
+albedo_color = Color(1, 0.5, 0.75, 1)
+emission_enabled = true
+emission = Color(1, 0.4, 0.7, 1)
+emission_energy_multiplier = 1.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_flower"]
+radius = 0.12
+height = 0.2
+
+[node name="WaterPond" type="Node3D"]
+
+[node name="PondBed" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+mesh = SubResource("CylinderMesh_pond_bed")
+surface_material_override/0 = SubResource("StandardMaterial3D_pond_bed")
+
+[node name="WaterSurface" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+mesh = SubResource("CylinderMesh_water_surface")
+surface_material_override/0 = SubResource("StandardMaterial3D_water_mat")
+
+[node name="LilyPad1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0.035, -1.2)
+mesh = SubResource("CylinderMesh_pad")
+surface_material_override/0 = SubResource("StandardMaterial3D_lilypad")
+
+[node name="Flower1" type="MeshInstance3D" parent="LilyPad1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0.08, 0.05)
+mesh = SubResource("SphereMesh_flower")
+surface_material_override/0 = SubResource("StandardMaterial3D_flower")
+
+[node name="LilyPad2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.85, 0, 0.52, 0, 1, 0, -0.52, 0, 0.85, -2.1, 0.035, 1.4)
+mesh = SubResource("CylinderMesh_pad")
+surface_material_override/0 = SubResource("StandardMaterial3D_lilypad")
+
+[node name="LilyPad3" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.95, 0, -0.3, 0, 1, 0, 0.3, 0, 0.95, 0.8, 0.035, 2.3)
+mesh = SubResource("CylinderMesh_pad")
+surface_material_override/0 = SubResource("StandardMaterial3D_lilypad")

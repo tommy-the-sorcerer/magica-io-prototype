@@ -1,33 +1,44 @@
-[gd_scene load_steps=5 format=3 uid="uid://c8xpgemscene"]
+[gd_scene load_steps=6 format=3 uid="uid://c8xpgemcrystal"]
 
-[sub_resource type="GDScript" id="GDScript_gem"]
-script/source = "extends Area3D
+[ext_resource type="Script" path="res://scripts/environment/xp_gem.gd" id="1_gem"]
 
-func _process(delta: float) -> void:
-	rotation.y += 2.0 * delta
-	position.y = 0.4 + sin(Time.get_ticks_msec() * 0.005 + get_instance_id()) * 0.1
-"
+[sub_resource type="SphereShape3D" id="SphereShape3D_gem"]
+radius = 0.65
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
-radius = 0.6
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pink"]
-albedo_color = Color(1.0, 0.45, 0.85, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gem_mat"]
+albedo_color = Color(0.15, 0.95, 0.75, 1)
+roughness = 0.15
 emission_enabled = true
-emission = Color(1.0, 0.35, 0.8, 1)
-emission_energy_multiplier = 0.8
-roughness = 0.2
+emission = Color(0.08, 0.9, 0.7, 1)
+emission_energy_multiplier = 2.2
+rim_enabled = true
+rim = 0.5
 
-[sub_resource type="BoxMesh" id="BoxMesh_crystal"]
-size = Vector3(0.35, 0.35, 0.35)
+[sub_resource type="PrismMesh" id="PrismMesh_crystal_top"]
+size = Vector3(0.4, 0.5, 0.4)
+
+[sub_resource type="PrismMesh" id="PrismMesh_crystal_bot"]
+size = Vector3(0.4, 0.5, 0.4)
 
 [node name="XPGem" type="Area3D"]
-script = SubResource("GDScript_gem")
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_gem")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("SphereShape3D_1")
+shape = SubResource("SphereShape3D_gem")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.707107, -0.707107, 0, 0.5, 0.5, -0.707107, 0.5, 0.5, 0.707107, 0, 0, 0)
-mesh = SubResource("BoxMesh_crystal")
-surface_material_override/0 = SubResource("StandardMaterial3D_pink")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+mesh = SubResource("PrismMesh_crystal_top")
+surface_material_override/0 = SubResource("StandardMaterial3D_gem_mat")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, -0.1, 0)
+mesh = SubResource("PrismMesh_crystal_bot")
+surface_material_override/0 = SubResource("StandardMaterial3D_gem_mat")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_color = Color(0.2, 0.95, 0.8, 1)
+light_energy = 0.6
+omni_range = 2.0

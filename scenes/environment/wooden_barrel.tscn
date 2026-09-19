@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://bf210wqqli0op"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_barrel_col"]
+height = 1.1
+radius = 0.48
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barrel_wood"]
+albedo_color = Color(0.48, 0.32, 0.18, 1)
+roughness = 0.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_barrel_body"]
+top_radius = 0.42
+bottom_radius = 0.42
+height = 1.05
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iron_hoop"]
+albedo_color = Color(0.3, 0.32, 0.36, 1)
+metallic = 0.6
+roughness = 0.4
+
+[sub_resource type="TorusMesh" id="TorusMesh_hoop"]
+inner_radius = 0.42
+outer_radius = 0.46
+rings = 16
+ring_segments = 4
+
+[node name="WoodenBarrel" type="StaticBody3D"]
+collision_layer = 1
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("CylinderShape3D_barrel_col")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="BarrelBody" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.525, 0)
+mesh = SubResource("CylinderMesh_barrel_body")
+surface_material_override/0 = SubResource("StandardMaterial3D_barrel_wood")
+
+[node name="HoopTop" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.82, 0)
+mesh = SubResource("TorusMesh_hoop")
+surface_material_override/0 = SubResource("StandardMaterial3D_iron_hoop")
+
+[node name="HoopBottom" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.23, 0)
+mesh = SubResource("TorusMesh_hoop")
+surface_material_override/0 = SubResource("StandardMaterial3D_iron_hoop")

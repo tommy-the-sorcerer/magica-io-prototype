@@ -1,0 +1,445 @@
+[gd_scene format=3 uid="uid://homescreen01"]
+
+[ext_resource type="Script" path="res://scripts/ui/home_screen.gd" id="1_home"]
+[ext_resource type="PackedScene" path="res://scenes/ui/character_showcase_3d.tscn" id="2_showcase"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_home_bg"]
+bg_color = Color(0.04, 0.06, 0.1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_top_pill"]
+bg_color = Color(0.09, 0.14, 0.22, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.5, 0.8, 0.6)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_play_main"]
+bg_color = Color(0.9, 0.58, 0.08, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.88, 0.45, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(1, 0.55, 0, 0.4)
+shadow_size = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_play_hover"]
+bg_color = Color(1, 0.7, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 0.7, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(1, 0.65, 0, 0.6)
+shadow_size = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_play_pressed"]
+bg_color = Color(0.75, 0.45, 0.05, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.95, 0.75, 0.25, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav_btn"]
+bg_color = Color(0.08, 0.13, 0.22, 0.88)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.22, 0.45, 0.75, 0.7)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav_btn_hover"]
+bg_color = Color(0.14, 0.22, 0.38, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.75, 1, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0.1, 0.5, 0.9, 0.4)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav_btn_pressed"]
+bg_color = Color(0.06, 0.1, 0.16, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.4, 0.7, 0.8)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_char_hero_badge"]
+bg_color = Color(0.06, 0.1, 0.18, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.65, 1, 0.6)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal_home"]
+bg_color = Color(0.07, 0.1, 0.18, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.7, 1, 0.9)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.75)
+shadow_size = 28
+
+[node name="HomeScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_home")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_home_bg")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="CharacterShowcase3D" parent="SubViewportContainer/SubViewport" instance=ExtResource("2_showcase")]
+
+[node name="DragOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = -24.0
+offset_bottom = 66.0
+grow_horizontal = 2
+theme_override_constants/separation = 16
+
+[node name="ProfilePill" type="PanelContainer" parent="TopBar"]
+custom_minimum_size = Vector2(210, 44)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_top_pill")
+
+[node name="HBox" type="HBoxContainer" parent="TopBar/ProfilePill"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Spacer" type="Control" parent="TopBar/ProfilePill/HBox"]
+custom_minimum_size = Vector2(6, 0)
+layout_mode = 2
+
+[node name="Avatar" type="Label" parent="TopBar/ProfilePill/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "🧙"
+
+[node name="InfoVBox" type="VBoxContainer" parent="TopBar/ProfilePill/HBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="PlayerName" type="Label" parent="TopBar/ProfilePill/HBox/InfoVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "Archmage #402"
+
+[node name="LevelLabel" type="Label" parent="TopBar/ProfilePill/HBox/InfoVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "Level 5 Apprentice"
+
+[node name="Spacer" type="Control" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CurrenciesHBox" type="HBoxContainer" parent="TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TrophiesPill" type="PanelContainer" parent="TopBar/CurrenciesHBox"]
+custom_minimum_size = Vector2(110, 44)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_top_pill")
+
+[node name="Label" type="Label" parent="TopBar/CurrenciesHBox/TrophiesPill"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+text = "🏆 1,240"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GoldPill" type="PanelContainer" parent="TopBar/CurrenciesHBox"]
+custom_minimum_size = Vector2(110, 44)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_top_pill")
+
+[node name="Label" type="Label" parent="TopBar/CurrenciesHBox/GoldPill"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
+theme_override_font_sizes/font_size = 14
+text = "🪙 1,450"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemsPill" type="PanelContainer" parent="TopBar/CurrenciesHBox"]
+custom_minimum_size = Vector2(95, 44)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_top_pill")
+
+[node name="Label" type="Label" parent="TopBar/CurrenciesHBox/GemsPill"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "💎 85"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SettingsBtn" type="Button" parent="TopBar"]
+custom_minimum_size = Vector2(48, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nav_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nav_btn_pressed")
+text = "⚙️"
+
+[node name="HeaderTitle" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -220.0
+offset_top = 80.0
+offset_right = 220.0
+offset_bottom = 140.0
+grow_horizontal = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="GameTitle" type="Label" parent="HeaderTitle"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_colors/font_shadow_color = Color(0.05, 0.25, 0.65, 0.85)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 32
+text = "MAGICA IO • SPELL ARENA"
+horizontal_alignment = 1
+
+[node name="SeasonBadge" type="Label" parent="HeaderTitle"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.85, 1, 0.9)
+theme_override_font_sizes/font_size = 13
+text = "✦ SEASON 1: THE FRACTURED REALMS ✦"
+horizontal_alignment = 1
+
+[node name="HeroOverviewBadge" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = 135.0
+offset_right = 160.0
+offset_bottom = 185.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_char_hero_badge")
+
+[node name="VBox" type="VBoxContainer" parent="HeroOverviewBadge"]
+layout_mode = 2
+alignment = 1
+
+[node name="HeroName" type="Label" parent="HeroOverviewBadge/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.9, 1)
+theme_override_font_sizes/font_size = 15
+text = "ARCANE APPRENTICE"
+horizontal_alignment = 1
+
+[node name="HeroSubtitle" type="Label" parent="HeroOverviewBadge/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.8, 1, 0.95)
+theme_override_font_sizes/font_size = 11
+text = "Mage Class • Touch / Drag to rotate"
+horizontal_alignment = 1
+
+[node name="BottomNav" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -96.0
+offset_right = -32.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="CharacterBtn" type="Button" parent="BottomNav"]
+custom_minimum_size = Vector2(170, 60)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nav_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nav_btn_pressed")
+text = "🧙 HEROES"
+
+[node name="AbilitiesBtn" type="Button" parent="BottomNav"]
+custom_minimum_size = Vector2(150, 60)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nav_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nav_btn_pressed")
+text = "⚡ SPELLS"
+
+[node name="PlayBtn" type="Button" parent="BottomNav"]
+custom_minimum_size = Vector2(240, 68)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(0.12, 0.08, 0.02, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_play_main")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_play_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_play_pressed")
+text = "⚔️ BATTLE"
+
+[node name="ProgressionBtn" type="Button" parent="BottomNav"]
+custom_minimum_size = Vector2(150, 60)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nav_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nav_btn_pressed")
+text = "🏆 PASS"
+
+[node name="InfoModal" type="PanelContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(480, 320)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -160.0
+offset_right = 240.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal_home")
+
+[node name="Margin" type="MarginContainer" parent="InfoModal"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 22
+
+[node name="VBox" type="VBoxContainer" parent="InfoModal/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ModalTitle" type="Label" parent="InfoModal/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "TITLE"
+horizontal_alignment = 1
+
+[node name="ModalBody" type="Label" parent="InfoModal/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.85, 0.9, 0.95, 0.95)
+theme_override_font_sizes/font_size = 14
+text = "Content"
+autowrap_mode = 2
+
+[node name="ModalCloseBtn" type="Button" parent="InfoModal/Margin/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nav_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nav_btn_pressed")
+text = "Close"

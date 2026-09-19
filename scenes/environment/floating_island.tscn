@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://djqelqogi3wft"]
+
+[ext_resource type="Script" path="res://scripts/environment/floating_island.gd" id="1_island"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_island_grass"]
+albedo_color = Color(0.46, 0.76, 0.28, 1)
+roughness = 0.85
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_grass_cap"]
+top_radius = 2.4
+bottom_radius = 2.5
+height = 0.4
+radial_segments = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rock_crag"]
+albedo_color = Color(0.36, 0.4, 0.46, 1)
+roughness = 0.88
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_rock_mid"]
+top_radius = 2.45
+bottom_radius = 1.3
+height = 1.8
+radial_segments = 12
+
+[sub_resource type="PrismMesh" id="PrismMesh_rock_tip"]
+size = Vector3(1.8, 2.4, 1.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_energy_glow"]
+transparency = 1
+albedo_color = Color(0.2, 0.8, 1, 0.4)
+emission_enabled = true
+emission = Color(0.1, 0.85, 1, 1)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="TorusMesh" id="TorusMesh_undercarriage"]
+inner_radius = 1.4
+outer_radius = 1.8
+rings = 16
+ring_segments = 4
+
+[sub_resource type="BoxMesh" id="BoxMesh_debris"]
+size = Vector3(0.45, 0.45, 0.45)
+
+[node name="FloatingIsland" type="Node3D"]
+script = ExtResource("1_island")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="GrassTop" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+mesh = SubResource("CylinderMesh_grass_cap")
+surface_material_override/0 = SubResource("StandardMaterial3D_island_grass")
+
+[node name="RockMid" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8, 0)
+mesh = SubResource("CylinderMesh_rock_mid")
+surface_material_override/0 = SubResource("StandardMaterial3D_rock_crag")
+
+[node name="RockTip" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, -2.4, 0)
+mesh = SubResource("PrismMesh_rock_tip")
+surface_material_override/0 = SubResource("StandardMaterial3D_rock_crag")
+
+[node name="EnergyRing" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.2, 0)
+mesh = SubResource("TorusMesh_undercarriage")
+surface_material_override/0 = SubResource("StandardMaterial3D_energy_glow")
+
+[node name="Debris" type="Node3D" parent="Visuals"]
+
+[node name="Shard1" type="MeshInstance3D" parent="Visuals/Debris"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.5, 0.5, -0.707107, 0.5, 0.5, 0.707107, 3.4, 0.3, 0.8)
+mesh = SubResource("BoxMesh_debris")
+surface_material_override/0 = SubResource("StandardMaterial3D_rock_crag")
+
+[node name="Shard2" type="MeshInstance3D" parent="Visuals/Debris"]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -3.2, -0.5, -1.6)
+mesh = SubResource("BoxMesh_debris")
+surface_material_override/0 = SubResource("StandardMaterial3D_rock_crag")
+
+[node name="Shard3" type="MeshInstance3D" parent="Visuals/Debris"]
+transform = Transform3D(0.5, 0.5, -0.707107, -0.707107, 0.707107, 0, 0.5, 0.5, 0.707107, 1.2, -1.1, -3.5)
+mesh = SubResource("BoxMesh_debris")
+surface_material_override/0 = SubResource("StandardMaterial3D_rock_crag")

@@ -1,0 +1,108 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/character_showcase_3d.gd" id="1_showcase"]
+[ext_resource type="PackedScene" path="res://assets/models/Arcane_Apprentice_Rigged.glb" id="2_model"]
+
+[sub_resource type="Environment" id="Environment_studio"]
+background_mode = 1
+background_color = Color(0.04, 0.06, 0.1, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.22, 0.25, 0.32, 1)
+ambient_light_energy = 0.85
+tonemap_mode = 3
+tonemap_exposure = 1.0
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.2
+glow_hdr_threshold = 1.05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pedestal_stone"]
+albedo_color = Color(0.18, 0.22, 0.28, 1)
+roughness = 0.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pedestal"]
+top_radius = 1.0
+bottom_radius = 1.15
+height = 0.2
+radial_segments = 32
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pedestal_rim"]
+albedo_color = Color(0.35, 0.4, 0.48, 1)
+metallic = 0.7
+roughness = 0.35
+
+[sub_resource type="TorusMesh" id="TorusMesh_ped_rim"]
+inner_radius = 0.95
+outer_radius = 1.05
+rings = 32
+ring_segments = 4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ped_rune"]
+transparency = 1
+albedo_color = Color(0.1, 0.85, 1, 0.8)
+emission_enabled = true
+emission = Color(0.05, 0.9, 1, 1)
+emission_energy_multiplier = 1.8
+
+[sub_resource type="TorusMesh" id="TorusMesh_rune"]
+inner_radius = 0.65
+outer_radius = 0.78
+rings = 32
+ring_segments = 4
+
+[node name="CharacterShowcase3D" type="Node3D"]
+script = ExtResource("1_showcase")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_studio")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.995632, 0.093368, 0, -0.093368, 0.995632, 0, 1.15, 3.5)
+fov = 36.0
+current = true
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 6, 4)
+light_color = Color(1, 0.97, 0.92, 1)
+light_energy = 1.05
+shadow_enabled = true
+directional_shadow_max_distance = 12.0
+
+[node name="RimLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.707107, -0.353553, 0.612372, 0, 0.866025, 0.5, -0.707107, 0.353553, -0.612372, 0, 5, -5)
+light_color = Color(0.35, 0.7, 1, 1)
+light_energy = 0.65
+
+[node name="FillLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 1.2, 1.8)
+light_color = Color(0.8, 0.82, 0.9, 1)
+light_energy = 0.45
+omni_range = 6.0
+
+[node name="Pedestal" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+
+[node name="Base" type="MeshInstance3D" parent="Pedestal"]
+mesh = SubResource("CylinderMesh_pedestal")
+surface_material_override/0 = SubResource("StandardMaterial3D_pedestal_stone")
+
+[node name="MetalRim" type="MeshInstance3D" parent="Pedestal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+mesh = SubResource("TorusMesh_ped_rim")
+surface_material_override/0 = SubResource("StandardMaterial3D_pedestal_rim")
+
+[node name="RunicRing" type="MeshInstance3D" parent="Pedestal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11, 0)
+mesh = SubResource("TorusMesh_rune")
+surface_material_override/0 = SubResource("StandardMaterial3D_ped_rune")
+
+[node name="CharacterPivot" type="Node3D" parent="."]
+
+[node name="Model" parent="CharacterPivot" instance=ExtResource("2_model")]
+transform = Transform3D(-1.25, 0, 0, 0, 1.25, 0, 0, 0, -1.25, 0, 0, 0)
+
+[node name="StaffCrystalLight" type="OmniLight3D" parent="CharacterPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24, 1.38, 0.22)
+light_color = Color(0.1, 0.85, 1, 1)
+light_energy = 0.9
+omni_range = 2.5

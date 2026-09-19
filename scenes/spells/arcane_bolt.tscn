@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://brtomvwvgk5wv"]
+
+[ext_resource type="Script" path="res://scripts/spells/arcane_bolt.gd" id="1_bolt"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hitbox"]
+radius = 0.45
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_core"]
+albedo_color = Color(0.2, 0.95, 1, 1)
+emission_enabled = true
+emission = Color(0, 0.92, 1, 1)
+emission_energy_multiplier = 4.5
+roughness = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_core"]
+radius = 0.28
+height = 0.56
+radial_segments = 12
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aura"]
+transparency = 1
+albedo_color = Color(0.15, 0.55, 1, 0.35)
+emission_enabled = true
+emission = Color(0.2, 0.65, 1, 1)
+emission_energy_multiplier = 2.8
+
+[sub_resource type="SphereMesh" id="SphereMesh_aura"]
+radius = 0.45
+height = 0.9
+radial_segments = 12
+rings = 6
+
+[sub_resource type="PrismMesh" id="PrismMesh_trail"]
+size = Vector3(0.35, 1.2, 0.35)
+
+[node name="ArcaneBolt" type="Area3D"]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("1_bolt")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_hitbox")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="CoreMesh" type="MeshInstance3D" parent="Visuals"]
+mesh = SubResource("SphereMesh_core")
+surface_material_override/0 = SubResource("StandardMaterial3D_core")
+
+[node name="AuraMesh" type="MeshInstance3D" parent="Visuals"]
+mesh = SubResource("SphereMesh_aura")
+surface_material_override/0 = SubResource("StandardMaterial3D_aura")
+
+[node name="TrailMesh" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0.6)
+mesh = SubResource("PrismMesh_trail")
+surface_material_override/0 = SubResource("StandardMaterial3D_aura")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Visuals"]
+light_color = Color(0.2, 0.85, 1, 1)
+light_energy = 2.4
+omni_range = 4.5

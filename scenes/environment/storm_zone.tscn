@@ -1,0 +1,67 @@
+[gd_scene load_steps=8 format=3 uid="uid://c7stormzonering"]
+
+[ext_resource type="Script" path="res://scripts/environment/storm.gd" id="1_storm"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_storm_wall"]
+transparency = 1
+cull_mode = 0
+albedo_color = Color(0.45, 0.25, 0.95, 0.32)
+emission_enabled = true
+emission = Color(0.55, 0.35, 1, 1)
+emission_energy_multiplier = 2.4
+rim_enabled = true
+rim = 0.95
+rim_tint = 0.7
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_storm"]
+top_radius = 1.0
+bottom_radius = 1.0
+height = 18.0
+radial_segments = 64
+rings = 1
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lightning_ring"]
+transparency = 1
+albedo_color = Color(0.2, 0.85, 1, 0.95)
+emission_enabled = true
+emission = Color(0.1, 0.88, 1, 1)
+emission_energy_multiplier = 3.6
+
+[sub_resource type="TorusMesh" id="TorusMesh_ring"]
+inner_radius = 0.97
+outer_radius = 1.03
+rings = 64
+ring_segments = 6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_arc_ring"]
+transparency = 1
+albedo_color = Color(0.7, 0.4, 1, 0.7)
+emission_enabled = true
+emission = Color(0.75, 0.35, 1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="TorusMesh" id="TorusMesh_upper_arc"]
+inner_radius = 0.96
+outer_radius = 1.02
+rings = 48
+ring_segments = 6
+
+[node name="StormZone" type="Node3D"]
+script = ExtResource("1_storm")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(45, 0, 0, 0, 1, 0, 0, 0, 45, 0, 9, 0)
+mesh = SubResource("CylinderMesh_storm")
+surface_material_override/0 = SubResource("StandardMaterial3D_storm_wall")
+
+[node name="GroundRing" type="MeshInstance3D" parent="."]
+transform = Transform3D(45, 0, 0, 0, 1, 0, 0, 0, 45, 0, 0.08, 0)
+mesh = SubResource("TorusMesh_ring")
+surface_material_override/0 = SubResource("StandardMaterial3D_lightning_ring")
+
+[node name="UpperArcRing" type="MeshInstance3D" parent="."]
+transform = Transform3D(45, 0, 0, 0, 1, 0, 0, 0, 45, 0, 3.5, 0)
+mesh = SubResource("TorusMesh_upper_arc")
+surface_material_override/0 = SubResource("StandardMaterial3D_arc_ring")

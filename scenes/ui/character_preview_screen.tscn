@@ -1,0 +1,639 @@
+[gd_scene format=3 uid="uid://dw0j0dq06j1c3"]
+
+[ext_resource type="Script" path="res://scripts/ui/character_preview_screen.gd" id="1_preview"]
+[ext_resource type="PackedScene" path="res://scenes/ui/character_showcase_3d.tscn" id="2_showcase"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.05, 0.07, 0.12, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel_glass"]
+bg_color = Color(0.08, 0.12, 0.2, 0.78)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.45, 0.8, 0.6)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.45)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_back"]
+bg_color = Color(0.12, 0.18, 0.28, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.6, 1, 0.7)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_back_hover"]
+bg_color = Color(0.18, 0.28, 0.45, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.8, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_play"]
+bg_color = Color(0.85, 0.55, 0.08, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.85, 0.35, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0.9, 0.5, 0, 0.35)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_play_hover"]
+bg_color = Color(1, 0.68, 0.15, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 0.6, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(1, 0.6, 0, 0.5)
+shadow_size = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_play_pressed"]
+bg_color = Color(0.7, 0.42, 0.05, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.9, 0.7, 0.2, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_sub"]
+bg_color = Color(0.12, 0.22, 0.38, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.6, 0.95, 0.7)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_sub_hover"]
+bg_color = Color(0.18, 0.32, 0.55, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.85, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_badge"]
+bg_color = Color(0.15, 0.3, 0.55, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.75, 1, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stat_bar_bg"]
+bg_color = Color(0.08, 0.1, 0.16, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stat_bar_fill"]
+bg_color = Color(0.2, 0.75, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
+bg_color = Color(0.06, 0.09, 0.16, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.65, 1, 0.9)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.7)
+shadow_size = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hint"]
+bg_color = Color(0.05, 0.1, 0.18, 0.75)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.55, 0.9, 0.5)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="CharacterPreviewScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_preview")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="CharacterShowcase3D" parent="SubViewportContainer/SubViewport" instance=ExtResource("2_showcase")]
+
+[node name="DragOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = 70.0
+grow_horizontal = 2
+theme_override_constants/separation = 16
+
+[node name="BackButton" type="Button" parent="TopBar"]
+custom_minimum_size = Vector2(120, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_back")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_back_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_back")
+text = "⬅ HOME"
+
+[node name="TitleLabel" type="Label" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.98, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.05, 0.2, 0.5, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "CHARACTER SHOWCASE"
+vertical_alignment = 1
+
+[node name="ResourceIndicator" type="HBoxContainer" parent="TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="GoldBadge" type="PanelContainer" parent="TopBar/ResourceIndicator"]
+custom_minimum_size = Vector2(100, 36)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+
+[node name="Label" type="Label" parent="TopBar/ResourceIndicator/GoldBadge"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.3, 1)
+theme_override_font_sizes/font_size = 15
+text = "🪙 1,450"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GemsBadge" type="PanelContainer" parent="TopBar/ResourceIndicator"]
+custom_minimum_size = Vector2(85, 36)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
+
+[node name="Label" type="Label" parent="TopBar/ResourceIndicator/GemsBadge"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "💎 85"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LeftPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = 88.0
+offset_right = 360.0
+offset_bottom = -28.0
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel_glass")
+
+[node name="Margin" type="MarginContainer" parent="LeftPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 18
+
+[node name="VBox" type="VBoxContainer" parent="LeftPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HeroClassBadge" type="Label" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "✦ MAGE CLASS • APPRENTICE"
+
+[node name="HeroName" type="Label" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.2, 0.6, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 26
+text = "ARCANE APPRENTICE"
+
+[node name="RoleBadge" type="Label" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.8, 0.7, 0.9)
+theme_override_font_sizes/font_size = 13
+text = "Role: Main Player Character"
+
+[node name="HSeparator" type="HSeparator" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="LoreLabel" type="Label" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.84, 0.92, 0.9)
+theme_override_font_sizes/font_size = 13
+text = "\"A young mage learning to master the ancient forces of the fractured realms.\""
+autowrap_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="StatsTitle" type="Label" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "ATTRIBUTES & STATS"
+
+[node name="HPStat" type="VBoxContainer" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="HBox" type="HBoxContainer" parent="LeftPanel/Margin/VBox/HPStat"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="LeftPanel/Margin/VBox/HPStat/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Health Points (HP)"
+
+[node name="Value" type="Label" parent="LeftPanel/Margin/VBox/HPStat/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "150 / 150"
+
+[node name="Bar" type="ProgressBar" parent="LeftPanel/Margin/VBox/HPStat"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_stat_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_stat_bar_fill")
+value = 75.0
+show_percentage = false
+
+[node name="SpeedStat" type="VBoxContainer" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="HBox" type="HBoxContainer" parent="LeftPanel/Margin/VBox/SpeedStat"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="LeftPanel/Margin/VBox/SpeedStat/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Movement Speed"
+
+[node name="Value" type="Label" parent="LeftPanel/Margin/VBox/SpeedStat/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "7.2 m/s"
+
+[node name="Bar" type="ProgressBar" parent="LeftPanel/Margin/VBox/SpeedStat"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_stat_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_stat_bar_fill")
+value = 72.0
+show_percentage = false
+
+[node name="SpellStat" type="VBoxContainer" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="HBox" type="HBoxContainer" parent="LeftPanel/Margin/VBox/SpellStat"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="LeftPanel/Margin/VBox/SpellStat/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Primary Spell: Arcane Bolt"
+
+[node name="Value" type="Label" parent="LeftPanel/Margin/VBox/SpellStat/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.2, 1)
+theme_override_font_sizes/font_size = 12
+text = "35 Dmg"
+
+[node name="Bar" type="ProgressBar" parent="LeftPanel/Margin/VBox/SpellStat"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_stat_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_stat_bar_fill")
+value = 85.0
+show_percentage = false
+
+[node name="HSeparator3" type="HSeparator" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="VisualDetails" type="VBoxContainer" parent="LeftPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="DetailsTitle" type="Label" parent="LeftPanel/Margin/VBox/VisualDetails"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 0.9)
+theme_override_font_sizes/font_size = 12
+text = "EQUIPMENT OUTFIT"
+
+[node name="Detail1" type="Label" parent="LeftPanel/Margin/VBox/VisualDetails"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.82, 0.85)
+theme_override_font_sizes/font_size = 11
+text = "• Navy Mage Tunic & Cream Robe"
+
+[node name="Detail2" type="Label" parent="LeftPanel/Margin/VBox/VisualDetails"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.82, 0.85)
+theme_override_font_sizes/font_size = 11
+text = "• Mahogany Staff with Arcane Crystal"
+
+[node name="Detail3" type="Label" parent="LeftPanel/Margin/VBox/VisualDetails"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.82, 0.85)
+theme_override_font_sizes/font_size = 11
+text = "• Crimson Scarf & Glowing Blue Amulet"
+
+[node name="RightPanel" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = 88.0
+offset_right = -28.0
+offset_bottom = -28.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 2
+
+[node name="AbilitiesBtn" type="Button" parent="RightPanel"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_sub")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_sub_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_sub")
+text = "⚡ VIEW SPELLS"
+
+[node name="PlayButton" type="Button" parent="RightPanel"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.08, 0.02, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_play")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_play_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_play_pressed")
+text = "⚔️ PLAY MATCH"
+
+[node name="CenterControls" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -170.0
+offset_top = -80.0
+offset_right = 170.0
+offset_bottom = -36.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="ResetViewBtn" type="Button" parent="CenterControls"]
+custom_minimum_size = Vector2(150, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_sub")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_sub_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_sub")
+text = "🔄 Reset Front"
+
+[node name="AutoSpinBtn" type="Button" parent="CenterControls"]
+custom_minimum_size = Vector2(150, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_sub")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_sub_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_sub")
+text = "▶️ Auto-Spin"
+
+[node name="HintBadge" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -124.0
+offset_right = 180.0
+offset_bottom = -92.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hint")
+
+[node name="HintLabel" type="Label" parent="HintBadge"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.85, 1, 0.9)
+theme_override_font_sizes/font_size = 13
+text = "↔️ Drag / Swipe horizontally for 360° View"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AbilitiesModal" type="PanelContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(460, 360)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -180.0
+offset_right = 230.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
+
+[node name="Margin" type="MarginContainer" parent="AbilitiesModal"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="AbilitiesModal/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="AbilitiesModal/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "⚡ ARCANE APPRENTICE ABILITIES"
+horizontal_alignment = 1
+
+[node name="Spell1" type="VBoxContainer" parent="AbilitiesModal/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="AbilitiesModal/Margin/VBox/Spell1"]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="AbilitiesModal/Margin/VBox/Spell1/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.35, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "🔮 Primary: Arcane Bolt"
+
+[node name="CD" type="Label" parent="AbilitiesModal/Margin/VBox/Spell1/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.9)
+theme_override_font_sizes/font_size = 13
+text = "Cooldown: 0.55s"
+
+[node name="Desc" type="Label" parent="AbilitiesModal/Margin/VBox/Spell1"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.82, 0.9, 0.9)
+theme_override_font_sizes/font_size = 13
+text = "Launches concentrated magical energy from the crystal staff dealing 35 base magical damage."
+autowrap_mode = 2
+
+[node name="Spell2" type="VBoxContainer" parent="AbilitiesModal/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="AbilitiesModal/Margin/VBox/Spell2"]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="AbilitiesModal/Margin/VBox/Spell2/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.5, 0.95, 0.6, 1)
+theme_override_font_sizes/font_size = 16
+text = "🌀 Passive: Arcane Stride"
+
+[node name="CD" type="Label" parent="AbilitiesModal/Margin/VBox/Spell2/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.9)
+theme_override_font_sizes/font_size = 13
+text = "Passive"
+
+[node name="Desc" type="Label" parent="AbilitiesModal/Margin/VBox/Spell2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.82, 0.9, 0.9)
+theme_override_font_sizes/font_size = 13
+text = "Smooth 360-degree mobile mobility with responsive head turning and quick strafe agility."
+autowrap_mode = 2
+
+[node name="CloseBtn" type="Button" parent="AbilitiesModal/Margin/VBox"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_sub")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_sub_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_sub")
+text = "Close"

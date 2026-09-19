@@ -8,13 +8,35 @@ signal world_changed(world_index: int, world_name: String)
 @export var current_world_index: int = 0
 
 # References to arena nodes
-@onready var world_env: WorldEnvironment = get_parent().find_child("WorldEnvironment", true, false) as WorldEnvironment
-@onready var sun_light: DirectionalLight3D = get_parent().find_child("DirectionalLight3D", true, false) as DirectionalLight3D
-@onready var ground_mesh: MeshInstance3D = get_parent().find_child("Ground", true, false).find_child("MeshInstance3D", true, false) as MeshInstance3D
-@onready var path_mesh: MeshInstance3D = get_parent().find_child("SandPath", true, false) as MeshInstance3D
-@onready var rock_cluster: Node3D = get_parent().find_child("RockCluster", true, false) as Node3D
-@onready var trees_group: Node3D = get_parent().find_child("Trees", true, false) as Node3D
-@onready var gems_group: Node3D = get_parent().find_child("Gems", true, false) as Node3D
+var world_env: WorldEnvironment
+var sun_light: DirectionalLight3D
+var ground_mesh: MeshInstance3D
+var path_mesh: MeshInstance3D
+var rock_cluster: Node3D
+var trees_group: Node3D
+var gems_group: Node3D
+var obstacles_group: Node3D
+
+func _init_references() -> void:
+	var root := get_parent()
+	if not root:
+		return
+	world_env = root.find_child("WorldEnvironment", true, false) as WorldEnvironment
+	sun_light = root.find_child("DirectionalLight3D", true, false) as DirectionalLight3D
+	var ground := root.find_child("IslandPlateau", true, false)
+	if not ground:
+		ground = root.find_child("Ground", true, false)
+	if ground:
+		ground_mesh = ground.find_child("GroundMesh", true, false) as MeshInstance3D
+		if not ground_mesh:
+			ground_mesh = ground.find_child("MeshInstance3D", true, false) as MeshInstance3D
+	path_mesh = root.find_child("Paths", true, false) as MeshInstance3D
+	if not path_mesh:
+		path_mesh = root.find_child("SandPath", true, false) as MeshInstance3D
+	rock_cluster = root.find_child("RockCluster", true, false) as Node3D
+	trees_group = root.find_child("Trees", true, false) as Node3D
+	gems_group = root.find_child("Gems", true, false) as Node3D
+	obstacles_group = root.find_child("Obstacles", true, false) as Node3D
 
 const WORLDS_DATA: Array[Dictionary] = [
 	{
@@ -202,6 +224,7 @@ func prev_world() -> void:
 	apply_world(current_world_index)
 
 func apply_world(index: int) -> void:
+	_init_references()
 	current_world_index = clamp(index, 0, WORLDS_DATA.size() - 1)
 	var data: Dictionary = WORLDS_DATA[current_world_index]
 	
@@ -246,7 +269,8 @@ func apply_world(index: int) -> void:
 				(child as MeshInstance3D).set_surface_override_material(0, rock_mat)
 				
 	# 5. Update Trees / Obstacles
-	if trees_group:
+	var tg := trees_group if trees_group else obstacles_group
+	if tg:
 		var foliage_mat := StandardMaterial3D.new()
 		foliage_mat.albedo_color = data["foliage_color"]
 		if current_world_index == 4 or current_world_index == 8: # Glowing mushrooms / void spires
@@ -257,7 +281,7 @@ func apply_world(index: int) -> void:
 		var trunk_mat := StandardMaterial3D.new()
 		trunk_mat.albedo_color = data["trunk_color"]
 		
-		for tree_node in trees_group.get_children():
+		for tree_node in tg.get_children():
 			var leaves := tree_node.find_child("Leaves", true, false) as MeshInstance3D
 			var trunk := tree_node.find_child("Trunk", true, false) as MeshInstance3D
 			if leaves:

@@ -57,6 +57,14 @@ func _ensure_initialized() -> void:
 	if defeat_panel:
 		restart_button_def = defeat_panel.find_child("RestartButton", true, false) as Button
 
+	var attack_orb := find_child("Orb", true, false) as Control
+	if attack_orb:
+		attack_orb.gui_input.connect(_on_attack_orb_gui_input)
+
+	var menu_btn := find_child("MenuBtn", true, false) as Button
+	if menu_btn:
+		menu_btn.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/ui/home_screen.tscn"))
+
 	# Connect World Manager
 	call_deferred("_connect_world_manager")
 
@@ -148,6 +156,15 @@ func show_defeat(final_rank: int) -> void:
 		var tween := create_tween()
 		defeat_panel.modulate.a = 0.0
 		tween.tween_property(defeat_panel, "modulate:a", 1.0, 0.5)
+
+func _on_attack_orb_gui_input(event: InputEvent) -> void:
+	if (event is InputEventMouseButton and event.pressed) or (event is InputEventScreenTouch and event.pressed):
+		var player := get_tree().current_scene.find_child("Player", true, false)
+		if player:
+			if player.has_method("_cast_spell"):
+				player.call("_cast_spell")
+			elif player.has_method("_cast_fireball"):
+				player.call("_cast_fireball")
 
 func _on_restart_pressed() -> void:
 	get_tree().reload_current_scene()
