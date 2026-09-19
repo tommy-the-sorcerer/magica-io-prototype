@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://un54yk44k4p2"]
+[gd_scene format=3 uid="uid://un54yk44k4p2"]
 
 [ext_resource type="Script" path="res://scripts/vfx/dash_ghost.gd" id="1_script"]
 

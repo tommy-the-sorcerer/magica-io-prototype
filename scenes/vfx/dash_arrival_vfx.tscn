@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://un54arr74k4p2"]
+[gd_scene format=3 uid="uid://bc4rch6ybkqw8"]
 
 [ext_resource type="Script" path="res://scripts/vfx/dash_arrival_vfx.gd" id="1_script"]
 [ext_resource type="AudioStream" path="res://assets/audio/celestial_dash.wav" id="2_audio_wav"]

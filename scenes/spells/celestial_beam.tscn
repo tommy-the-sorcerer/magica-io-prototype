@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://b7celestialbeam"]
+[gd_scene format=3 uid="uid://ukq21gwgsu0c"]
 
 [ext_resource type="Script" path="res://scripts/spells/celestial_beam.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://c8celestialimpact" path="res://scenes/vfx/celestial_impact.tscn" id="2_impact"]

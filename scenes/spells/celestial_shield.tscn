@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://c8celestialshield"]
+[gd_scene format=3 uid="uid://ciw4dxh4g3320"]
 
 [ext_resource type="Script" path="res://scripts/spells/celestial_shield.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://c8celestialgroundrune" path="res://assets/textures/celestial_ground_rune.png" id="2_rune_tex"]

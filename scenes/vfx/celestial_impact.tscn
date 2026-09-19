@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://c8celestialimpact"]
+[gd_scene format=3 uid="uid://cjp54164sboeh"]
 
 [ext_resource type="Script" path="res://scripts/vfx/celestial_impact.gd" id="1_script"]
 
