@@ -1,0 +1,152 @@
+[gd_scene format=3 uid="uid://bnlob1t1n3qxd"]
+
+[ext_resource type="Script" path="res://scripts/maps/chapter_04_magma_core/ignis_molten_overlord.gd" id="1_boss"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ignis"]
+height = 5.0
+radius = 1.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_obsidian"]
+albedo_color = Color(0.1, 0.08, 0.08, 1)
+roughness = 0.7
+
+[sub_resource type="BoxMesh" id="BoxMesh_torso"]
+size = Vector3(2.4, 2.6, 1.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_magma_glow"]
+albedo_color = Color(1.0, 0.35, 0.0, 1)
+emission_enabled = true
+emission = Color(1.0, 0.45, 0.0, 1)
+emission_energy_multiplier = 5.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_core"]
+radius = 0.65
+height = 1.3
+
+[sub_resource type="PrismMesh" id="PrismMesh_magma_horn"]
+size = Vector3(0.5, 1.5, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_head"]
+size = Vector3(1.3, 1.3, 1.3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eyes"]
+albedo_color = Color(1.0, 0.9, 0.1, 1)
+emission_enabled = true
+emission = Color(1.0, 0.85, 0.0, 1)
+emission_energy_multiplier = 6.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_eye"]
+size = Vector3(0.24, 0.14, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_arm"]
+size = Vector3(0.85, 2.4, 0.85)
+
+[sub_resource type="BoxMesh" id="BoxMesh_fist"]
+size = Vector3(1.1, 1.1, 1.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_leg"]
+size = Vector3(0.85, 2.0, 0.85)
+
+[sub_resource type="PrismMesh" id="PrismMesh_back_spike"]
+size = Vector3(0.6, 1.8, 0.5)
+
+[node name="IgnisMoltenOverlord" type="CharacterBody3D"]
+collision_layer = 3
+collision_mask = 7
+script = ExtResource("1_boss")
+max_health = 1050.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+shape = SubResource("CylinderShape3D_ignis")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 1050.0
+
+[node name="Nameplate3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.8, 0)
+billboard = 1
+font_size = 28
+outline_size = 8
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="Torso" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+mesh = SubResource("BoxMesh_torso")
+surface_material_override/0 = SubResource("StandardMaterial3D_obsidian")
+
+[node name="MagmaCore" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.6)
+mesh = SubResource("SphereMesh_core")
+surface_material_override/0 = SubResource("StandardMaterial3D_magma_glow")
+
+[node name="BackSpike" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 0.8, 0.8)
+mesh = SubResource("PrismMesh_back_spike")
+surface_material_override/0 = SubResource("StandardMaterial3D_magma_glow")
+
+[node name="Head" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+
+[node name="HeadMesh" type="MeshInstance3D" parent="Visuals/Head"]
+mesh = SubResource("BoxMesh_head")
+surface_material_override/0 = SubResource("StandardMaterial3D_obsidian")
+
+[node name="LeftHorn" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0, 1, -0.65, 0.9, 0)
+mesh = SubResource("PrismMesh_magma_horn")
+surface_material_override/0 = SubResource("StandardMaterial3D_magma_glow")
+
+[node name="RightHorn" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 0.65, 0.9, 0)
+mesh = SubResource("PrismMesh_magma_horn")
+surface_material_override/0 = SubResource("StandardMaterial3D_magma_glow")
+
+[node name="LeftEye" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.15, -0.65)
+mesh = SubResource("BoxMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_eyes")
+
+[node name="RightEye" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 0.15, -0.65)
+mesh = SubResource("BoxMesh_eye")
+surface_material_override/0 = SubResource("StandardMaterial3D_eyes")
+
+[node name="LeftArmPivot" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 3.3, 0)
+
+[node name="ArmMesh" type="MeshInstance3D" parent="Visuals/LeftArmPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0, 0)
+mesh = SubResource("BoxMesh_arm")
+surface_material_override/0 = SubResource("StandardMaterial3D_obsidian")
+
+[node name="Fist" type="MeshInstance3D" parent="Visuals/LeftArmPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2, 0)
+mesh = SubResource("BoxMesh_fist")
+surface_material_override/0 = SubResource("StandardMaterial3D_magma_glow")
+
+[node name="RightArmPivot" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 3.3, 0)
+
+[node name="ArmMesh" type="MeshInstance3D" parent="Visuals/RightArmPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0, 0)
+mesh = SubResource("BoxMesh_arm")
+surface_material_override/0 = SubResource("StandardMaterial3D_obsidian")
+
+[node name="Fist" type="MeshInstance3D" parent="Visuals/RightArmPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2, 0)
+mesh = SubResource("BoxMesh_fist")
+surface_material_override/0 = SubResource("StandardMaterial3D_magma_glow")
+
+[node name="LeftLeg" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 1.0, 0)
+mesh = SubResource("BoxMesh_leg")
+surface_material_override/0 = SubResource("StandardMaterial3D_obsidian")
+
+[node name="RightLeg" type="MeshInstance3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.0, 0)
+mesh = SubResource("BoxMesh_leg")
+surface_material_override/0 = SubResource("StandardMaterial3D_obsidian")
