@@ -426,7 +426,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_pill")
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.9)
 theme_override_font_sizes/font_size = 13
-text = "🎮 WASD: Move | SPACE: Shoot Fireball | RIGHT-CLICK: Dash | LEFT-CLICK Drag: 360° Orbit | Wheel: Zoom"
+text = "🎮 WASD: Move | Click Power Buttons [LMB/RMB/E/R/Q] | Right-Click Drag: 360° Rotate | Wheel: Zoom"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -622,8 +622,15 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "⚙️ SETTINGS"
 
+[node name="MapSelectBtn" type="Button" parent="EndGameOverlay/PausePanel/VBox"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "🗺️ SELECT MAP"
+
 [node name="MenuBtn" type="Button" parent="EndGameOverlay/PausePanel/VBox"]
 custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "🏠 MAIN MENU"
+

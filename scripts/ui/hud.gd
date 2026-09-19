@@ -68,17 +68,41 @@ func _ensure_initialized() -> void:
 	shield_label = find_child("ShieldLabel", true, false) as Label
 	wind_label = find_child("WindLabel", true, false) as Label
 	
-	# Connect clickable skill icons
+	# Connect all clickable power buttons in the game
+	var orb_btn: Control = find_child("Orb", true, false) as Control
+	if orb_btn:
+		orb_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+		orb_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		orb_btn.pivot_offset = orb_btn.size * 0.5
+		orb_btn.gui_input.connect(_on_primary_attack_gui_input.bind(orb_btn))
+		
+	var skill_ice: Control = find_child("SkillIce", true, false) as Control
+	if skill_ice:
+		skill_ice.mouse_filter = Control.MOUSE_FILTER_STOP
+		skill_ice.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		skill_ice.pivot_offset = skill_ice.size * 0.5
+		skill_ice.gui_input.connect(_on_secondary_attack_gui_input.bind(skill_ice))
+
 	var skill_shield: Control = find_child("SkillShield", true, false) as Control
 	if skill_shield:
-		skill_shield.gui_input.connect(_on_skill_shield_gui_input)
+		skill_shield.mouse_filter = Control.MOUSE_FILTER_STOP
+		skill_shield.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		skill_shield.pivot_offset = skill_shield.size * 0.5
+		skill_shield.gui_input.connect(_on_skill_shield_gui_input.bind(skill_shield))
+		
 	var skill_beam: Control = find_child("SkillBeam", true, false) as Control
 	if skill_beam:
-		skill_beam.gui_input.connect(_on_skill_beam_gui_input)
+		skill_beam.mouse_filter = Control.MOUSE_FILTER_STOP
+		skill_beam.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		skill_beam.pivot_offset = skill_beam.size * 0.5
+		skill_beam.gui_input.connect(_on_skill_beam_gui_input.bind(skill_beam))
+		
 	skill_wind = find_child("SkillWind", true, false) as Control
 	if skill_wind:
+		skill_wind.mouse_filter = Control.MOUSE_FILTER_STOP
+		skill_wind.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		skill_wind.pivot_offset = skill_wind.size * 0.5
-		skill_wind.gui_input.connect(_on_skill_wind_gui_input)
+		skill_wind.gui_input.connect(_on_skill_wind_gui_input.bind(skill_wind))
 	
 	world_title_label = find_child("WorldTitleLabel", true, false) as Label
 	prev_world_btn = find_child("PrevWorldBtn", true, false) as Button
@@ -121,6 +145,7 @@ func _setup_pause_and_settings() -> void:
 		var resume_btn := pause_panel.find_child("ResumeBtn", true, false) as Button
 		var restart_btn := pause_panel.find_child("RestartBtn", true, false) as Button
 		var settings_btn := pause_panel.find_child("SettingsBtn", true, false) as Button
+		var map_select_btn := pause_panel.find_child("MapSelectBtn", true, false) as Button
 		var menu_btn := pause_panel.find_child("MenuBtn", true, false) as Button
 		
 		if resume_btn:
@@ -129,6 +154,11 @@ func _setup_pause_and_settings() -> void:
 			restart_btn.pressed.connect(_on_restart_pressed)
 		if settings_btn:
 			settings_btn.pressed.connect(func(): if settings_panel: settings_panel.visible = true)
+		if map_select_btn:
+			map_select_btn.pressed.connect(func():
+				get_tree().paused = false
+				get_tree().change_scene_to_file("res://scenes/ui/level_select.tscn")
+			)
 		if menu_btn:
 			menu_btn.pressed.connect(_on_menu_pressed)
 			
@@ -250,26 +280,67 @@ func _update_shield_status() -> void:
 				shield_label.text = "⏳ [R]\n%.1fs" % cd
 				shield_label.modulate = Color(0.8, 0.8, 0.8, 0.7)
 
-func _on_skill_shield_gui_input(event: InputEvent) -> void:
+func _get_player() -> Node:
+	if player_node and is_instance_valid(player_node):
+		return player_node
+	var p: Node = get_tree().current_scene.find_child("Player", true, false) if get_tree().current_scene else null
+	if not p:
+		var players := get_tree().get_nodes_in_group("player")
+		if not players.is_empty():
+			p = players[0]
+	if not p:
+		var players2 := get_tree().get_nodes_in_group("players")
+		if not players2.is_empty():
+			p = players2[0]
+	player_node = p as CharacterBody3D
+	return player_node
+
+func _animate_power_btn_press(btn: Control) -> void:
+	if not btn: return
+	var tw := create_tween()
+	tw.tween_property(btn, "scale", Vector2(0.90, 0.90), 0.05)
+	tw.tween_property(btn, "scale", Vector2.ONE, 0.08)
+
+func _on_primary_attack_gui_input(event: InputEvent, btn: Control = null) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if not player_node or not is_instance_valid(player_node):
-			player_node = get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
-		if player_node and is_instance_valid(player_node):
-			if player_node.has_method("_cast_celestial_shield"):
-				player_node.call("_cast_celestial_shield")
-			elif player_node.has_method("_cast_electro_shield"):
-				player_node.call("_cast_electro_shield")
-			elif player_node.has_method("_cast_dragon_aegis"):
-				player_node.call("_cast_dragon_aegis")
+		if btn: _animate_power_btn_press(btn)
+		var p := _get_player()
+		if p:
+			if p.has_method("trigger_primary_attack"):
+				p.call("trigger_primary_attack")
+			elif p.has_method("_request_attack"):
+				p.call("_request_attack", "slash")
+
+func _on_secondary_attack_gui_input(event: InputEvent, btn: Control = null) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if btn: _animate_power_btn_press(btn)
+		var p := _get_player()
+		if p:
+			if p.has_method("trigger_secondary_attack"):
+				p.call("trigger_secondary_attack")
+			elif p.has_method("_request_attack"):
+				p.call("_request_attack", "magma")
+
+func _on_skill_shield_gui_input(event: InputEvent, btn: Control = null) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if btn: _animate_power_btn_press(btn)
+		var p := _get_player()
+		if p:
+			if p.has_method("trigger_shield_defense"):
+				p.call("trigger_shield_defense")
+			elif p.has_method("_cast_dragon_aegis"):
+				p.call("_cast_dragon_aegis")
+			elif p.has_method("_cast_celestial_shield"):
+				p.call("_cast_celestial_shield")
+			elif p.has_method("_cast_electro_shield"):
+				p.call("_cast_electro_shield")
 
 func _update_wind_status() -> void:
 	if not wind_label:
 		return
-	if not player_node or not is_instance_valid(player_node):
-		player_node = get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
-	
-	if player_node and is_instance_valid(player_node):
-		var cd_val = player_node.get("_dash_cd_timer")
+	var p := _get_player()
+	if p and is_instance_valid(p):
+		var cd_val = p.get("_dash_cd_timer")
 		if cd_val != null:
 			var cd: float = float(cd_val)
 			if cd <= 0.0:
@@ -286,22 +357,27 @@ func _update_wind_status() -> void:
 				wind_label.text = "⏳ [Q]\n%.1fs" % cd
 				wind_label.modulate = Color(0.75, 0.75, 0.75, 0.65)
 
-func _on_skill_wind_gui_input(event: InputEvent) -> void:
+func _on_skill_wind_gui_input(event: InputEvent, btn: Control = null) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if not player_node or not is_instance_valid(player_node):
-			player_node = get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
-		if player_node and is_instance_valid(player_node) and player_node.has_method("_perform_dash"):
-			player_node.call("_perform_dash")
+		if btn: _animate_power_btn_press(btn)
+		var p := _get_player()
+		if p:
+			if p.has_method("trigger_dash"):
+				p.call("trigger_dash")
+			elif p.has_method("_perform_dash"):
+				p.call("_perform_dash")
 
-func _on_skill_beam_gui_input(event: InputEvent) -> void:
+func _on_skill_beam_gui_input(event: InputEvent, btn: Control = null) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if not player_node or not is_instance_valid(player_node):
-			player_node = get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
-		if player_node and is_instance_valid(player_node):
-			if player_node.has_method("_cast_celestial_beam"):
-				player_node.call("_cast_celestial_beam")
-			elif player_node.has_method("_cast_dragon_breath"):
-				player_node.call("_cast_dragon_breath")
+		if btn: _animate_power_btn_press(btn)
+		var p := _get_player()
+		if p:
+			if p.has_method("trigger_beam_attack"):
+				p.call("trigger_beam_attack")
+			elif p.has_method("_cast_dragon_breath"):
+				p.call("_cast_dragon_breath")
+			elif p.has_method("_cast_celestial_beam"):
+				p.call("_cast_celestial_beam")
 
 func _on_world_changed(_idx: int, wname: String) -> void:
 	if world_title_label:

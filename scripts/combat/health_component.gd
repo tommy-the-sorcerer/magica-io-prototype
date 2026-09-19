@@ -61,6 +61,11 @@ func set_max_health(new_max: float, reset_current: bool = false) -> void:
 		current_health = minf(current_health, max_health)
 	health_changed.emit(current_health, max_health)
 
+## Checks whether the entity is dead.
+var is_dead: bool:
+	get:
+		return current_health <= 0.0
+
 ## Checks whether the entity is still alive.
 func is_alive() -> bool:
 	return current_health > 0.0

@@ -138,6 +138,9 @@ func _on_bot_died(killer: Node, bot: BotAI) -> void:
 	alive_combatants = maxi(1, alive_combatants - 1)
 	if hud:
 		hud.update_alive_count(alive_combatants, total_combatants)
+		if killer and is_instance_valid(killer):
+			if killer.is_in_group("player") or killer.is_in_group("players") or killer == player_node or killer.name == "Player":
+				hud.add_kill()
 		
 	if alive_combatants == 1:
 		# Player is the last one standing!

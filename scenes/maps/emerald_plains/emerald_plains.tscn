@@ -111,7 +111,7 @@ size = Vector2(24, 24)
 
 [node name="EmeraldPlains" type="Node3D" unique_id=445623397]
 script = ExtResource("1_ctrl")
-is_boss_level = true
+is_boss_level = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1289754971]
 environment = SubResource("Environment_emerald_god")

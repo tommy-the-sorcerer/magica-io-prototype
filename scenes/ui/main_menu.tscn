@@ -4,11 +4,132 @@
 [ext_resource type="Texture2D" uid="uid://dvw8psh4wpwdx" path="res://assets/kenney/fantasy_ui_borders/PNG/Default/Panel/panel-000.png" id="2_panel"]
 [ext_resource type="Texture2D" uid="uid://dri4anw7dec68" path="res://assets/kenney/fantasy_ui_borders/PNG/Default/Border/panel-border-000.png" id="3_border"]
 [ext_resource type="Texture2D" uid="uid://c4ctai1uw8a8k" path="res://assets/kenney/fantasy_ui_borders/PNG/Default/Divider/divider-000.png" id="4_divider"]
+[ext_resource type="PackedScene" path="res://assets/castle_kit/wall-doorway.glb" id="5_doorway"]
+[ext_resource type="PackedScene" path="res://assets/castle_kit/wall-pillar.glb" id="6_pillar"]
+[ext_resource type="PackedScene" path="res://assets/castle_kit/metal-gate.glb" id="7_gate"]
+[ext_resource type="PackedScene" path="res://assets/castle_kit/flag-banner-long.glb" id="8_banner"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+size = Vector3(18, 0.2, 14)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
+albedo_color = Color(0.12, 0.1, 0.14, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_backwall"]
+size = Vector3(18, 6.5, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wall"]
+albedo_color = Color(0.13, 0.11, 0.15, 1)
+roughness = 0.85
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_brazier_bowl"]
+top_radius = 0.45
+bottom_radius = 0.22
+height = 0.45
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_brazier_metal"]
+albedo_color = Color(0.14, 0.12, 0.15, 1)
+metallic = 0.85
+roughness = 0.4
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_brazier_embers"]
+top_radius = 0.42
+bottom_radius = 0.42
+height = 0.08
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_embers"]
+albedo_color = Color(1, 0.4, 0.05, 1)
+emission_enabled = true
+emission = Color(1, 0.35, 0.05, 1)
+emission_energy_multiplier = 3.5
+
+[sub_resource type="QuadMesh" id="QuadMesh_flame"]
+size = Vector2(0.9, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flame"]
+transparency = 1
+blend_mode = 1
+albedo_color = Color(1, 0.65, 0.2, 0.9)
+emission_enabled = true
+emission = Color(1, 0.55, 0.1, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_rug"]
+top_radius = 1.8
+bottom_radius = 1.8
+height = 0.02
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rug"]
+albedo_color = Color(0.18, 0.08, 0.26, 1)
+emission_enabled = true
+emission = Color(0.55, 0.18, 0.85, 1)
+emission_energy_multiplier = 0.6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_banner_panel"]
+bg_color = Color(0.08, 0.04, 0.14, 0.85)
+border_width_right = 3
+border_color = Color(0.65, 0.28, 0.92, 0.7)
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+shadow_color = Color(0.35, 0.1, 0.55, 0.3)
+shadow_size = 14
+content_margin_left = 22.0
+content_margin_top = 26.0
+content_margin_right = 22.0
+content_margin_bottom = 26.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menu_sub_btn"]
+bg_color = Color(0.16, 0.1, 0.24, 0.85)
+border_width_left = 2
+border_color = Color(0.6, 0.35, 0.85, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hero_select_normal"]
+bg_color = Color(0.11, 0.07, 0.16, 0.88)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.48, 0.32, 0.72, 0.75)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hero_select_active"]
+bg_color = Color(0.24, 0.14, 0.36, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1.0, 0.82, 0.3, 1.0)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0.9, 0.6, 0.1, 0.5)
+shadow_size = 10
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
-sky_top_color = Color(0.18, 0.08, 0.28, 1)
-sky_horizon_color = Color(0.35, 0.15, 0.45, 1)
-ground_bottom_color = Color(0.08, 0.05, 0.12, 1)
+sky_top_color = Color(0.08, 0.05, 0.14, 1)
+sky_horizon_color = Color(0.18, 0.1, 0.25, 1)
+ground_bottom_color = Color(0.04, 0.03, 0.06, 1)
 
 [sub_resource type="Sky" id="Sky_1"]
 sky_material = SubResource("ProceduralSkyMaterial_1")
@@ -16,11 +137,11 @@ sky_material = SubResource("ProceduralSkyMaterial_1")
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 2
 sky = SubResource("Sky_1")
-ambient_light_color = Color(0.5, 0.35, 0.65, 1)
-ambient_light_energy = 1.2
+ambient_light_color = Color(0.25, 0.18, 0.32, 1)
+ambient_light_energy = 0.95
 glow_enabled = true
-glow_intensity = 0.8
-glow_bloom = 0.25
+glow_intensity = 0.9
+glow_bloom = 0.3
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_stone"]
 albedo_color = Color(0.15, 0.12, 0.18, 1)
@@ -300,173 +421,220 @@ render_target_update_mode = 4
 environment = SubResource("Environment_1")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
-transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 2, 4, 3)
-light_color = Color(1, 0.9, 0.8, 1)
-light_energy = 1.6
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 1.5, 4.5, 2.5)
+light_color = Color(0.85, 0.75, 0.95, 1)
+light_energy = 0.6
 shadow_enabled = true
 
 [node name="PurpleRimLight" type="OmniLight3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1.2, -1.0)
-light_color = Color(0.7, 0.25, 0.95, 1)
-light_energy = 3.0
-omni_range = 6.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 1.8, -0.6)
+light_color = Color(0.72, 0.25, 0.95, 1)
+light_energy = 3.2
+omni_range = 7.0
+
+[node name="BrazierLight" type="OmniLight3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, 0.95, -0.5)
+light_color = Color(1, 0.58, 0.18, 1)
+light_energy = 2.8
+omni_range = 8.5
+shadow_enabled = true
 
 [node name="GoldFrontLight" type="OmniLight3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0.8, 1.5)
-light_color = Color(1, 0.7, 0.2, 1)
-light_energy = 2.2
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 1.2, 2.0)
+light_color = Color(1, 0.85, 0.55, 1)
+light_energy = 1.2
 omni_range = 5.0
 
 [node name="ShowcaseCamera" type="Camera3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
-transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 1.45, 4.2)
+transform = Transform3D(1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, 0, 1.25, 3.8)
 current = true
 fov = 38.0
 
-[node name="HeroPlatform" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.08, 0)
+[node name="DungeonArchitecture" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
 
-[node name="StoneBase" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
-mesh = SubResource("CylinderMesh_pedestal")
-surface_material_override/0 = SubResource("StandardMaterial3D_stone")
+[node name="StoneFloor" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/DungeonArchitecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+mesh = SubResource("BoxMesh_floor")
+surface_material_override/0 = SubResource("StandardMaterial3D_floor")
+
+[node name="BackWall" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/DungeonArchitecture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, -3.2)
+mesh = SubResource("BoxMesh_backwall")
+surface_material_override/0 = SubResource("StandardMaterial3D_wall")
+
+[node name="DoorwayLeft" parent="SubViewportContainer/SubViewport/ShowcaseWorld/DungeonArchitecture" instance=ExtResource("5_doorway")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, -1.8, 0, -2.9)
+
+[node name="DoorwayRight" parent="SubViewportContainer/SubViewport/ShowcaseWorld/DungeonArchitecture" instance=ExtResource("5_doorway")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 1.8, 0, -2.9)
+
+[node name="CenterPillar" parent="SubViewportContainer/SubViewport/ShowcaseWorld/DungeonArchitecture" instance=ExtResource("6_pillar")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, -2.9)
+
+[node name="IronGate" parent="SubViewportContainer/SubViewport/ShowcaseWorld/DungeonArchitecture" instance=ExtResource("7_gate")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, -1.8, 0, -3.05)
+
+[node name="Brazier" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, 0, -0.5)
+
+[node name="BrazierStand" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/Brazier"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+mesh = SubResource("CylinderMesh_brazier_bowl")
+surface_material_override/0 = SubResource("StandardMaterial3D_brazier_metal")
+
+[node name="BrazierEmbers" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/Brazier"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.52, 0)
+mesh = SubResource("CylinderMesh_brazier_embers")
+surface_material_override/0 = SubResource("StandardMaterial3D_embers")
+
+[node name="BrazierFlames" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/Brazier"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+mesh = SubResource("QuadMesh_flame")
+surface_material_override/0 = SubResource("StandardMaterial3D_flame")
+
+[node name="BannerHanging" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, -2.5, 1.2, -0.8)
+
+[node name="BannerModel" parent="SubViewportContainer/SubViewport/ShowcaseWorld/BannerHanging" instance=ExtResource("8_banner")]
+
+[node name="HeroPlatform" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="RunicCarpet" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
+mesh = SubResource("CylinderMesh_rug")
+surface_material_override/0 = SubResource("StandardMaterial3D_rug")
 
 [node name="RuneRing" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
 mesh = SubResource("CylinderMesh_rune")
 surface_material_override/0 = SubResource("StandardMaterial3D_rune")
 
-[node name="GoldRing" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
-mesh = SubResource("CylinderMesh_gold_ring")
-surface_material_override/0 = SubResource("StandardMaterial3D_gold_ring")
-
 [node name="HeroAnchor" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
 
-[node name="BackgroundScenery" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld"]
+[node name="CompanionLeft" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -0.95, 0.02, -0.3)
 
-[node name="FloatingIsland1" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/BackgroundScenery"]
-transform = Transform3D(1, 0, 0, 0, -0.866025, 0.5, 0, -0.5, -0.866025, -4.5, 0.5, -5.5)
-mesh = SubResource("PrismMesh_island")
-surface_material_override/0 = SubResource("StandardMaterial3D_stone")
+[node name="CompanionRight" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
+transform = Transform3D(0.927184, 0, -0.374607, 0, 1, 0, 0.374607, 0, 0.927184, 0.95, 0.02, 0.1)
 
-[node name="FloatingIsland2" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/BackgroundScenery"]
-transform = Transform3D(1, 0, 0, 0, -0.866025, 0.5, 0, -0.5, -0.866025, 4.8, 1.2, -6.0)
-mesh = SubResource("PrismMesh_island")
-surface_material_override/0 = SubResource("StandardMaterial3D_stone")
+[node name="CompanionFront" type="Node3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform"]
+transform = Transform3D(0.939693, 0, -0.34202, 0, 1, 0, 0.34202, 0, 0.939693, 1.25, 0.02, 0.55)
 
-[node name="CastleTower" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/ShowcaseWorld/BackgroundScenery"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 1.8, -7.5)
-mesh = SubResource("BoxMesh_castle")
-surface_material_override/0 = SubResource("StandardMaterial3D_stone")
-
-[node name="TopLeftProfile" type="PanelContainer" parent="."]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 20.0
-offset_right = 320.0
-offset_bottom = 90.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_gold_card")
-
-[node name="HBox" type="HBoxContainer" parent="TopLeftProfile"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="AvatarBox" type="ColorRect" parent="TopLeftProfile/HBox"]
-custom_minimum_size = Vector2(50, 50)
-layout_mode = 2
-color = Color(0.28, 0.18, 0.42, 1)
-
-[node name="Icon" type="Label" parent="TopLeftProfile/HBox/AvatarBox"]
+[node name="MenuBanner" type="PanelContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_left_right = 0.5
-anchor_top_bottom = 0.5
-offset_left = -15.0
-offset_top = -18.0
-offset_right = 15.0
-offset_bottom = 18.0
-grow_horizontal = 2
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 45.0
+offset_right = 330.0
+offset_bottom = -45.0
 grow_vertical = 2
-theme_override_font_sizes/font_size = 24
-text = "🧙‍♂️"
-horizontal_alignment = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_banner_panel")
 
-[node name="VBox" type="VBoxContainer" parent="TopLeftProfile/HBox"]
+[node name="VBox" type="VBoxContainer" parent="MenuBanner"]
 layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
+theme_override_constants/separation = 14
 
-[node name="NameHBox" type="HBoxContainer" parent="TopLeftProfile/HBox/VBox"]
+[node name="BannerHeader" type="Label" parent="MenuBanner/VBox"]
 layout_mode = 2
-
-[node name="PlayerName" type="Label" parent="TopLeftProfile/HBox/VBox/NameHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "Player#5139"
-
-[node name="LvlBadge" type="Label" parent="TopLeftProfile/HBox/VBox/NameHBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.78, 0.25, 1)
+theme_override_colors/font_color = Color(0.95, 0.8, 0.35, 1)
+theme_override_colors/font_shadow_color = Color(0.3, 0.05, 0.4, 0.9)
+theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 14
-text = "LVL 2"
-
-[node name="XPBar" type="ProgressBar" parent="TopLeftProfile/HBox/VBox"]
-custom_minimum_size = Vector2(0, 12)
-layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_xp_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_xp_fill")
-value = 40.0
-show_percentage = false
-
-[node name="XPText" type="Label" parent="TopLeftProfile/HBox/VBox/XPBar"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_left_right = 0.5
-anchor_top_bottom = 0.5
-offset_left = -40.0
-offset_top = -8.0
-offset_right = 40.0
-offset_bottom = 8.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 9
-text = "120 / 300 XP"
+text = "⚜️   M A G I C A . I O   ⚜️"
 horizontal_alignment = 1
 
-[node name="TopCenterLogo" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -160.0
-offset_top = 16.0
-offset_right = 160.0
-offset_bottom = 96.0
-grow_horizontal = 2
-alignment = 1
-
-[node name="CrownIcon" type="Label" parent="TopCenterLogo"]
+[node name="SpacerTop" type="Control" parent="MenuBanner/VBox"]
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.82, 0.2, 1)
-theme_override_font_sizes/font_size = 22
-text = "👑"
-horizontal_alignment = 1
 
-[node name="Title" type="Label" parent="TopCenterLogo"]
+[node name="PlayBtn" type="Button" parent="MenuBanner/VBox"]
+custom_minimum_size = Vector2(0, 68)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.98, 0.85, 0.35, 1)
-theme_override_colors/font_shadow_color = Color(0.2, 0.05, 0.3, 0.8)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 32
-text = "LUDUSFORGE"
-horizontal_alignment = 1
+theme_override_colors/font_color = Color(1, 0.86, 0.42, 1)
+theme_override_colors/font_hover_color = Color(1, 0.98, 0.72, 1)
+theme_override_colors/font_pressed_color = Color(0.9, 0.72, 0.25, 1)
+theme_override_colors/font_outline_color = Color(0.12, 0.04, 0.04, 0.95)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 46
+text = "Play"
+flat = true
+alignment = 0
+
+[node name="OptionsBtn" type="Button" parent="MenuBanner/VBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.88, 0.95, 1)
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.55, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.05, 0.15, 0.9)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "Options"
+flat = true
+alignment = 0
+
+[node name="CreditsBtn" type="Button" parent="MenuBanner/VBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.88, 0.95, 1)
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.55, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.05, 0.15, 0.9)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "Credits"
+flat = true
+alignment = 0
+
+[node name="QuitBtn" type="Button" parent="MenuBanner/VBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.88, 0.95, 1)
+theme_override_colors/font_hover_color = Color(1, 0.45, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.05, 0.15, 0.9)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "Quit"
+flat = true
+alignment = 0
+
+[node name="Divider" type="HSeparator" parent="MenuBanner/VBox"]
+layout_mode = 2
+
+[node name="FeaturesLabel" type="Label" parent="MenuBanner/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.7, 0.85, 1)
+theme_override_font_sizes/font_size = 11
+text = "CHAMPIONS & REALMS"
+
+[node name="HeroesBtn" type="Button" parent="MenuBanner/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_sub_btn")
+theme_override_font_sizes/font_size = 13
+text = "👑  HEROES ROSTER"
+
+[node name="MapSelectBtn" type="Button" parent="MenuBanner/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_sub_btn")
+theme_override_font_sizes/font_size = 13
+text = "🗺️  MAP REALMS (1 - 10)"
+
+[node name="ShopBtn" type="Button" parent="MenuBanner/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_sub_btn")
+theme_override_font_sizes/font_size = 13
+text = "💎  FANTASY TREASURY"
+
+[node name="MissionsBtn" type="Button" parent="MenuBanner/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_sub_btn")
+theme_override_font_sizes/font_size = 13
+text = "📜  QUESTS & REWARDS"
 
 [node name="TopRightCurrencies" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -474,8 +642,8 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -380.0
-offset_top = 20.0
-offset_right = -24.0
+offset_top = 24.0
+offset_right = -28.0
 offset_bottom = 68.0
 grow_horizontal = 0
 theme_override_constants/separation = 12
@@ -534,556 +702,10 @@ text = " + "
 flat = true
 
 [node name="SettingsBtn" type="Button" parent="TopRightCurrencies"]
-custom_minimum_size = Vector2(48, 48)
+custom_minimum_size = Vector2(44, 44)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
 text = "⚙️"
-
-[node name="LeftNav" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = 110.0
-offset_right = 160.0
-offset_bottom = -240.0
-grow_vertical = 2
-theme_override_constants/separation = 16
-
-[node name="SpellbookBtn" type="Button" parent="LeftNav"]
-custom_minimum_size = Vector2(136, 76)
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
-alignment = 1
-
-[node name="VBox" type="VBoxContainer" parent="LeftNav/SpellbookBtn"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="LeftNav/SpellbookBtn/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "📖"
-horizontal_alignment = 1
-
-[node name="Label" type="Label" parent="LeftNav/SpellbookBtn/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.98, 1)
-theme_override_font_sizes/font_size = 12
-text = "SPELLBOOK"
-horizontal_alignment = 1
-
-[node name="RewardsBtn" type="Button" parent="LeftNav"]
-custom_minimum_size = Vector2(136, 76)
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
-alignment = 1
-
-[node name="VBox" type="VBoxContainer" parent="LeftNav/RewardsBtn"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="LeftNav/RewardsBtn/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "🎁"
-horizontal_alignment = 1
-
-[node name="Label" type="Label" parent="LeftNav/RewardsBtn/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.98, 1)
-theme_override_font_sizes/font_size = 12
-text = "REWARDS"
-horizontal_alignment = 1
-
-[node name="MissionsBtn" type="Button" parent="LeftNav"]
-custom_minimum_size = Vector2(136, 76)
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
-alignment = 1
-
-[node name="VBox" type="VBoxContainer" parent="LeftNav/MissionsBtn"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="LeftNav/MissionsBtn/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "📜"
-horizontal_alignment = 1
-
-[node name="Label" type="Label" parent="LeftNav/MissionsBtn/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.98, 1)
-theme_override_font_sizes/font_size = 12
-text = "MISSIONS"
-horizontal_alignment = 1
-
-[node name="Badge" type="Panel" parent="LeftNav/MissionsBtn"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -16.0
-offset_top = 4.0
-offset_right = -4.0
-offset_bottom = 16.0
-grow_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
-
-[node name="Exclamation" type="Label" parent="LeftNav/MissionsBtn/Badge"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_left_right = 0.5
-anchor_top_bottom = 0.5
-offset_left = -4.0
-offset_top = -8.0
-offset_right = 4.0
-offset_bottom = 8.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 10
-text = "!"
-horizontal_alignment = 1
-
-[node name="LowerLeftNav" type="HBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = -140.0
-offset_right = 380.0
-offset_bottom = -24.0
-grow_vertical = 0
-theme_override_constants/separation = 14
-
-[node name="HeroesPortalBtn" type="Button" parent="LowerLeftNav"]
-custom_minimum_size = Vector2(110, 110)
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_portal_btn")
-
-[node name="VBox" type="VBoxContainer" parent="LowerLeftNav/HeroesPortalBtn"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="LowerLeftNav/HeroesPortalBtn/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "🌀"
-horizontal_alignment = 1
-
-[node name="Label" type="Label" parent="LowerLeftNav/HeroesPortalBtn/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.85, 1, 1)
-theme_override_font_sizes/font_size = 11
-text = "HEROES\nPORTAL"
-horizontal_alignment = 1
-
-[node name="HeroesBtn" type="Button" parent="LowerLeftNav"]
-custom_minimum_size = Vector2(100, 110)
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
-
-[node name="VBox" type="VBoxContainer" parent="LowerLeftNav/HeroesBtn"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="LowerLeftNav/HeroesBtn/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "🛡️"
-horizontal_alignment = 1
-
-[node name="Label" type="Label" parent="LowerLeftNav/HeroesBtn/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.98, 1)
-theme_override_font_sizes/font_size = 12
-text = "HEROES"
-horizontal_alignment = 1
-
-[node name="ShopBtn" type="Button" parent="LowerLeftNav"]
-custom_minimum_size = Vector2(100, 110)
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_nav_btn")
-
-[node name="VBox" type="VBoxContainer" parent="LowerLeftNav/ShopBtn"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="LowerLeftNav/ShopBtn/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "📦"
-horizontal_alignment = 1
-
-[node name="Label" type="Label" parent="LowerLeftNav/ShopBtn/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.85, 0.98, 1)
-theme_override_font_sizes/font_size = 12
-text = "SHOP"
-horizontal_alignment = 1
-
-[node name="Badge" type="Panel" parent="LowerLeftNav/ShopBtn"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -16.0
-offset_top = 4.0
-offset_right = -4.0
-offset_bottom = 16.0
-grow_horizontal = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_badge")
-
-[node name="CenterOverlay" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_left_right = 0.5
-anchor_top_bottom = 0.5
-offset_left = -220.0
-offset_top = 135.0
-offset_right = 220.0
-offset_bottom = 225.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 6
-alignment = 1
-
-[node name="HeroSelectorBar" type="HBoxContainer" parent="CenterOverlay"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="HeroPrevBtn" type="Button" parent="CenterOverlay/HeroSelectorBar"]
-custom_minimum_size = Vector2(38, 38)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
-theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_arrow_btn")
-text = "◀"
-
-[node name="HeroBadge" type="Button" parent="CenterOverlay/HeroSelectorBar"]
-custom_minimum_size = Vector2(260, 38)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 13
-theme_override_styles/normal = SubResource("StyleBoxFlat_hero_badge")
-text = "🐉 Dragonbound (Pyromancer)"
-
-[node name="HeroNextBtn" type="Button" parent="CenterOverlay/HeroSelectorBar"]
-custom_minimum_size = Vector2(38, 38)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
-theme_override_font_sizes/font_size = 18
-theme_override_styles/normal = SubResource("StyleBoxFlat_arrow_btn")
-text = "▶"
-
-[node name="DragHint" type="HBoxContainer" parent="CenterOverlay"]
-layout_mode = 2
-alignment = 1
-
-[node name="Icon" type="Label" parent="CenterOverlay/DragHint"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.85, 1, 0.8)
-theme_override_font_sizes/font_size = 13
-text = "🔄"
-
-[node name="Text" type="Label" parent="CenterOverlay/DragHint"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.85, 1, 0.8)
-theme_override_font_sizes/font_size = 12
-text = "DRAG TO ROTATE 360°"
-
-[node name="RightPromotions" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -340.0
-offset_top = -240.0
-offset_right = -24.0
-offset_bottom = 120.0
-grow_horizontal = 0
-grow_vertical = 2
-theme_override_constants/separation = 14
-
-[node name="CommunityCard" type="PanelContainer" parent="RightPromotions"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_card")
-
-[node name="HBox" type="HBoxContainer" parent="RightPromotions/CommunityCard"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="VBox" type="VBoxContainer" parent="RightPromotions/CommunityCard/HBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Title" type="Label" parent="RightPromotions/CommunityCard/HBox/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.75, 0.95, 1)
-theme_override_font_sizes/font_size = 11
-text = "Follow us!"
-
-[node name="IconsHBox" type="HBoxContainer" parent="RightPromotions/CommunityCard/HBox/VBox"]
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="Discord" type="Label" parent="RightPromotions/CommunityCard/HBox/VBox/IconsHBox"]
-layout_mode = 2
-text = "💬"
-
-[node name="Insta" type="Label" parent="RightPromotions/CommunityCard/HBox/VBox/IconsHBox"]
-layout_mode = 2
-text = "📷"
-
-[node name="YT" type="Label" parent="RightPromotions/CommunityCard/HBox/VBox/IconsHBox"]
-layout_mode = 2
-text = "▶️"
-
-[node name="X" type="Label" parent="RightPromotions/CommunityCard/HBox/VBox/IconsHBox"]
-layout_mode = 2
-text = "✖️"
-
-[node name="JoinBtn" type="Button" parent="RightPromotions/CommunityCard/HBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 11
-text = "JOIN OUR\nCOMMUNITY"
-
-[node name="WatchAdsCard" type="PanelContainer" parent="RightPromotions"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ad_btn")
-
-[node name="HBox" type="HBoxContainer" parent="RightPromotions/WatchAdsCard"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="Icon" type="Label" parent="RightPromotions/WatchAdsCard/HBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "📺"
-
-[node name="VBox" type="VBoxContainer" parent="RightPromotions/WatchAdsCard/HBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
-
-[node name="Title" type="Label" parent="RightPromotions/WatchAdsCard/HBox/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
-text = "WATCH ADS"
-
-[node name="Sub" type="Label" parent="RightPromotions/WatchAdsCard/HBox/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 11
-text = "Get 400 Coins"
-
-[node name="RewardBox" type="HBoxContainer" parent="RightPromotions/WatchAdsCard/HBox"]
-layout_mode = 2
-alignment = 1
-
-[node name="Coin" type="Label" parent="RightPromotions/WatchAdsCard/HBox/RewardBox"]
-layout_mode = 2
-text = "🪙"
-
-[node name="Amt" type="Label" parent="RightPromotions/WatchAdsCard/HBox/RewardBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
-theme_override_font_sizes/font_size = 16
-text = "400"
-
-[node name="SpecialOfferCard" type="PanelContainer" parent="RightPromotions"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_card")
-
-[node name="VBox" type="VBoxContainer" parent="RightPromotions/SpecialOfferCard"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="HeaderHBox" type="HBoxContainer" parent="RightPromotions/SpecialOfferCard/VBox"]
-layout_mode = 2
-
-[node name="LeftBtn" type="Button" parent="RightPromotions/SpecialOfferCard/VBox/HeaderHBox"]
-layout_mode = 2
-text = "◀"
-flat = true
-
-[node name="Title" type="Label" parent="RightPromotions/SpecialOfferCard/VBox/HeaderHBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.95, 0.8, 0.3, 1)
-theme_override_font_sizes/font_size = 13
-text = "SPECIAL OFFER"
-horizontal_alignment = 1
-
-[node name="RightBtn" type="Button" parent="RightPromotions/SpecialOfferCard/VBox/HeaderHBox"]
-layout_mode = 2
-text = "▶"
-flat = true
-
-[node name="BodyHBox" type="HBoxContainer" parent="RightPromotions/SpecialOfferCard/VBox"]
-layout_mode = 2
-alignment = 1
-
-[node name="CoinBadge" type="Label" parent="RightPromotions/SpecialOfferCard/VBox/BodyHBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
-theme_override_font_sizes/font_size = 13
-text = "🪙 +50,000"
-
-[node name="PriceBtn" type="Button" parent="RightPromotions/SpecialOfferCard/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
-text = "₹150.00"
-
-[node name="BottomCenterEquipment" type="HBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -150.0
-offset_top = -120.0
-offset_right = 60.0
-offset_bottom = -40.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_constants/separation = 16
-alignment = 1
-
-[node name="WeaponSlot" type="PanelContainer" parent="BottomCenterEquipment"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_equip_slot")
-
-[node name="Icon" type="Label" parent="BottomCenterEquipment/WeaponSlot"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "⚔️"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Badge" type="Label" parent="BottomCenterEquipment/WeaponSlot"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 8
-theme_override_colors/font_color = Color(0.9, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 11
-text = "1"
-
-[node name="ArmorSlot" type="PanelContainer" parent="BottomCenterEquipment"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_equip_slot")
-
-[node name="Icon" type="Label" parent="BottomCenterEquipment/ArmorSlot"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "🛡️"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Badge" type="Label" parent="BottomCenterEquipment/ArmorSlot"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 8
-theme_override_colors/font_color = Color(0.9, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 11
-text = "1"
-
-[node name="RingSlot" type="PanelContainer" parent="BottomCenterEquipment"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_equip_slot")
-
-[node name="Icon" type="Label" parent="BottomCenterEquipment/RingSlot"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "💍"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="BottomRightArea" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -320.0
-offset_top = -155.0
-offset_right = -24.0
-offset_bottom = -24.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_constants/separation = 8
-
-[node name="MapSelectBtn" type="Button" parent="BottomRightArea"]
-custom_minimum_size = Vector2(0, 42)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.9, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.7)
-theme_override_font_sizes/font_size = 13
-theme_override_styles/normal = SubResource("StyleBoxFlat_map_btn")
-text = "🗺️ REALMS & MAPS (CH 1-10)"
-
-[node name="PlayButton" type="Button" parent="BottomRightArea"]
-custom_minimum_size = Vector2(0, 78)
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_play_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_play_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_play_pressed")
-text = "⚔️ PLAY 100-LVL MAP"
 
 [node name="ModalOverlay" type="Panel" parent="."]
 visible = false
@@ -1198,7 +820,67 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_modal_action")
-text = "CONFIRM"
+[node name="HeroRosterSelector" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -380.0
+offset_top = -90.0
+offset_right = 380.0
+offset_bottom = -22.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_banner_panel")
+
+[node name="VBox" type="VBoxContainer" parent="HeroRosterSelector"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="SelectorHeader" type="Label" parent="HeroRosterSelector/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.45, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 11
+text = "⚔️  CHAMPIONS ROSTER — CLICK TO SELECT  ⚔️"
+horizontal_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="HeroRosterSelector/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="HeroBtn_dragonbound" type="Button" parent="HeroRosterSelector/VBox/HBox"]
+custom_minimum_size = Vector2(170, 42)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_hero_select_normal")
+theme_override_font_sizes/font_size = 13
+text = "🐉 Dragonbound"
+
+[node name="HeroBtn_celestial" type="Button" parent="HeroRosterSelector/VBox/HBox"]
+custom_minimum_size = Vector2(170, 42)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_hero_select_normal")
+theme_override_font_sizes/font_size = 13
+text = "✨ Celestial"
+
+[node name="HeroBtn_arcane" type="Button" parent="HeroRosterSelector/VBox/HBox"]
+custom_minimum_size = Vector2(170, 42)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_hero_select_normal")
+theme_override_font_sizes/font_size = 13
+text = "⚡ Arcane Magus"
+
+[node name="HeroBtn_pyro" type="Button" parent="HeroRosterSelector/VBox/HBox"]
+custom_minimum_size = Vector2(170, 42)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_hero_select_normal")
+theme_override_font_sizes/font_size = 13
+text = "🧙‍♂️ Classic Magus"
 
 [node name="ToastNotification" type="NinePatchRect" parent="."]
 visible = false

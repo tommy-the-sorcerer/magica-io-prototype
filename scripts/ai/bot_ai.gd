@@ -328,14 +328,25 @@ func _on_died(killer: Node) -> void:
 	var killer_name: String = "Storm"
 	var is_player: bool = false
 	if killer and is_instance_valid(killer):
-		if killer.get("display_name"):
-			killer_name = killer.get("display_name")
-		elif killer.is_in_group("player"):
+		if killer.is_in_group("player") or killer.is_in_group("players") or killer.name == "Player":
 			killer_name = "👑 YOU"
 			is_player = true
+		elif killer.get("display_name"):
+			killer_name = killer.get("display_name")
 			
-	var gm: Node = get_tree().root.find_child("GameManager", true, false)
-	if gm and gm.has_method("report_elimination"):
+	var hud_node: HUD = null
+	if get_tree() and get_tree().current_scene:
+		hud_node = get_tree().current_scene.find_child("HUD", true, false) as HUD
+	if not hud_node and get_tree() and get_tree().root:
+		hud_node = get_tree().root.find_child("HUD", true, false) as HUD
+
+	if hud_node:
+		hud_node.add_kill_feed(killer_name, display_name, is_player)
+		if is_player:
+			hud_node.add_kill()
+		
+	var gm: Node = get_tree().root.find_child("GameManager", true, false) if get_tree() and get_tree().root else null
+	if gm and gm.has_method("report_elimination") and not hud_node:
 		gm.call("report_elimination", killer_name, display_name, is_player)
 		
 	var tween: Tween = create_tween()

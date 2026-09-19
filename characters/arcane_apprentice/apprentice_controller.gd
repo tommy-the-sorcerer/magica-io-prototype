@@ -111,6 +111,29 @@ func _unhandled_input(event: InputEvent) -> void:
 			_perform_dash()
 		# NOTE: [E] key is deliberately NOT bound (no special attack per user request)
 
+## UI Power Button Triggers
+func trigger_primary_attack() -> void:
+	if not health_component or not health_component.is_alive(): return
+	_request_electro_blast()
+
+func trigger_secondary_attack() -> void:
+	if not health_component or not health_component.is_alive(): return
+	_request_electro_blast()
+
+func trigger_beam_attack() -> void:
+	if not health_component or not health_component.is_alive(): return
+	_request_electro_blast()
+
+func trigger_shield_defense() -> void:
+	if not health_component or not health_component.is_alive(): return
+	if _shield_timer <= 0.0:
+		_cast_electro_shield()
+
+func trigger_dash() -> void:
+	if not health_component or not health_component.is_alive(): return
+	if _dash_cd_timer <= 0.0:
+		_perform_dash()
+
 ## Computes world-space aiming direction pointing directly toward mouse cursor
 func _get_mouse_aim_direction() -> Vector3:
 	var viewport := get_viewport()

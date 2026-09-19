@@ -64,7 +64,7 @@ emission_energy_multiplier = 3.0
 [node name="CosmicVoid" type="Node3D" unique_id=409579676]
 script = ExtResource("1_ctrl")
 chapter_name = "Chapter 9: Cosmic Void"
-is_boss_level = true
+is_boss_level = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2099520665]
 environment = SubResource("Environment_cosmic")

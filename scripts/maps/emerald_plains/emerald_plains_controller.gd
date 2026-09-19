@@ -27,7 +27,13 @@ func _ready() -> void:
 	_apply_environment_settings()
 	_spawn_player()
 	
-	if is_boss_level or current_level == 10 or (level_data and level_data.is_boss_level):
+	var boss_mode: bool = false
+	if LevelManager.instance and LevelManager.instance.has_method("should_spawn_boss"):
+		boss_mode = LevelManager.instance.should_spawn_boss(current_level)
+	elif current_level == 10:
+		boss_mode = true
+		
+	if boss_mode:
 		_setup_boss_arena()
 	else:
 		_spawn_enemies()
@@ -44,7 +50,7 @@ func _load_level_data() -> void:
 		# Default fallback data
 		level_data = ChapterLevelData.new()
 		level_data.level_number = current_level
-		level_data.enemy_count = 8
+		level_data.enemy_count = 14
 		level_data.storm_shrink_duration = 140.0
 
 func _apply_environment_settings() -> void:
@@ -73,8 +79,8 @@ func _spawn_player() -> void:
 	player_instance = player_scene.instantiate() as Node3D
 	add_child(player_instance)
 	
-	# Pick first player spawn or default origin
-	var spawn_pos := Vector3(0, 0.2, 0)
+	# Pick first player spawn or default origin away from center
+	var spawn_pos := Vector3(0, 0.2, -14.0)
 	if player_spawns and player_spawns.get_child_count() > 0:
 		var spawn_marker := player_spawns.get_child(0) as Marker3D
 		if spawn_marker:
@@ -135,7 +141,7 @@ func _setup_boss_arena() -> void:
 	if boss_scene:
 		var boss: Node3D = boss_scene.instantiate() as Node3D
 		add_child(boss)
-		boss.global_position = Vector3(0, 0.2, 0)
+		boss.global_position = Vector3(0, 0.2, 14.0)
 		
 		var hp: HealthComponent = boss.find_child("HealthComponent", true, false) as HealthComponent
 		if hp:
@@ -158,7 +164,7 @@ func _check_fall_bounds() -> void:
 	if player_instance and is_instance_valid(player_instance):
 		if player_instance.global_position.y < -22.0:
 			var hp: HealthComponent = player_instance.find_child("HealthComponent", true, false) as HealthComponent
-			if hp and not hp.is_dead:
+			if hp and hp.is_alive():
 				hp.take_damage(99999, null)
 				if hud:
 					hud.show_defeat(active_combatants, "☁️ FELL FROM THE CLOUDS ☁️")
@@ -168,13 +174,16 @@ func _check_fall_bounds() -> void:
 		if is_instance_valid(c) and c != player_instance and c is Node3D:
 			if c.global_position.y < -22.0:
 				var hp: HealthComponent = c.find_child("HealthComponent", true, false) as HealthComponent
-				if hp and not hp.is_dead:
+				if hp and hp.is_alive():
 					hp.take_damage(99999, null)
 
-func _on_enemy_died(_killer: Node) -> void:
+func _on_enemy_died(killer: Node) -> void:
 	active_combatants = maxi(1, active_combatants - 1)
 	if hud:
 		hud.update_alive_count(active_combatants, total_combatants)
+		if killer and is_instance_valid(killer):
+			if killer.is_in_group("player") or killer.is_in_group("players") or killer.name == "Player":
+				hud.add_kill()
 		if active_combatants == 1:
 			hud.show_victory()
 

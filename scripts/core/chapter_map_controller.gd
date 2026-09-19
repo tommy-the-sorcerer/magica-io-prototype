@@ -5,7 +5,7 @@ extends Node3D
 
 @export var chapter_name: String = "Chapter"
 @export var current_level: int = 1
-@export var enemy_count: int = 8
+@export var enemy_count: int = 14
 @export var is_boss_level: bool = false
 @export var boss_scene: PackedScene
 
@@ -39,7 +39,13 @@ func _ready() -> void:
 	_resolve_boss_scene()
 	_spawn_player()
 	
-	if (is_boss_level or current_level == 10) and boss_scene:
+	var boss_mode: bool = false
+	if LevelManager.instance:
+		boss_mode = LevelManager.instance.should_spawn_boss(current_level)
+	else:
+		boss_mode = is_boss_level or (current_level % 10 == 0)
+		
+	if boss_mode and boss_scene:
 		_setup_boss_encounter()
 	else:
 		_spawn_enemies()
@@ -67,7 +73,7 @@ func _spawn_player() -> void:
 	player_instance = player_scene.instantiate() as Node3D
 	add_child(player_instance)
 	
-	var spawn_pos := Vector3(0, 0.2, 0)
+	var spawn_pos := Vector3(0, 0.2, -14.0)
 	if player_spawns and player_spawns.get_child_count() > 0:
 		var marker := player_spawns.get_child(0) as Marker3D
 		if marker:
@@ -123,7 +129,7 @@ func _setup_boss_encounter() -> void:
 		
 	var boss: Node3D = boss_scene.instantiate() as Node3D
 	add_child(boss)
-	boss.global_position = Vector3(0, 0.2, 0)
+	boss.global_position = Vector3(0, 0.2, 14.0)
 	
 	var hp: HealthComponent = boss.find_child("HealthComponent", true, false) as HealthComponent
 	if hp:
@@ -138,7 +144,7 @@ func _check_fall_bounds() -> void:
 	if player_instance and is_instance_valid(player_instance):
 		if player_instance.global_position.y < -22.0:
 			var hp: HealthComponent = player_instance.find_child("HealthComponent", true, false) as HealthComponent
-			if hp and not hp.is_dead:
+			if hp and hp.is_alive():
 				hp.take_damage(99999, null)
 				if hud:
 					hud.show_defeat(active_combatants, "☁️ FELL INTO THE VOID ☁️")
@@ -148,13 +154,16 @@ func _check_fall_bounds() -> void:
 		if is_instance_valid(c) and c != player_instance and c is Node3D:
 			if c.global_position.y < -22.0:
 				var hp: HealthComponent = c.find_child("HealthComponent", true, false) as HealthComponent
-				if hp and not hp.is_dead:
+				if hp and hp.is_alive():
 					hp.take_damage(99999, null)
 
-func _on_enemy_died(_killer: Node) -> void:
+func _on_enemy_died(killer: Node) -> void:
 	active_combatants = maxi(1, active_combatants - 1)
 	if hud:
 		hud.update_alive_count(active_combatants, total_combatants)
+		if killer and is_instance_valid(killer):
+			if killer.is_in_group("player") or killer.is_in_group("players") or killer.name == "Player":
+				hud.add_kill()
 		if active_combatants == 1:
 			hud.show_victory()
 

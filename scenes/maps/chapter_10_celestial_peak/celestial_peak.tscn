@@ -95,7 +95,7 @@ size = Vector2(0.9, 0.9)
 [node name="CelestialPeak" type="Node3D" unique_id=1173065891]
 script = ExtResource("1_ctrl")
 chapter_name = "Chapter 10: Celestial Peak"
-is_boss_level = true
+is_boss_level = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1821637437]
 environment = SubResource("Environment_celestial")

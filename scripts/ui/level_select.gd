@@ -605,6 +605,37 @@ func _open_level_modal(lvl: int) -> void:
 	if reward_label:
 		reward_label.text = "REWARDS:\n🪙 %d Coins  |  ⭐ %d XP" % [cfg.get("reward_coins", 300), cfg.get("reward_xp", 150)]
 		
+	if start_btn:
+		if is_boss_lvl:
+			start_btn.text = "👑 FIGHT BOSS: %s" % boss_title
+		else:
+			start_btn.text = "⚔️ PLAY LEVEL %d BATTLE" % lvl
+			
+	var boss_btn := modal_card.find_child("BossDuelBtn", true, false) as Button
+	if not boss_btn:
+		boss_btn = Button.new()
+		boss_btn.name = "BossDuelBtn"
+		boss_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.8, 0.22, 0.18)
+		sb.set_border_width_all(2)
+		sb.border_color = Color(1.0, 0.8, 0.3)
+		sb.set_corner_radius_all(8)
+		sb.content_margin_left = 16
+		sb.content_margin_right = 16
+		sb.content_margin_top = 8
+		sb.content_margin_bottom = 8
+		boss_btn.add_theme_stylebox_override("normal", sb)
+		boss_btn.add_theme_color_override("font_color", Color.WHITE)
+		boss_btn.add_theme_font_size_override("font_size", 13)
+		start_btn.get_parent().add_child(boss_btn)
+		
+	boss_btn.text = "👑 TEST CHAPTER BOSS (%s)" % boss_title
+	boss_btn.visible = not is_boss_lvl
+	if boss_btn.pressed.is_connected(_on_start_boss_duel):
+		boss_btn.pressed.disconnect(_on_start_boss_duel)
+	boss_btn.pressed.connect(_on_start_boss_duel)
+		
 	if modal_panel:
 		modal_panel.visible = true
 		modal_panel.mouse_filter = MOUSE_FILTER_STOP
@@ -629,6 +660,20 @@ func close_level_modal() -> void:
 func _on_start_selected_level() -> void:
 	if level_mgr:
 		level_mgr.current_level_id = selected_level_num
+		level_mgr.is_boss_encounter_mode = (selected_level_num % 10 == 0)
+		if level_mgr.has_method("get_level_scene_path"):
+			level_mgr.selected_map_scene_path = level_mgr.get_level_scene_path(selected_level_num)
+	level_selected.emit(selected_level_num)
+	var tween := create_tween()
+	tween.tween_property(self, "modulate:a", 0.0, 0.3)
+	tween.tween_callback(func():
+		get_tree().change_scene_to_file("res://scenes/ui/matchmaking_screen.tscn")
+	)
+
+func _on_start_boss_duel() -> void:
+	if level_mgr:
+		level_mgr.current_level_id = selected_level_num
+		level_mgr.is_boss_encounter_mode = true
 		if level_mgr.has_method("get_level_scene_path"):
 			level_mgr.selected_map_scene_path = level_mgr.get_level_scene_path(selected_level_num)
 	level_selected.emit(selected_level_num)

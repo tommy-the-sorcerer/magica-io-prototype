@@ -24,13 +24,25 @@ extends Control
 # 3D Node References
 @onready var hero_platform: Node3D = $SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform if has_node("SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform") else null
 @onready var hero_anchor: Node3D = $SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/HeroAnchor if has_node("SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/HeroAnchor") else null
+@onready var companion_left_anchor: Node3D = $SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/CompanionLeft if has_node("SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/CompanionLeft") else null
+@onready var companion_right_anchor: Node3D = $SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/CompanionRight if has_node("SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/CompanionRight") else null
+@onready var companion_front_anchor: Node3D = $SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/CompanionFront if has_node("SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/CompanionFront") else null
+@onready var hero_btn_dragonbound: Button = find_child("HeroBtn_dragonbound", true, false) as Button
+@onready var hero_btn_celestial: Button = find_child("HeroBtn_celestial", true, false) as Button
+@onready var hero_btn_arcane: Button = find_child("HeroBtn_arcane", true, false) as Button
+@onready var hero_btn_pyro: Button = find_child("HeroBtn_pyro", true, false) as Button
+@onready var brazier_light: OmniLight3D = $SubViewportContainer/SubViewport/ShowcaseWorld/BrazierLight if has_node("SubViewportContainer/SubViewport/ShowcaseWorld/BrazierLight") else null
 @onready var rune_ring: MeshInstance3D = $SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/RuneRing if has_node("SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/RuneRing") else null
 @onready var drag_hint: Control = $CenterOverlay/DragHint if has_node("CenterOverlay/DragHint") else null
 @onready var hero_prev_btn: Button = $CenterOverlay/HeroSelectorBar/HeroPrevBtn if has_node("CenterOverlay/HeroSelectorBar/HeroPrevBtn") else null
 @onready var hero_badge: Button = $CenterOverlay/HeroSelectorBar/HeroBadge if has_node("CenterOverlay/HeroSelectorBar/HeroBadge") else null
 @onready var hero_next_btn: Button = $CenterOverlay/HeroSelectorBar/HeroNextBtn if has_node("CenterOverlay/HeroSelectorBar/HeroNextBtn") else null
-@onready var map_select_btn: Button = $BottomRightArea/MapSelectBtn if has_node("BottomRightArea/MapSelectBtn") else null
-@onready var play_button: Button = $BottomRightArea/PlayButton if has_node("BottomRightArea/PlayButton") else null
+@onready var map_select_btn: Button = find_child("MapSelectBtn", true, false) as Button
+@onready var play_button: Button = find_child("PlayButton", true, false) as Button
+@onready var play_btn_main: Button = find_child("PlayBtn", true, false) as Button
+@onready var options_btn_main: Button = find_child("OptionsBtn", true, false) as Button
+@onready var credits_btn_main: Button = find_child("CreditsBtn", true, false) as Button
+@onready var quit_btn_main: Button = find_child("QuitBtn", true, false) as Button
 
 # 3D Lighting for Hero Classes
 @onready var purple_rim_light: OmniLight3D = $SubViewportContainer/SubViewport/ShowcaseWorld/PurpleRimLight if has_node("SubViewportContainer/SubViewport/ShowcaseWorld/PurpleRimLight") else null
@@ -209,8 +221,87 @@ func _setup_showcase_hero() -> void:
 		if nameplate:
 			nameplate.visible = false
 			
+	# Spawn all 3 party companions gathered around the hall
+	var others: Array[String] = []
+	for hid in HERO_CYCLE_KEYS:
+		if hid != current_hero_id:
+			others.append(hid)
+			
+	var chars: Dictionary = LevelManager.PLAYABLE_CHARACTERS if (LevelManager and "PLAYABLE_CHARACTERS" in LevelManager) else {}
+
+	if companion_left_anchor and others.size() > 0:
+		for c in companion_left_anchor.get_children():
+			c.queue_free()
+		var left_id: String = others[0]
+		if chars.has(left_id):
+			var left_scene := load(chars[left_id]["scene_path"]) as PackedScene
+			if left_scene:
+				var c_left := left_scene.instantiate() as Node3D
+				companion_left_anchor.add_child(c_left)
+				c_left.position = Vector3.ZERO
+				c_left.rotation = Vector3(0, deg_to_rad(15), 0)
+				c_left.scale = Vector3(0.50, 0.50, 0.50)
+				c_left.set_physics_process(false)
+				c_left.set_process_unhandled_input(false)
+				var np := c_left.find_child("Nameplate3D", true, false)
+				if np: np.visible = false
+
+	if companion_right_anchor and others.size() > 1:
+		for c in companion_right_anchor.get_children():
+			c.queue_free()
+		var right_id: String = others[1]
+		if chars.has(right_id):
+			var right_scene := load(chars[right_id]["scene_path"]) as PackedScene
+			if right_scene:
+				var c_right := right_scene.instantiate() as Node3D
+				companion_right_anchor.add_child(c_right)
+				c_right.position = Vector3.ZERO
+				c_right.rotation = Vector3(0, deg_to_rad(-20), 0)
+				c_right.scale = Vector3(0.48, 0.48, 0.48)
+				c_right.set_physics_process(false)
+				c_right.set_process_unhandled_input(false)
+				var np := c_right.find_child("Nameplate3D", true, false)
+				if np: np.visible = false
+
+	if companion_front_anchor and others.size() > 2:
+		for c in companion_front_anchor.get_children():
+			c.queue_free()
+		var front_id: String = others[2]
+		if chars.has(front_id):
+			var front_scene := load(chars[front_id]["scene_path"]) as PackedScene
+			if front_scene:
+				var c_front := front_scene.instantiate() as Node3D
+				companion_front_anchor.add_child(c_front)
+				c_front.position = Vector3.ZERO
+				c_front.rotation = Vector3(0, deg_to_rad(-35), 0)
+				c_front.scale = Vector3(0.46, 0.46, 0.46)
+				c_front.set_physics_process(false)
+				c_front.set_process_unhandled_input(false)
+				var np := c_front.find_child("Nameplate3D", true, false)
+				if np: np.visible = false
+			
 	_apply_hero_visuals(current_hero_id)
 	_update_quick_hero_banner()
+	_update_hero_selector_buttons()
+
+func _update_hero_selector_buttons() -> void:
+	var btn_map: Dictionary = {
+		"dragonbound": hero_btn_dragonbound,
+		"celestial": hero_btn_celestial,
+		"arcane_apprentice": hero_btn_arcane,
+		"pyromancer": hero_btn_pyro
+	}
+	for hid in btn_map:
+		var b: Button = btn_map[hid]
+		if not b: continue
+		if hid == current_hero_id:
+			b.add_theme_color_override("font_color", Color(1.0, 0.9, 0.4))
+			b.add_theme_color_override("font_outline_color", Color(0.45, 0.25, 0.05, 1.0))
+			b.add_theme_constant_override("outline_size", 4)
+		else:
+			b.add_theme_color_override("font_color", Color(0.8, 0.75, 0.9))
+			b.add_theme_color_override("font_outline_color", Color(0.08, 0.04, 0.12, 1.0))
+			b.add_theme_constant_override("outline_size", 2)
 
 func _update_quick_hero_banner() -> void:
 	if not hero_badge:
@@ -322,6 +413,16 @@ func _connect_all_ui_buttons() -> void:
 	if modal_overlay:
 		modal_overlay.gui_input.connect(_on_modal_overlay_gui_input)
 		
+	# Main Left Menu Actions (Play, Options, Credits, Quit)
+	if play_btn_main:
+		play_btn_main.pressed.connect(_on_play_pressed)
+	if options_btn_main:
+		options_btn_main.pressed.connect(open_settings)
+	if credits_btn_main:
+		credits_btn_main.pressed.connect(open_credits)
+	if quit_btn_main:
+		quit_btn_main.pressed.connect(_on_quit_pressed)
+
 	# Hero Quick Selector & Map Realm Button
 	if hero_prev_btn:
 		hero_prev_btn.pressed.connect(func(): _cycle_hero(-1))
@@ -331,6 +432,16 @@ func _connect_all_ui_buttons() -> void:
 		hero_badge.pressed.connect(open_heroes)
 	if map_select_btn:
 		map_select_btn.pressed.connect(open_map_realms)
+
+	# Direct Hero Roster Buttons
+	if hero_btn_dragonbound:
+		hero_btn_dragonbound.pressed.connect(func(): _select_hero("dragonbound"))
+	if hero_btn_celestial:
+		hero_btn_celestial.pressed.connect(func(): _select_hero("celestial"))
+	if hero_btn_arcane:
+		hero_btn_arcane.pressed.connect(func(): _select_hero("arcane_apprentice"))
+	if hero_btn_pyro:
+		hero_btn_pyro.pressed.connect(func(): _select_hero("pyromancer"))
 
 func _setup_button_effects() -> void:
 	var buttons := find_children("*", "Button", true, false)
@@ -424,6 +535,9 @@ func _process(delta: float) -> void:
 		
 	if rune_ring:
 		rune_ring.rotation.y += delta * 0.4
+		
+	if brazier_light:
+		brazier_light.light_energy = 2.5 + sin(time_passed * 13.0) * 0.35 + sin(time_passed * 27.0) * 0.15
 		
 	if hero_anchor and not is_flipping:
 		var idle_breath := sin(time_passed * 2.5) * 0.02
@@ -1093,10 +1207,36 @@ func open_heroes() -> void:
 		dynamic_content.add_child(card)
 
 func open_map_realms() -> void:
-	open_modal("MAP REALMS & CHAPTERS (1 - 10)")
+	open_modal("REALMS & CHAPTER MAPS (1 - 10)")
 	action_btn.text = "CLOSE"
 	action_btn.pressed.disconnect(close_modal) if action_btn.pressed.is_connected(close_modal) else null
 	action_btn.pressed.connect(close_modal, CONNECT_ONE_SHOT)
+	
+	# Evaluator Guidance Banner
+	var guide_box := _create_card_panel(Color(0.18, 0.12, 0.26, 0.95), Color(0.95, 0.75, 0.2))
+	var guide_vb := VBoxContainer.new()
+	guide_vb.add_theme_constant_override("separation", 6)
+	guide_box.add_child(guide_vb)
+	
+	var guide_title := Label.new()
+	guide_title.text = "🧭 EVALUATOR MAP & BOSS INSPECTOR"
+	guide_title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+	guide_title.add_theme_font_size_override("font_size", 13)
+	guide_vb.add_child(guide_title)
+	
+	var guide_desc := Label.new()
+	guide_desc.text = "Choose ⚔️ BATTLE MODE to explore any map with bots, crates, and safe arena combat.\nChoose 👑 BOSS DUEL to test that chapter's legendary boss directly!"
+	guide_desc.add_theme_color_override("font_color", Color(0.9, 0.9, 0.95))
+	guide_desc.add_theme_font_size_override("font_size", 11)
+	guide_vb.add_child(guide_desc)
+	
+	var roadmap_btn := _create_action_button("🗺️ OPEN 100-LEVEL PROGRESSION ROADMAP", Color(0.25, 0.45, 0.8))
+	roadmap_btn.pressed.connect(func():
+		close_modal()
+		get_tree().change_scene_to_file("res://scenes/ui/level_select.tscn")
+	)
+	guide_vb.add_child(roadmap_btn)
+	dynamic_content.add_child(guide_box)
 	
 	var maps_dict: Dictionary = LevelManager.CHAPTER_MAPS if (LevelManager and "CHAPTER_MAPS" in LevelManager) else {}
 	var order: Array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -1106,7 +1246,7 @@ func open_map_realms() -> void:
 		var m: Dictionary = maps_dict[map_idx]
 		var card := _create_card_panel(Color(0.12, 0.1, 0.18, 0.95), Color(0.4, 0.35, 0.6))
 		var hbox := HBoxContainer.new()
-		hbox.add_theme_constant_override("separation", 14)
+		hbox.add_theme_constant_override("separation", 12)
 		card.add_child(hbox)
 		
 		var icon_box := PanelContainer.new()
@@ -1153,13 +1293,19 @@ func open_map_realms() -> void:
 		info.add_child(b_lbl)
 		hbox.add_child(info)
 		
-		var play_btn := _create_action_button("PLAY MAP", Color(0.18, 0.65, 0.35))
-		play_btn.custom_minimum_size = Vector2(110, 44)
 		var target_scene: String = str(m.scene_path)
 		var lvl_start: int = 1 if map_idx == 1 else (map_idx * 10 - 9 if map_idx > 1 else 1)
+		var boss_lvl: int = map_idx * 10 if map_idx > 0 else 10
+		
+		var btn_vb := VBoxContainer.new()
+		btn_vb.add_theme_constant_override("separation", 6)
+		
+		var play_btn := _create_action_button("⚔️ BATTLE", Color(0.18, 0.65, 0.35))
+		play_btn.custom_minimum_size = Vector2(115, 34)
 		play_btn.pressed.connect(func():
 			close_modal()
 			if LevelManager.instance:
+				LevelManager.instance.is_boss_encounter_mode = false
 				LevelManager.instance.selected_map_scene_path = target_scene
 				LevelManager.instance.current_level_id = lvl_start
 			var tween := create_tween()
@@ -1168,7 +1314,25 @@ func open_map_realms() -> void:
 				get_tree().change_scene_to_file("res://scenes/ui/matchmaking_screen.tscn")
 			)
 		)
-		hbox.add_child(play_btn)
+		btn_vb.add_child(play_btn)
+		
+		var boss_btn := _create_action_button("👑 BOSS", Color(0.82, 0.22, 0.2))
+		boss_btn.custom_minimum_size = Vector2(115, 34)
+		boss_btn.pressed.connect(func():
+			close_modal()
+			if LevelManager.instance:
+				LevelManager.instance.is_boss_encounter_mode = true
+				LevelManager.instance.selected_map_scene_path = target_scene
+				LevelManager.instance.current_level_id = boss_lvl
+			var tween := create_tween()
+			tween.tween_property(self, "modulate:a", 0.0, 0.3)
+			tween.tween_callback(func():
+				get_tree().change_scene_to_file("res://scenes/ui/matchmaking_screen.tscn")
+			)
+		)
+		btn_vb.add_child(boss_btn)
+		
+		hbox.add_child(btn_vb)
 		dynamic_content.add_child(card)
 
 # ==============================================================================
@@ -1644,3 +1808,40 @@ func _on_play_pressed() -> void:
 		else:
 			get_tree().change_scene_to_file("res://scenes/ui/matchmaking_screen.tscn")
 	)
+
+func open_credits() -> void:
+	open_modal("HALL OF LEGENDS & CREDITS")
+	action_btn.text = "CLOSE"
+	action_btn.pressed.disconnect(close_modal) if action_btn.pressed.is_connected(close_modal) else null
+	action_btn.pressed.connect(close_modal, CONNECT_ONE_SHOT)
+	
+	var c_box := _create_card_panel(Color(0.14, 0.08, 0.22, 0.95), Color(0.95, 0.75, 0.2))
+	var cvb := VBoxContainer.new()
+	cvb.add_theme_constant_override("separation", 10)
+	c_box.add_child(cvb)
+	
+	var t_lbl := Label.new()
+	t_lbl.text = "⚔️ MAGICA.IO HACKATHON EDITION ⚔️"
+	t_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
+	t_lbl.add_theme_font_size_override("font_size", 16)
+	t_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cvb.add_child(t_lbl)
+	
+	var authors := [
+		"• Game Director & Lead Architecture: Anand & Team",
+		"• Complete 3D Dynamic Wing Aerodynamics & Seraph Combat",
+		"• 10 Chapter Worlds & Epic Legendary Boss Encounters",
+		"• Built with Godot 4 Engine",
+		"• Mobile Responsive Controls, Dual Joysticks & Tactical Abilities"
+	]
+	for a in authors:
+		var l := Label.new()
+		l.text = a
+		l.add_theme_color_override("font_color", Color(0.9, 0.9, 0.95))
+		l.add_theme_font_size_override("font_size", 12)
+		cvb.add_child(l)
+		
+	dynamic_content.add_child(c_box)
+
+func _on_quit_pressed() -> void:
+	get_tree().quit()

@@ -91,7 +91,7 @@ size = Vector2(0.8, 0.8)
 [node name="MysticGrove" type="Node3D" unique_id=311407701]
 script = ExtResource("1_ctrl")
 chapter_name = "Chapter 5: Mystic Grove"
-is_boss_level = true
+is_boss_level = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=952806456]
 environment = SubResource("Environment_mystic")

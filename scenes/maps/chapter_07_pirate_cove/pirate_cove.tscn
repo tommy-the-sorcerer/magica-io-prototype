@@ -92,7 +92,7 @@ size = Vector2(2.5, 2.5)
 [node name="PirateCove" type="Node3D" unique_id=1669407629]
 script = ExtResource("1_ctrl")
 chapter_name = "Chapter 7: Pirate Cove"
-is_boss_level = true
+is_boss_level = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2054416495]
 environment = SubResource("Environment_pirate")

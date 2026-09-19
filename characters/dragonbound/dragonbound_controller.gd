@@ -83,6 +83,7 @@ var _orig_visuals_pos_y: float = 0.0
 const HOVER_ALTITUDE: float = 0.55
 
 func _ready() -> void:
+	add_to_group("player")
 	add_to_group("players")
 	add_to_group("combatants")
 	
@@ -119,6 +120,25 @@ func _unhandled_input(event: InputEvent) -> void:
 			_cast_dragon_breath()
 		elif (keycode == KEY_R or keycode == KEY_C) and _aegis_timer <= 0.0:
 			_cast_dragon_aegis()
+
+## UI Power Button Triggers
+func trigger_primary_attack() -> void:
+	_request_attack("slash")
+
+func trigger_secondary_attack() -> void:
+	_request_attack("magma")
+
+func trigger_beam_attack() -> void:
+	if _breath_timer <= 0.0:
+		_cast_dragon_breath()
+
+func trigger_shield_defense() -> void:
+	if _aegis_timer <= 0.0:
+		_cast_dragon_aegis()
+
+func trigger_dash() -> void:
+	if _dash_cd_timer <= 0.0 and not _is_dashing:
+		_perform_dash()
 
 func _physics_process(delta: float) -> void:
 	# Timers

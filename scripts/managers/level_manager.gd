@@ -241,7 +241,7 @@ func _generate_100_levels() -> void:
 			"id": i,
 			"name": lname,
 			"difficulty_stars": difficulty_stars,
-			"enemy_count": mini(50, 4 + i),
+			"enemy_count": mini(50, 14 + (i - 1)),
 			"reward_xp": 100 + i * 45,
 			"reward_coins": 300 + i * 80,
 			"region_name": r_name,
@@ -306,6 +306,13 @@ func get_active_gameplay_scene() -> String:
 	if selected_map_scene_path != "" and ResourceLoader.exists(selected_map_scene_path):
 		return selected_map_scene_path
 	return get_level_scene_path(current_level_id)
+
+var is_boss_encounter_mode: bool = false
+
+func should_spawn_boss(lvl: int) -> bool:
+	if is_boss_encounter_mode:
+		return true
+	return (lvl > 0 and lvl % 10 == 0)
 
 func save_progression() -> void:
 	var data := {
