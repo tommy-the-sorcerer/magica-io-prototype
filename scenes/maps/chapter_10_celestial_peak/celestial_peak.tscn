@@ -1,0 +1,241 @@
+[gd_scene load_steps=25 format=3 uid="uid://bjg7gmhnw23t"]
+
+[ext_resource type="Script" path="res://scripts/core/chapter_map_controller.gd" id="1_ctrl"]
+[ext_resource type="Script" path="res://scripts/camera/camera_follow.gd" id="2_cam"]
+[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/pink_gem.tscn" id="3_gem"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_10_celestial_peak/props/celestial_crate.tscn" id="4_crate"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_10_celestial_peak/props/marble_temple_pillar.tscn" id="5_pillar"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_10_celestial_peak/props/divine_rune_ring.tscn" id="6_ring"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_10_celestial_peak/props/celestial_golden_obelisk.tscn" id="7_obelisk"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="8_hud"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_celestial"]
+sky_top_color = Color(0.35, 0.62, 0.98, 1)
+sky_horizon_color = Color(1, 0.92, 0.75, 1)
+ground_bottom_color = Color(0.95, 0.88, 0.72, 1)
+ground_horizon_color = Color(1, 0.92, 0.75, 1)
+
+[sub_resource type="Sky" id="Sky_celestial"]
+sky_material = SubResource("ProceduralSkyMaterial_celestial")
+
+[sub_resource type="Environment" id="Environment_celestial"]
+background_mode = 2
+sky = SubResource("Sky_celestial")
+ambient_light_source = 2
+ambient_light_color = Color(0.98, 0.94, 0.85, 1)
+ambient_light_energy = 0.45
+tonemap_mode = 3
+glow_enabled = true
+glow_intensity = 0.8
+glow_bloom = 0.0
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_celestial"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_marble_ground"]
+top_radius = 50.0
+bottom_radius = 52.0
+height = 1.0
+radial_segments = 64
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_marble_col"]
+height = 1.0
+radius = 50.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_white_marble"]
+albedo_color = Color(0.96, 0.98, 1, 1)
+roughness = 0.25
+metallic = 0.15
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_celestial_underbelly"]
+top_radius = 50.0
+bottom_radius = 4.0
+height = 18.0
+radial_segments = 64
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_celestial_underbelly"]
+albedo_color = Color(0.92, 0.94, 0.98, 1)
+roughness = 0.32
+metallic = 0.2
+emission_enabled = true
+emission = Color(1, 0.8, 0.3, 1)
+emission_energy_multiplier = 0.35
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_golden_heaven_sea"]
+size = Vector2(450, 450)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_golden_heaven_sea"]
+transparency = 1
+albedo_color = Color(1, 0.95, 0.82, 0.88)
+emission_enabled = true
+emission = Color(1, 0.85, 0.55, 1)
+emission_energy_multiplier = 0.5
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_golden_sparkle"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 0.9, 0.4, 0.85)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_golden_sparkle"]
+material = SubResource("StandardMaterial3D_golden_sparkle")
+size = Vector2(0.9, 0.9)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gold_vein"]
+albedo_color = Color(1, 0.78, 0.1, 1)
+emission_enabled = true
+emission = Color(1, 0.7, 0.05, 1)
+emission_energy_multiplier = 2.4
+metallic = 0.85
+roughness = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_gold_trail"]
+size = Vector3(4.5, 0.05, 52.0)
+
+[node name="CelestialPeak" type="Node3D"]
+script = ExtResource("1_ctrl")
+chapter_name = "Chapter 10: Celestial Peak"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_celestial")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 35, 0)
+light_color = Color(1, 0.96, 0.85, 1)
+light_energy = 1.1
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 16, 16)
+fov = 42.0
+script = ExtResource("2_cam")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_celestial")
+
+[node name="GroundTerrain" type="StaticBody3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain"]
+mesh = SubResource("CylinderMesh_marble_ground")
+surface_material_override/0 = SubResource("StandardMaterial3D_white_marble")
+
+[node name="UnderbellyMesh" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.5, 0)
+mesh = SubResource("CylinderMesh_celestial_underbelly")
+surface_material_override/0 = SubResource("StandardMaterial3D_celestial_underbelly")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/GroundTerrain"]
+shape = SubResource("CylinderShape3D_marble_col")
+
+[node name="GoldenTrails" type="Node3D" parent="."]
+
+[node name="Trail1" type="MeshInstance3D" parent="GoldenTrails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+mesh = SubResource("BoxMesh_gold_trail")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold_vein")
+
+[node name="Trail2" type="MeshInstance3D" parent="GoldenTrails"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.03, 0)
+mesh = SubResource("BoxMesh_gold_trail")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold_vein")
+
+[node name="DivineObeliskCenter" parent="." instance=ExtResource("7_obelisk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Colonnade" type="Node3D" parent="."]
+
+[node name="PillarNW" parent="Colonnade" instance=ExtResource("5_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -12)
+
+[node name="PillarNE" parent="Colonnade" instance=ExtResource("5_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -12)
+
+[node name="PillarSW" parent="Colonnade" instance=ExtResource("5_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 12)
+
+[node name="PillarSE" parent="Colonnade" instance=ExtResource("5_pillar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 12)
+
+[node name="RuneRings" type="Node3D" parent="."]
+
+[node name="RingWest" parent="RuneRings" instance=ExtResource("6_ring")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -18, 0, 0)
+
+[node name="RingEast" parent="RuneRings" instance=ExtResource("6_ring")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 18, 0, 0)
+
+[node name="TacticalCover" type="Node3D" parent="."]
+
+[node name="CelestialCrate1" parent="TacticalCover" instance=ExtResource("4_crate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 5)
+
+[node name="CelestialCrate2" parent="TacticalCover" instance=ExtResource("4_crate")]
+transform = Transform3D(0.9, 0, 0.4, 0, 1, 0, -0.4, 0, 0.9, 5, 0, -5)
+
+[node name="CelestialCrate3" parent="TacticalCover" instance=ExtResource("4_crate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
+
+[node name="PinkDiamonds" type="Node3D" parent="."]
+
+[node name="GemCenter" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -3)
+
+[node name="GemN" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -14)
+
+[node name="GemS" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 14)
+
+[node name="GemE" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0.35, 0)
+
+[node name="GemW" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0.35, 0)
+
+[node name="Gameplay" type="Node3D" parent="."]
+
+[node name="PlayerSpawns" type="Node3D" parent="Gameplay"]
+
+[node name="PlayerSpawn_01" type="Marker3D" parent="Gameplay/PlayerSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 8)
+
+[node name="EnemySpawns" type="Node3D" parent="Gameplay"]
+
+[node name="EnemySpawn_North" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -22)
+
+[node name="EnemySpawn_South" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 22)
+
+[node name="EnemySpawn_East" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0.2, 0)
+
+[node name="EnemySpawn_West" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0.2, 0)
+
+[node name="HUD" parent="." instance=ExtResource("8_hud")]
+
+[node name="GoldenHeavenAbyss" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -18.0, 0)
+
+[node name="GoldenCloudPlane" type="MeshInstance3D" parent="GoldenHeavenAbyss"]
+mesh = SubResource("PlaneMesh_golden_heaven_sea")
+surface_material_override/0 = SubResource("StandardMaterial3D_golden_heaven_sea")
+
+[node name="DivineSparkles" type="CPUParticles3D" parent="GoldenHeavenAbyss"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0, 0)
+amount = 55
+lifetime = 7.0
+mesh = SubResource("QuadMesh_golden_sparkle")
+emission_shape = 3
+emission_box_extents = Vector3(180, 4, 180)
+direction = Vector3(0, 1, 0.1)
+spread = 25.0
+gravity = Vector3(0, 0.5, 0)
+initial_velocity_min = 1.5
+initial_velocity_max = 4.0
+color = Color(1, 0.92, 0.5, 0.8)

@@ -1,0 +1,79 @@
+[gd_scene load_steps=10 format=3 uid="uid://wc287vx0e4p2"]
+
+[ext_resource type="Script" path="res://scripts/vfx/explosion_particles.gd" id="1_script"]
+
+[sub_resource type="Curve" id="Curve_scale"]
+_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_scale"]
+curve = SubResource("Curve_scale")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_embers"]
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 5.0
+initial_velocity_max = 11.0
+gravity = Vector3(0, -9.8, 0)
+damping_min = 4.0
+damping_max = 8.0
+scale_min = 0.6
+scale_max = 1.2
+scale_curve = SubResource("CurveTexture_scale")
+color = Color(1, 0.65, 0.15, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ember"]
+shading_mode = 0
+albedo_color = Color(1, 0.6, 0.1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ember"]
+material = SubResource("StandardMaterial3D_ember")
+size = Vector3(0.12, 0.12, 0.12)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_shockwave"]
+gravity = Vector3(0, 0, 0)
+scale_min = 0.5
+scale_max = 3.2
+scale_curve = SubResource("CurveTexture_scale")
+color = Color(1, 0.85, 0.35, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shockwave"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 0.75, 0.25, 0.6)
+
+[sub_resource type="TorusMesh" id="TorusMesh_ring"]
+material = SubResource("StandardMaterial3D_shockwave")
+inner_radius = 0.85
+outer_radius = 1.15
+rings = 16
+ring_segments = 12
+
+[node name="ExplosionParticles" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Embers" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 32
+lifetime = 0.6
+one_shot = true
+explosiveness = 0.95
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_embers")
+draw_pass_1 = SubResource("BoxMesh_ember")
+
+[node name="Shockwave" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+emitting = false
+amount = 1
+lifetime = 0.35
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_shockwave")
+draw_pass_1 = SubResource("TorusMesh_ring")
+
+[node name="FlashLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+light_color = Color(1, 0.65, 0.15, 1)
+light_energy = 3.5
+omni_range = 5.5

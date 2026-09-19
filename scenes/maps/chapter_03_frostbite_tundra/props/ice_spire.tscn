@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://fticespire01"]
+
+[ext_resource type="PackedScene" path="res://assets/nature_kit/stone_tallC.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_spire"]
+size = Vector3(2.2, 5.5, 2.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_crystal_ice"]
+transparency = 1
+albedo_color = Color(0.45, 0.82, 0.98, 0.78)
+roughness = 0.08
+metallic = 0.2
+emission_enabled = true
+emission = Color(0.35, 0.75, 1, 1)
+emission_energy_multiplier = 1.8
+
+[node name="IceSpire" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+shape = SubResource("BoxShape3D_spire")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.6, 0, 0, 0, 2.6, 0, 0, 0, 2.6, 0, 0, 0)
+
+[node name="IceGaze" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0, 0)
+light_color = Color(0.4, 0.8, 1, 1)
+light_energy = 1.5
+omni_range = 5.0

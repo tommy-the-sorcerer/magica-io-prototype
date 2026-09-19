@@ -1,0 +1,22 @@
+﻿[gd_resource type="Resource" script_class="ChapterLevelData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/chapter_level_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+level_number = 10
+level_title = "Level 10: Awakening of the Treant King"
+enemy_count = 0
+coin_count = 16
+storm_shrink_duration = 100.0
+storm_start_radius = 32.0
+storm_end_radius = 6.0
+storm_dps = 8.0
+sun_color = Color(0.75, 0.72, 0.85, 1)
+sun_energy = 0.95
+ambient_color = Color(0.48, 0.55, 0.62, 1)
+ambient_energy = 0.95
+fog_density = 0.005
+wind_particle_speed = 2.4
+is_boss_level = true
+boss_name = "Gorgon — The Treant King"

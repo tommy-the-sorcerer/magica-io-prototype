@@ -1,0 +1,132 @@
+[gd_scene format=3 uid="uid://db_dragon_aegis"]
+
+[ext_resource type="Script" path="res://characters/dragonbound/skills/dragon_aegis.gd" id="1_script"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_hit"]
+height = 1.8
+radius = 2.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_obsidian"]
+shading_mode = 0
+albedo_color = Color(0.12, 0.05, 0.05, 0.95)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_magma_edge"]
+shading_mode = 0
+albedo_color = Color(1, 0.38, 0.05, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_scale"]
+material = SubResource("StandardMaterial3D_obsidian")
+size = Vector3(0.65, 1.4, 0.12)
+
+[sub_resource type="BoxMesh" id="BoxMesh_edge"]
+material = SubResource("StandardMaterial3D_magma_edge")
+size = Vector3(0.68, 0.1, 0.15)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flame_ring"]
+shading_mode = 0
+transparency = 1
+albedo_color = Color(0.95, 0.25, 0.05, 0.45)
+
+[sub_resource type="TorusMesh" id="TorusMesh_flame_ring"]
+material = SubResource("StandardMaterial3D_flame_ring")
+inner_radius = 1.7
+outer_radius = 2.0
+rings = 32
+ring_segments = 12
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sparks"]
+emission_shape = 2
+emission_sphere_radius = 1.9
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 2.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, 1.0, 0)
+scale_min = 0.15
+scale_max = 0.4
+color = Color(1, 0.6, 0.15, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spark"]
+shading_mode = 0
+albedo_color = Color(1, 0.8, 0.3, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_spark"]
+material = SubResource("StandardMaterial3D_spark")
+size = Vector3(0.05, 0.05, 0.15)
+
+[node name="DragonAegis" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="HitArea" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HitArea"]
+shape = SubResource("CylinderShape3D_hit")
+
+[node name="ShieldPivot" type="Node3D" parent="."]
+
+[node name="FlameRing" type="MeshInstance3D" parent="ShieldPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.05, 0, 0, 0, 1, 0, -0.4, 0)
+mesh = SubResource("TorusMesh_flame_ring")
+
+[node name="Scale1" type="MeshInstance3D" parent="ShieldPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.85)
+mesh = SubResource("BoxMesh_scale")
+
+[node name="Edge1" type="MeshInstance3D" parent="ShieldPivot/Scale1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+mesh = SubResource("BoxMesh_edge")
+
+[node name="Scale2" type="MeshInstance3D" parent="ShieldPivot"]
+transform = Transform3D(0.5, 0, 0.866, 0, 1, 0, -0.866, 0, 0.5, 1.6, 0, 0.92)
+mesh = SubResource("BoxMesh_scale")
+
+[node name="Edge2" type="MeshInstance3D" parent="ShieldPivot/Scale2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+mesh = SubResource("BoxMesh_edge")
+
+[node name="Scale3" type="MeshInstance3D" parent="ShieldPivot"]
+transform = Transform3D(-0.5, 0, 0.866, 0, 1, 0, -0.866, 0, -0.5, 1.6, 0, -0.92)
+mesh = SubResource("BoxMesh_scale")
+
+[node name="Edge3" type="MeshInstance3D" parent="ShieldPivot/Scale3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+mesh = SubResource("BoxMesh_edge")
+
+[node name="Scale4" type="MeshInstance3D" parent="ShieldPivot"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -1.85)
+mesh = SubResource("BoxMesh_scale")
+
+[node name="Edge4" type="MeshInstance3D" parent="ShieldPivot/Scale4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+mesh = SubResource("BoxMesh_edge")
+
+[node name="Scale5" type="MeshInstance3D" parent="ShieldPivot"]
+transform = Transform3D(-0.5, 0, -0.866, 0, 1, 0, 0.866, 0, -0.5, -1.6, 0, -0.92)
+mesh = SubResource("BoxMesh_scale")
+
+[node name="Edge5" type="MeshInstance3D" parent="ShieldPivot/Scale5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+mesh = SubResource("BoxMesh_edge")
+
+[node name="Scale6" type="MeshInstance3D" parent="ShieldPivot"]
+transform = Transform3D(0.5, 0, -0.866, 0, 1, 0, 0.866, 0, 0.5, -1.6, 0, 0.92)
+mesh = SubResource("BoxMesh_scale")
+
+[node name="Edge6" type="MeshInstance3D" parent="ShieldPivot/Scale6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+mesh = SubResource("BoxMesh_edge")
+
+[node name="ShieldLight" type="OmniLight3D" parent="."]
+light_color = Color(1, 0.4, 0.1, 1)
+light_energy = 2.4
+omni_range = 5.0
+
+[node name="Sparks" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 20
+lifetime = 0.3
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_sparks")
+draw_pass_1 = SubResource("BoxMesh_spark")

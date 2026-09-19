@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://dqo5l5s1rv3qq"]
+
+[ext_resource type="PackedScene" path="res://assets/pirate_kit/ship-wreck.glb" id="1_wreck"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hull"]
+size = Vector3(5.0, 4.0, 12.0)
+
+[node name="WreckedShip" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
+shape = SubResource("BoxShape3D_hull")
+
+[node name="ShipModel" parent="." instance=ExtResource("1_wreck")]
+transform = Transform3D(3.2, 0, 0, 0, 3.2, 0, 0, 0, 3.2, 0, 0, 0)

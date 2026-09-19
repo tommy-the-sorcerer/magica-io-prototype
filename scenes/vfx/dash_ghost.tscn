@@ -1,0 +1,104 @@
+[gd_scene load_steps=12 format=3 uid="uid://un54yk44k4p2"]
+
+[ext_resource type="Script" path="res://scripts/vfx/dash_ghost.gd" id="1_script"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_base"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(0.35, 0.85, 1, 0.75)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_torso"]
+material = SubResource("StandardMaterial3D_base")
+radius = 0.24
+height = 0.85
+
+[sub_resource type="SphereMesh" id="SphereMesh_head"]
+material = SubResource("StandardMaterial3D_base")
+radius = 0.2
+height = 0.38
+
+[sub_resource type="TorusMesh" id="TorusMesh_halo"]
+material = SubResource("StandardMaterial3D_base")
+inner_radius = 0.24
+outer_radius = 0.32
+
+[sub_resource type="PrismMesh" id="PrismMesh_wing_lg"]
+material = SubResource("StandardMaterial3D_base")
+size = Vector3(0.08, 1.1, 0.45)
+
+[sub_resource type="PrismMesh" id="PrismMesh_wing_sm"]
+material = SubResource("StandardMaterial3D_base")
+size = Vector3(0.06, 0.7, 0.32)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_spear"]
+material = SubResource("StandardMaterial3D_base")
+top_radius = 0.02
+bottom_radius = 0.035
+height = 1.2
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_stardust"]
+emission_shape = 1
+emission_sphere_radius = 0.4
+direction = Vector3(0, 0, 1)
+spread = 35.0
+initial_velocity_min = 1.0
+initial_velocity_max = 2.5
+gravity = Vector3(0, 0, 0)
+scale_min = 0.2
+scale_max = 0.5
+color = Color(0.7, 0.95, 1, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spark"]
+shading_mode = 0
+albedo_color = Color(0.85, 0.95, 1, 0.9)
+
+[sub_resource type="SphereMesh" id="SphereMesh_spark"]
+material = SubResource("StandardMaterial3D_spark")
+radius = 0.03
+height = 0.06
+
+[node name="DashGhost" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Torso" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0)
+mesh = SubResource("CapsuleMesh_torso")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12, 0)
+mesh = SubResource("SphereMesh_head")
+
+[node name="Halo" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 1.42, -0.05)
+mesh = SubResource("TorusMesh_halo")
+
+[node name="UpperLeftWing" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.34202, -0.939693, 0, 0.883022, 0.321394, 0.34202, -0.321394, -0.116978, 0.939693, -0.35, 0.85, 0.15)
+mesh = SubResource("PrismMesh_wing_lg")
+
+[node name="UpperRightWing" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.34202, 0.939693, 0, -0.883022, 0.321394, 0.34202, 0.321394, -0.116978, 0.939693, 0.35, 0.85, 0.15)
+mesh = SubResource("PrismMesh_wing_lg")
+
+[node name="LowerLeftWing" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, -0.866025, 0, 0.75, 0.433013, -0.5, 0.433013, 0.25, 0.866025, -0.28, 0.52, 0.12)
+mesh = SubResource("PrismMesh_wing_sm")
+
+[node name="LowerRightWing" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0.866025, 0, -0.75, 0.433013, -0.5, -0.433013, 0.25, 0.866025, 0.28, 0.52, 0.12)
+mesh = SubResource("PrismMesh_wing_sm")
+
+[node name="SpearLance" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.15, 0.65, -0.5)
+mesh = SubResource("CylinderMesh_spear")
+
+[node name="Stardust" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+emitting = true
+amount = 10
+lifetime = 0.28
+one_shot = true
+explosiveness = 0.8
+process_material = SubResource("ParticleProcessMaterial_stardust")
+draw_pass_1 = SubResource("SphereMesh_spark")

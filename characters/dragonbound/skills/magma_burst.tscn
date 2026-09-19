@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://db_magma_burst"]
+
+[ext_resource type="Script" path="res://characters/dragonbound/skills/magma_burst.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://characters/dragonbound/vfx/dragon_impact.tscn" id="2_impact"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hit"]
+radius = 0.55
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_core"]
+shading_mode = 0
+albedo_color = Color(1, 0.4, 0.08, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_core"]
+material = SubResource("StandardMaterial3D_core")
+radius = 0.4
+height = 0.8
+radial_segments = 16
+rings = 8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_crust"]
+shading_mode = 0
+albedo_color = Color(0.18, 0.06, 0.06, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_crust"]
+material = SubResource("StandardMaterial3D_crust")
+size = Vector3(0.3, 0.3, 0.3)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_embers"]
+emission_shape = 1
+emission_sphere_radius = 0.4
+direction = Vector3(0, 0, 1)
+spread = 30.0
+initial_velocity_min = 2.0
+initial_velocity_max = 4.0
+gravity = Vector3(0, -2.0, 0)
+scale_min = 0.1
+scale_max = 0.28
+color = Color(1, 0.6, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spark"]
+shading_mode = 0
+albedo_color = Color(1, 0.8, 0.25, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_spark"]
+material = SubResource("StandardMaterial3D_spark")
+size = Vector3(0.06, 0.06, 0.12)
+
+[node name="MagmaBurst" type="Area3D"]
+collision_layer = 8
+collision_mask = 7
+script = ExtResource("1_script")
+explosion_vfx_scene = ExtResource("2_impact")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_hit")
+
+[node name="Core" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_core")
+
+[node name="CrustPiece1" type="MeshInstance3D" parent="Core"]
+transform = Transform3D(0.8, 0.3, 0, -0.3, 0.8, 0, 0, 0, 0.8, 0.25, 0.1, 0.2)
+mesh = SubResource("BoxMesh_crust")
+
+[node name="CrustPiece2" type="MeshInstance3D" parent="Core"]
+transform = Transform3D(0.7, 0, 0.4, 0, 0.8, 0, -0.4, 0, 0.7, -0.22, -0.15, -0.18)
+mesh = SubResource("BoxMesh_crust")
+
+[node name="OrbLight" type="OmniLight3D" parent="."]
+light_color = Color(1, 0.45, 0.15, 1)
+light_energy = 4.2
+omni_range = 5.0
+
+[node name="Embers" type="GPUParticles3D" parent="."]
+amount = 22
+lifetime = 0.28
+process_material = SubResource("ParticleProcessMaterial_embers")
+draw_pass_1 = SubResource("BoxMesh_spark")

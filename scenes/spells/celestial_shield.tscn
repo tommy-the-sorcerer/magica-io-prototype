@@ -1,0 +1,402 @@
+[gd_scene load_steps=25 format=3 uid="uid://c8celestialshield"]
+
+[ext_resource type="Script" path="res://scripts/spells/celestial_shield.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c8celestialgroundrune" path="res://assets/textures/celestial_ground_rune.png" id="2_rune_tex"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_shield"]
+size = Vector3(1.3, 1.5, 0.25)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shield_plate"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.85, 0.3, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_plate"]
+material = SubResource("StandardMaterial3D_shield_plate")
+size = Vector3(1.15, 1.4, 0.05)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gold_rim"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.9, 0.45, 0.85)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rim_v"]
+material = SubResource("StandardMaterial3D_gold_rim")
+size = Vector3(0.06, 1.42, 0.07)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rim_h"]
+material = SubResource("StandardMaterial3D_gold_rim")
+size = Vector3(1.17, 0.06, 0.07)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_heaven_bright"]
+shading_mode = 0
+albedo_color = Color(1, 0.98, 0.72, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cross_v"]
+material = SubResource("StandardMaterial3D_heaven_bright")
+size = Vector3(0.08, 0.95, 0.04)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cross_h"]
+material = SubResource("StandardMaterial3D_heaven_bright")
+size = Vector3(0.55, 0.08, 0.04)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_heaven_halo"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.88, 0.35, 0.95)
+
+[sub_resource type="TorusMesh" id="TorusMesh_halo"]
+material = SubResource("StandardMaterial3D_heaven_halo")
+inner_radius = 0.2
+outer_radius = 0.26
+rings = 20
+ring_segments = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_diamond"]
+shading_mode = 0
+albedo_color = Color(1, 1, 0.9, 1)
+
+[sub_resource type="PrismMesh" id="PrismMesh_diamond"]
+material = SubResource("StandardMaterial3D_diamond")
+size = Vector3(0.18, 0.18, 0.06)
+
+[sub_resource type="PrismMesh" id="PrismMesh_wing"]
+material = SubResource("StandardMaterial3D_heaven_halo")
+size = Vector3(0.1, 0.35, 0.04)
+
+[sub_resource type="Curve" id="Curve_spark_scale"]
+_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_spark"]
+curve = SubResource("Curve_spark_scale")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_block"]
+direction = Vector3(0, 0, -1)
+spread = 60.0
+initial_velocity_min = 3.5
+initial_velocity_max = 7.0
+gravity = Vector3(0, 1.0, 0)
+scale_min = 0.6
+scale_max = 1.2
+scale_curve = SubResource("CurveTexture_spark")
+color = Color(1, 0.95, 0.6, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spark"]
+shading_mode = 0
+albedo_color = Color(1, 0.92, 0.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_spark"]
+material = SubResource("StandardMaterial3D_spark")
+size = Vector3(0.08, 0.08, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground_rune"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.94, 0.75, 0.95)
+albedo_texture = ExtResource("2_rune_tex")
+
+[sub_resource type="QuadMesh" id="QuadMesh_ground_rune"]
+material = SubResource("StandardMaterial3D_ground_rune")
+size = Vector2(3.6, 3.6)
+
+[node name="CelestialShield" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="GroundRune" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.03, 0)
+mesh = SubResource("QuadMesh_ground_rune")
+
+[node name="RuneLight" type="OmniLight3D" parent="GroundRune"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.35)
+light_color = Color(0.88, 0.7, 1, 1)
+light_energy = 2.4
+omni_range = 4.2
+
+[node name="ShieldFront" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -1.65)
+
+[node name="HitArea" type="Area3D" parent="ShieldFront"]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShieldFront/HitArea"]
+shape = SubResource("BoxShape3D_shield")
+
+[node name="Plate" type="MeshInstance3D" parent="ShieldFront"]
+mesh = SubResource("BoxMesh_plate")
+
+[node name="RimLeft" type="MeshInstance3D" parent="ShieldFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.56, 0, 0)
+mesh = SubResource("BoxMesh_rim_v")
+
+[node name="RimRight" type="MeshInstance3D" parent="ShieldFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.56, 0, 0)
+mesh = SubResource("BoxMesh_rim_v")
+
+[node name="RimTop" type="MeshInstance3D" parent="ShieldFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.68, 0)
+mesh = SubResource("BoxMesh_rim_h")
+
+[node name="RimBottom" type="MeshInstance3D" parent="ShieldFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.68, 0)
+mesh = SubResource("BoxMesh_rim_h")
+
+[node name="HeavenSign" type="Node3D" parent="ShieldFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, -0.035)
+
+[node name="CrossV" type="MeshInstance3D" parent="ShieldFront/HeavenSign"]
+mesh = SubResource("BoxMesh_cross_v")
+
+[node name="CrossH" type="MeshInstance3D" parent="ShieldFront/HeavenSign"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0)
+mesh = SubResource("BoxMesh_cross_h")
+
+[node name="HaloRing" type="MeshInstance3D" parent="ShieldFront/HeavenSign"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.12, 0)
+mesh = SubResource("TorusMesh_halo")
+
+[node name="SunDiamond" type="MeshInstance3D" parent="ShieldFront/HeavenSign"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, 0.12, -0.01)
+mesh = SubResource("PrismMesh_diamond")
+
+[node name="LeftWing" type="MeshInstance3D" parent="ShieldFront/HeavenSign"]
+transform = Transform3D(0.819152, 0.573576, 0, -0.573576, 0.819152, 0, 0, 0, 1, -0.32, 0.22, 0)
+mesh = SubResource("PrismMesh_wing")
+
+[node name="RightWing" type="MeshInstance3D" parent="ShieldFront/HeavenSign"]
+transform = Transform3D(0.819152, -0.573576, 0, 0.573576, 0.819152, 0, 0, 0, 1, 0.32, 0.22, 0)
+mesh = SubResource("PrismMesh_wing")
+
+[node name="ShieldLight" type="OmniLight3D" parent="ShieldFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.4)
+light_color = Color(1, 0.9, 0.45, 1)
+light_energy = 1.2
+omni_range = 3.5
+
+[node name="BlockSparks" type="GPUParticles3D" parent="ShieldFront"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.1)
+emitting = false
+amount = 16
+lifetime = 0.3
+one_shot = true
+explosiveness = 0.9
+process_material = SubResource("ParticleProcessMaterial_block")
+draw_pass_1 = SubResource("BoxMesh_spark")
+
+[node name="ShieldBack" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.6, 1.65)
+
+[node name="HitArea" type="Area3D" parent="ShieldBack"]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShieldBack/HitArea"]
+shape = SubResource("BoxShape3D_shield")
+
+[node name="Plate" type="MeshInstance3D" parent="ShieldBack"]
+mesh = SubResource("BoxMesh_plate")
+
+[node name="RimLeft" type="MeshInstance3D" parent="ShieldBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.56, 0, 0)
+mesh = SubResource("BoxMesh_rim_v")
+
+[node name="RimRight" type="MeshInstance3D" parent="ShieldBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.56, 0, 0)
+mesh = SubResource("BoxMesh_rim_v")
+
+[node name="RimTop" type="MeshInstance3D" parent="ShieldBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.68, 0)
+mesh = SubResource("BoxMesh_rim_h")
+
+[node name="RimBottom" type="MeshInstance3D" parent="ShieldBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.68, 0)
+mesh = SubResource("BoxMesh_rim_h")
+
+[node name="HeavenSign" type="Node3D" parent="ShieldBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, -0.035)
+
+[node name="CrossV" type="MeshInstance3D" parent="ShieldBack/HeavenSign"]
+mesh = SubResource("BoxMesh_cross_v")
+
+[node name="CrossH" type="MeshInstance3D" parent="ShieldBack/HeavenSign"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0)
+mesh = SubResource("BoxMesh_cross_h")
+
+[node name="HaloRing" type="MeshInstance3D" parent="ShieldBack/HeavenSign"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.12, 0)
+mesh = SubResource("TorusMesh_halo")
+
+[node name="SunDiamond" type="MeshInstance3D" parent="ShieldBack/HeavenSign"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, 0.12, -0.01)
+mesh = SubResource("PrismMesh_diamond")
+
+[node name="LeftWing" type="MeshInstance3D" parent="ShieldBack/HeavenSign"]
+transform = Transform3D(0.819152, 0.573576, 0, -0.573576, 0.819152, 0, 0, 0, 1, -0.32, 0.22, 0)
+mesh = SubResource("PrismMesh_wing")
+
+[node name="RightWing" type="MeshInstance3D" parent="ShieldBack/HeavenSign"]
+transform = Transform3D(0.819152, -0.573576, 0, 0.573576, 0.819152, 0, 0, 0, 1, 0.32, 0.22, 0)
+mesh = SubResource("PrismMesh_wing")
+
+[node name="ShieldLight" type="OmniLight3D" parent="ShieldBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.4)
+light_color = Color(1, 0.9, 0.45, 1)
+light_energy = 1.2
+omni_range = 3.5
+
+[node name="BlockSparks" type="GPUParticles3D" parent="ShieldBack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.1)
+emitting = false
+amount = 16
+lifetime = 0.3
+one_shot = true
+explosiveness = 0.9
+process_material = SubResource("ParticleProcessMaterial_block")
+draw_pass_1 = SubResource("BoxMesh_spark")
+
+[node name="ShieldLeft" type="Node3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.65, 0.6, 0)
+
+[node name="HitArea" type="Area3D" parent="ShieldLeft"]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShieldLeft/HitArea"]
+shape = SubResource("BoxShape3D_shield")
+
+[node name="Plate" type="MeshInstance3D" parent="ShieldLeft"]
+mesh = SubResource("BoxMesh_plate")
+
+[node name="RimLeft" type="MeshInstance3D" parent="ShieldLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.56, 0, 0)
+mesh = SubResource("BoxMesh_rim_v")
+
+[node name="RimRight" type="MeshInstance3D" parent="ShieldLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.56, 0, 0)
+mesh = SubResource("BoxMesh_rim_v")
+
+[node name="RimTop" type="MeshInstance3D" parent="ShieldLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.68, 0)
+mesh = SubResource("BoxMesh_rim_h")
+
+[node name="RimBottom" type="MeshInstance3D" parent="ShieldLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.68, 0)
+mesh = SubResource("BoxMesh_rim_h")
+
+[node name="HeavenSign" type="Node3D" parent="ShieldLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, -0.035)
+
+[node name="CrossV" type="MeshInstance3D" parent="ShieldLeft/HeavenSign"]
+mesh = SubResource("BoxMesh_cross_v")
+
+[node name="CrossH" type="MeshInstance3D" parent="ShieldLeft/HeavenSign"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0)
+mesh = SubResource("BoxMesh_cross_h")
+
+[node name="HaloRing" type="MeshInstance3D" parent="ShieldLeft/HeavenSign"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.12, 0)
+mesh = SubResource("TorusMesh_halo")
+
+[node name="SunDiamond" type="MeshInstance3D" parent="ShieldLeft/HeavenSign"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, 0.12, -0.01)
+mesh = SubResource("PrismMesh_diamond")
+
+[node name="LeftWing" type="MeshInstance3D" parent="ShieldLeft/HeavenSign"]
+transform = Transform3D(0.819152, 0.573576, 0, -0.573576, 0.819152, 0, 0, 0, 1, -0.32, 0.22, 0)
+mesh = SubResource("PrismMesh_wing")
+
+[node name="RightWing" type="MeshInstance3D" parent="ShieldLeft/HeavenSign"]
+transform = Transform3D(0.819152, -0.573576, 0, 0.573576, 0.819152, 0, 0, 0, 1, 0.32, 0.22, 0)
+mesh = SubResource("PrismMesh_wing")
+
+[node name="ShieldLight" type="OmniLight3D" parent="ShieldLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.4)
+light_color = Color(1, 0.9, 0.45, 1)
+light_energy = 1.2
+omni_range = 3.5
+
+[node name="BlockSparks" type="GPUParticles3D" parent="ShieldLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.1)
+emitting = false
+amount = 16
+lifetime = 0.3
+one_shot = true
+explosiveness = 0.9
+process_material = SubResource("ParticleProcessMaterial_block")
+draw_pass_1 = SubResource("BoxMesh_spark")
+
+[node name="ShieldRight" type="Node3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 1.65, 0.6, 0)
+
+[node name="HitArea" type="Area3D" parent="ShieldRight"]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShieldRight/HitArea"]
+shape = SubResource("BoxShape3D_shield")
+
+[node name="Plate" type="MeshInstance3D" parent="ShieldRight"]
+mesh = SubResource("BoxMesh_plate")
+
+[node name="RimLeft" type="MeshInstance3D" parent="ShieldRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.56, 0, 0)
+mesh = SubResource("BoxMesh_rim_v")
+
+[node name="RimRight" type="MeshInstance3D" parent="ShieldRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.56, 0, 0)
+mesh = SubResource("BoxMesh_rim_v")
+
+[node name="RimTop" type="MeshInstance3D" parent="ShieldRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.68, 0)
+mesh = SubResource("BoxMesh_rim_h")
+
+[node name="RimBottom" type="MeshInstance3D" parent="ShieldRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.68, 0)
+mesh = SubResource("BoxMesh_rim_h")
+
+[node name="HeavenSign" type="Node3D" parent="ShieldRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, -0.035)
+
+[node name="CrossV" type="MeshInstance3D" parent="ShieldRight/HeavenSign"]
+mesh = SubResource("BoxMesh_cross_v")
+
+[node name="CrossH" type="MeshInstance3D" parent="ShieldRight/HeavenSign"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0)
+mesh = SubResource("BoxMesh_cross_h")
+
+[node name="HaloRing" type="MeshInstance3D" parent="ShieldRight/HeavenSign"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.12, 0)
+mesh = SubResource("TorusMesh_halo")
+
+[node name="SunDiamond" type="MeshInstance3D" parent="ShieldRight/HeavenSign"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, 0.12, -0.01)
+mesh = SubResource("PrismMesh_diamond")
+
+[node name="LeftWing" type="MeshInstance3D" parent="ShieldRight/HeavenSign"]
+transform = Transform3D(0.819152, 0.573576, 0, -0.573576, 0.819152, 0, 0, 0, 1, -0.32, 0.22, 0)
+mesh = SubResource("PrismMesh_wing")
+
+[node name="RightWing" type="MeshInstance3D" parent="ShieldRight/HeavenSign"]
+transform = Transform3D(0.819152, -0.573576, 0, 0.573576, 0.819152, 0, 0, 0, 1, 0.32, 0.22, 0)
+mesh = SubResource("PrismMesh_wing")
+
+[node name="ShieldLight" type="OmniLight3D" parent="ShieldRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.4)
+light_color = Color(1, 0.9, 0.45, 1)
+light_energy = 1.2
+omni_range = 3.5
+
+[node name="BlockSparks" type="GPUParticles3D" parent="ShieldRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.1)
+emitting = false
+amount = 16
+lifetime = 0.3
+one_shot = true
+explosiveness = 0.9
+process_material = SubResource("ParticleProcessMaterial_block")
+draw_pass_1 = SubResource("BoxMesh_spark")

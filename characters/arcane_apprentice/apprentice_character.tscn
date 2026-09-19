@@ -1,0 +1,344 @@
+[gd_scene load_steps=38 format=3 uid="uid://c_apprentice_hero"]
+
+[ext_resource type="Script" path="res://characters/arcane_apprentice/apprentice_controller.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2_health"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hitbox"]
+radius = 0.45
+height = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_skin"]
+albedo_color = Color(0.96, 0.82, 0.72, 1)
+roughness = 0.55
+
+[sub_resource type="SphereMesh" id="SphereMesh_head"]
+material = SubResource("StandardMaterial3D_skin")
+radius = 0.2
+height = 0.42
+radial_segments = 24
+rings = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hair"]
+albedo_color = Color(0.1, 0.1, 0.13, 1)
+roughness = 0.7
+
+[sub_resource type="SphereMesh" id="SphereMesh_hair_base"]
+material = SubResource("StandardMaterial3D_hair")
+radius = 0.22
+height = 0.44
+radial_segments = 20
+rings = 14
+
+[sub_resource type="PrismMesh" id="PrismMesh_hair_spike_lg"]
+material = SubResource("StandardMaterial3D_hair")
+size = Vector3(0.12, 0.36, 0.12)
+
+[sub_resource type="PrismMesh" id="PrismMesh_hair_spike_sm"]
+material = SubResource("StandardMaterial3D_hair")
+size = Vector3(0.08, 0.24, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eye_white"]
+albedo_color = Color(0.98, 0.98, 0.98, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_eye_white"]
+material = SubResource("StandardMaterial3D_eye_white")
+size = Vector2(0.07, 0.055)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eye_blue"]
+albedo_color = Color(0.2, 0.75, 1, 1)
+emission_enabled = true
+emission = Color(0.15, 0.65, 1, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="QuadMesh" id="QuadMesh_eye_blue"]
+material = SubResource("StandardMaterial3D_eye_blue")
+size = Vector2(0.045, 0.045)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eye_pupil"]
+albedo_color = Color(0.05, 0.05, 0.08, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_eye_pupil"]
+material = SubResource("StandardMaterial3D_eye_pupil")
+size = Vector2(0.02, 0.02)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_blue_cowl"]
+albedo_color = Color(0.1, 0.42, 0.88, 1)
+roughness = 0.65
+
+[sub_resource type="TorusMesh" id="TorusMesh_cowl"]
+material = SubResource("StandardMaterial3D_blue_cowl")
+inner_radius = 0.2
+outer_radius = 0.35
+rings = 24
+ring_segments = 14
+
+[sub_resource type="PrismMesh" id="PrismMesh_cowl_fold"]
+material = SubResource("StandardMaterial3D_blue_cowl")
+size = Vector3(0.32, 0.25, 0.16)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cape"]
+albedo_color = Color(0.08, 0.36, 0.82, 1)
+roughness = 0.6
+
+[sub_resource type="PrismMesh" id="PrismMesh_cape"]
+material = SubResource("StandardMaterial3D_cape")
+size = Vector3(0.55, 0.95, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_white_coat"]
+albedo_color = Color(0.92, 0.93, 0.96, 1)
+roughness = 0.5
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_torso"]
+material = SubResource("StandardMaterial3D_white_coat")
+radius = 0.22
+height = 0.58
+radial_segments = 20
+rings = 8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dark_tunic"]
+albedo_color = Color(0.12, 0.15, 0.22, 1)
+roughness = 0.6
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_tunic"]
+material = SubResource("StandardMaterial3D_dark_tunic")
+radius = 0.19
+height = 0.44
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_leather_belt"]
+albedo_color = Color(0.32, 0.2, 0.12, 1)
+roughness = 0.7
+
+[sub_resource type="BoxMesh" id="BoxMesh_belt"]
+material = SubResource("StandardMaterial3D_leather_belt")
+size = Vector3(0.44, 0.08, 0.38)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gold_buckle"]
+albedo_color = Color(0.92, 0.76, 0.22, 1)
+metallic = 0.85
+roughness = 0.25
+
+[sub_resource type="BoxMesh" id="BoxMesh_buckle"]
+material = SubResource("StandardMaterial3D_gold_buckle")
+size = Vector3(0.1, 0.09, 0.04)
+
+[sub_resource type="PrismMesh" id="PrismMesh_coattail"]
+material = SubResource("StandardMaterial3D_white_coat")
+size = Vector3(0.24, 0.58, 0.1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_sleeve"]
+material = SubResource("StandardMaterial3D_white_coat")
+radius = 0.09
+height = 0.45
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_hand"]
+material = SubResource("StandardMaterial3D_skin")
+radius = 0.065
+height = 0.18
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_pants"]
+material = SubResource("StandardMaterial3D_dark_tunic")
+radius = 0.09
+height = 0.52
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_boot"]
+material = SubResource("StandardMaterial3D_leather_belt")
+radius = 0.095
+height = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_electro_core"]
+shading_mode = 0
+albedo_color = Color(0.7, 0.96, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_electro_core"]
+material = SubResource("StandardMaterial3D_electro_core")
+radius = 0.14
+height = 0.28
+radial_segments = 16
+rings = 10
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_electro_ring"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(0.25, 0.8, 1, 0.95)
+
+[sub_resource type="TorusMesh" id="TorusMesh_electro_ring"]
+material = SubResource("StandardMaterial3D_electro_ring")
+inner_radius = 0.18
+outer_radius = 0.24
+rings = 16
+ring_segments = 12
+
+[node name="ArcaneApprentice" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_script")
+move_speed = 7.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, 0)
+shape = SubResource("CapsuleShape3D_hitbox")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 135.0
+
+[node name="Nameplate3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.95, 0)
+billboard = 1
+double_sided = false
+text = "⚡ [ 135 / 135 ]
+⚡ Arcane Apprentice (Lvl 1)"
+font_size = 28
+outline_size = 8
+outline_color = Color(0.05, 0.1, 0.15, 1)
+modulate = Color(0.4, 0.85, 1, 1)
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="Head" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+
+[node name="HeadMesh" type="MeshInstance3D" parent="Visuals/Head"]
+mesh = SubResource("SphereMesh_head")
+
+[node name="HairBase" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0.04)
+mesh = SubResource("SphereMesh_hair_base")
+
+[node name="HairSpikeTop" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, -0.05, 0.3, -0.02)
+mesh = SubResource("PrismMesh_hair_spike_lg")
+
+[node name="HairSpikeLeft" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, -0.16, 0.2, 0)
+mesh = SubResource("PrismMesh_hair_spike_sm")
+
+[node name="HairSpikeRight" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0, 1, 0.16, 0.2, 0)
+mesh = SubResource("PrismMesh_hair_spike_sm")
+
+[node name="HairBangs" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, 0.12, -0.2)
+mesh = SubResource("PrismMesh_hair_spike_sm")
+
+[node name="LeftEye" type="Node3D" parent="Visuals/Head"]
+transform = Transform3D(0.984808, 0, -0.173648, 0, 1, 0, 0.173648, 0, 0.984808, -0.08, 0.02, -0.19)
+
+[node name="White" type="MeshInstance3D" parent="Visuals/Head/LeftEye"]
+mesh = SubResource("QuadMesh_eye_white")
+
+[node name="Iris" type="MeshInstance3D" parent="Visuals/Head/LeftEye"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.005)
+mesh = SubResource("QuadMesh_eye_blue")
+
+[node name="Pupil" type="MeshInstance3D" parent="Visuals/Head/LeftEye"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.008)
+mesh = SubResource("QuadMesh_eye_pupil")
+
+[node name="RightEye" type="Node3D" parent="Visuals/Head"]
+transform = Transform3D(0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, 0.984808, 0.08, 0.02, -0.19)
+
+[node name="White" type="MeshInstance3D" parent="Visuals/Head/RightEye"]
+mesh = SubResource("QuadMesh_eye_white")
+
+[node name="Iris" type="MeshInstance3D" parent="Visuals/Head/RightEye"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.005)
+mesh = SubResource("QuadMesh_eye_blue")
+
+[node name="Pupil" type="MeshInstance3D" parent="Visuals/Head/RightEye"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.008)
+mesh = SubResource("QuadMesh_eye_pupil")
+
+[node name="CowlScarf" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, -0.18, -0.02)
+mesh = SubResource("TorusMesh_cowl")
+
+[node name="CowlKnot" type="MeshInstance3D" parent="Visuals/Head"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.12, -0.24, -0.18)
+mesh = SubResource("PrismMesh_cowl_fold")
+
+[node name="Torso" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+
+[node name="OuterCoat" type="MeshInstance3D" parent="Visuals/Torso"]
+mesh = SubResource("CapsuleMesh_torso")
+
+[node name="InnerTunic" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, -0.04)
+mesh = SubResource("CapsuleMesh_tunic")
+
+[node name="Belt" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+mesh = SubResource("BoxMesh_belt")
+
+[node name="Buckle" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -0.2)
+mesh = SubResource("BoxMesh_buckle")
+
+[node name="CoattailLeft" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -0.16, -0.4, 0.02)
+mesh = SubResource("PrismMesh_coattail")
+
+[node name="CoattailRight" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 0.16, -0.4, 0.02)
+mesh = SubResource("PrismMesh_coattail")
+
+[node name="Cape" type="MeshInstance3D" parent="Visuals/Torso"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, -0.1, 0.22)
+mesh = SubResource("PrismMesh_cape")
+
+[node name="Arms" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+
+[node name="RightArm" type="MeshInstance3D" parent="Visuals/Arms"]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 0.28, -0.12, 0)
+mesh = SubResource("CapsuleMesh_sleeve")
+
+[node name="RightHand" type="MeshInstance3D" parent="Visuals/Arms/RightArm"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.26, 0)
+mesh = SubResource("CapsuleMesh_hand")
+
+[node name="LeftArm" type="MeshInstance3D" parent="Visuals/Arms"]
+transform = Transform3D(0.866025, 0.433013, -0.25, 0, 0.5, 0.866025, 0.5, -0.75, 0.433013, -0.28, -0.05, -0.15)
+mesh = SubResource("CapsuleMesh_sleeve")
+
+[node name="LeftHand" type="MeshInstance3D" parent="Visuals/Arms/LeftArm"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.26, 0)
+mesh = SubResource("CapsuleMesh_hand")
+
+[node name="ElectroBall" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42, 0.72, -0.38)
+
+[node name="Core" type="MeshInstance3D" parent="Visuals/ElectroBall"]
+mesh = SubResource("SphereMesh_electro_core")
+
+[node name="Ring" type="MeshInstance3D" parent="Visuals/ElectroBall"]
+mesh = SubResource("TorusMesh_electro_ring")
+
+[node name="BallLight" type="OmniLight3D" parent="Visuals/ElectroBall"]
+light_color = Color(0.3, 0.85, 1, 1)
+light_energy = 2.2
+omni_range = 3.5
+
+[node name="CastPoint" type="Marker3D" parent="Visuals/ElectroBall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+
+[node name="Legs" type="Node3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, 0)
+
+[node name="LeftLeg" type="MeshInstance3D" parent="Visuals/Legs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 0, 0)
+mesh = SubResource("CapsuleMesh_pants")
+
+[node name="LeftBoot" type="MeshInstance3D" parent="Visuals/Legs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, -0.2, -0.02)
+mesh = SubResource("CapsuleMesh_boot")
+
+[node name="RightLeg" type="MeshInstance3D" parent="Visuals/Legs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12, 0, 0)
+mesh = SubResource("CapsuleMesh_pants")
+
+[node name="RightBoot" type="MeshInstance3D" parent="Visuals/Legs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12, -0.2, -0.02)
+mesh = SubResource("CapsuleMesh_boot")

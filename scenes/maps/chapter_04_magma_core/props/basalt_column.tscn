@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://mcbasaltcol01"]
+
+[ext_resource type="PackedScene" path="res://assets/nature_kit/stone_tallB.glb" id="1_model"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_basalt"]
+height = 5.0
+radius = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_basalt_override"]
+albedo_color = Color(0.14, 0.12, 0.15, 1)
+metallic = 0.2
+roughness = 0.85
+
+[node name="BasaltColumn" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+shape = SubResource("CylinderShape3D_basalt")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)

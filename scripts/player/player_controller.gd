@@ -1,381 +1,918 @@
 class_name PlayerController
 extends CharacterBody3D
 
-const AntigravityScript = preload("res://scripts/player/antigravity.gd")
+## Ascended - Legendary Seraph Archangel Hero
+## Features animated 4-wing flight fluttering, floating glowing halo, divine spellcasting, and health tracking
 
-## High-Detail Voxel Hero with Dual Mobile Joysticks, WASD movement, 360° Aiming,
-## Spacebar Flip Jump, Right-Click/Shift Dash, and Animated Limbs.
+@export_group("Movement")
+@export var move_speed: float = 7.5
+@export var acceleration: float = 35.0
+@export var deceleration: float = 45.0
+@export var rotation_speed: float = 720.0
 
-signal spell_cast(spell_scene: PackedScene, origin_position: Vector3, forward_direction: Vector3)
+@export_group("Spells")
+@export var fireball_scene: PackedScene = preload("res://scenes/spells/fireball.tscn")
+@export var ice_lance_scene: PackedScene = preload("res://scenes/spells/ice_lance.tscn")
+@export var celestial_beam_scene: PackedScene = preload("res://characters/celestial/skills/celestial_beam.tscn")
+@export var celestial_shield_scene: PackedScene = preload("res://characters/celestial/skills/celestial_shield.tscn")
+@export var dash_ghost_scene: PackedScene = preload("res://characters/celestial/vfx/dash_ghost.tscn")
+@export var dash_burst_scene: PackedScene = preload("res://characters/celestial/vfx/dash_burst_vfx.tscn")
+@export var dash_arrival_scene: PackedScene = preload("res://characters/celestial/vfx/dash_arrival_vfx.tscn")
+@export var spell_cooldown: float = 0.38
+@export var beam_cooldown: float = 3.0
+@export var shield_cooldown: float = 8.0
+@export var dash_cooldown: float = 3.5
+@export var dash_speed: float = 16.0
+@export var dash_duration: float = 0.22
 
-@export_group("Movement Settings")
-@export var move_speed: float = 7.0
-@export var acceleration: float = 20.0
-@export var deceleration: float = 25.0
-@export var rotation_speed: float = 12.0
+# Core Gameplay Attack Release Pipeline Standards
+const INPUT_BUFFER_WINDOW: float = 0.08
+const CAST_START_DELAY: float = 0.12
+const ATTACK_RELEASE_TIME: float = 0.20
+const ATTACK_RECOVERY_TIME: float = 0.18
+const TOTAL_ATTACK_ANIM_TIME: float = 0.38
 
-@export_group("Combat & Spell Settings")
-@export var spell_scene: PackedScene
-@export var aim_threshold: float = 0.3
+var _is_casting_attack: bool = false
+var _attack_timer: float = 0.0
+var _attack_released: bool = false
+var _buffered_attack: bool = false
+var _pending_spell_scene: PackedScene = null
+var _buffered_spell_scene: PackedScene = null
 
-@export_group("Node References")
-@export var move_joystick: MobileVirtualJoystick
-@export var aim_joystick: MobileVirtualJoystick
-@export var cast_point: Marker3D
+# Core Gameplay Beam Standards
+const BEAM_CHARGE_TIME: float = 0.18
+const BEAM_APPEAR_TIME: float = 0.20
+const BEAM_ACTIVE_DURATION: float = 0.35
+const BEAM_FADE_DURATION: float = 0.10
 
-@export_group("Antigravity Settings")
-@export var antigravity_enabled: bool = true
+var _is_charging_beam: bool = false
+var _beam_pipeline_timer: float = 0.0
+var _beam_has_appeared: bool = false
 
-var display_name: String = "Player#5139"
-var walk_cycle_time: float = 0.0
+var display_name: String = "👑 Ascended"
+var can_cast: bool = true
+var _beam_timer: float = 0.0
+var _shield_timer: float = 0.0
+var _dash_cd_timer: float = 0.0
+var _active_shield: Node3D = null
 
-# Spellcasting, Dash & Flip State
-var can_shoot: bool = true
-var shoot_cooldown: float = 0.35
-var can_dash: bool = true
-var dash_cooldown: float = 1.8
-var is_dashing: bool = false
-var dash_time_left: float = 0.0
-var dash_direction: Vector3 = Vector3.FORWARD
+var _is_dashing: bool = false
+var _is_dash_recovering: bool = false
+var _dash_timer: float = 0.0
+var _dash_recovery_timer: float = 0.0
+var _dash_direction: Vector3 = Vector3.ZERO
+var _ghost_spawn_timer: float = 0.0
+var _ghost_counter: int = 0
+var _invulnerable_buffer: float = 0.0
+var _knockback_velocity: Vector3 = Vector3.ZERO
+var _stagger_timer: float = 0.0
 
-# 360 Flip State
-var can_flip: bool = true
-var is_flipping: bool = false
-var flip_cooldown: float = 1.0
+var _speed_modifier: float = 1.0
+var _slow_timer: float = 0.0
+var _is_slowed: bool = false
+var _is_beam_active: bool = false
+var _beam_charge_phase: float = 0.0
 
-@onready var visuals: Node3D = $Visuals if has_node("Visuals") else null
-@onready var health_component: HealthComponent = $HealthComponent if has_node("HealthComponent") else null
-@onready var nameplate: Label3D = $Nameplate3D if has_node("Nameplate3D") else null
+@onready var visuals: Node3D = $Visuals
+@onready var health_component: HealthComponent = $HealthComponent
+@onready var nameplate: Label3D = $Nameplate3D
 
-var _mouse_aim_start: Vector2 = Vector2.ZERO
-var _is_mouse_aiming: bool = false
-var _last_mouse_aim_dir: Vector3 = Vector3.FORWARD
+# Visual sub-nodes for Seraph animations
+@onready var upper_left_wing: Node3D = $Visuals.find_child("UpperLeftWing", true, false) as Node3D
+@onready var upper_right_wing: Node3D = $Visuals.find_child("UpperRightWing", true, false) as Node3D
+@onready var lower_left_wing: Node3D = $Visuals.find_child("LowerLeftWing", true, false) as Node3D
+@onready var lower_right_wing: Node3D = $Visuals.find_child("LowerRightWing", true, false) as Node3D
+@onready var halo: Node3D = $Visuals.find_child("Halo", true, false) as Node3D
+@onready var scepter: Node3D = $Visuals.find_child("Scepter", true, false) as Node3D
+@onready var head_node: Node3D = $Visuals.find_child("Head", true, false) as Node3D
+@onready var left_arm: Node3D = $Visuals.find_child("LeftArm", true, false) as Node3D
+@onready var right_arm: Node3D = $Visuals.find_child("RightArm", true, false) as Node3D
+@onready var left_leg: Node3D = $Visuals.find_child("LeftLeg", true, false) as Node3D
+@onready var right_leg: Node3D = $Visuals.find_child("RightLeg", true, false) as Node3D
+@onready var coattail_left: Node3D = $Visuals.find_child("CoattailLeft", true, false) as Node3D
+@onready var coattail_right: Node3D = $Visuals.find_child("CoattailRight", true, false) as Node3D
+@onready var coattail_back: Node3D = $Visuals.find_child("CoattailBack", true, false) as Node3D
+@onready var dash_streamers: GPUParticles3D = $Visuals.find_child("DashStreamers", true, false) as GPUParticles3D
 
-# Animated Limbs
-@onready var left_leg_pivot: Node3D = $Visuals/LeftLegPivot if has_node("Visuals/LeftLegPivot") else null
-@onready var right_leg_pivot: Node3D = $Visuals/RightLegPivot if has_node("Visuals/RightLegPivot") else null
-@onready var left_arm_pivot: Node3D = $Visuals/LeftArmPivot if has_node("Visuals/LeftArmPivot") else null
-@onready var right_arm_pivot: Node3D = $Visuals/RightArmPivot if has_node("Visuals/RightArmPivot") else null
-@onready var wand_flame: MeshInstance3D = $Visuals/RightArmPivot/Wand/FlameTip if has_node("Visuals/RightArmPivot/Wand/FlameTip") else null
+var _orig_left_arm_trans: Transform3D
+var _orig_right_arm_trans: Transform3D
+var _orig_left_leg_trans: Transform3D
+var _orig_right_leg_trans: Transform3D
+var _orig_scepter_pos: Vector3 = Vector3.ZERO
+var _orig_visuals_pos_y: float = 0.0
+var _orig_coattail_l_rot: Vector3 = Vector3.ZERO
+var _orig_coattail_r_rot: Vector3 = Vector3.ZERO
+var _orig_coattail_b_rot: Vector3 = Vector3.ZERO
+var _orig_halo_rot_x: float = 0.0
 
 func _ready() -> void:
 	add_to_group("combatants")
 	add_to_group("player")
 	
+	if left_arm: _orig_left_arm_trans = left_arm.transform
+	if right_arm: _orig_right_arm_trans = right_arm.transform
+	if left_leg: _orig_left_leg_trans = left_leg.transform
+	if right_leg: _orig_right_leg_trans = right_leg.transform
+	if scepter: _orig_scepter_pos = scepter.position
+	if visuals: _orig_visuals_pos_y = visuals.position.y
+	if coattail_left: _orig_coattail_l_rot = coattail_left.rotation
+	if coattail_right: _orig_coattail_r_rot = coattail_right.rotation
+	if coattail_back: _orig_coattail_b_rot = coattail_back.rotation
+	if halo: _orig_halo_rot_x = halo.rotation.x
+	
 	if health_component:
 		health_component.health_changed.connect(_on_health_changed)
+		health_component.died.connect(_on_player_died)
 		_update_nameplate(health_component.current_health, health_component.max_health)
-		
-	call_deferred("_connect_hud_touch_buttons")
-
-	if not cast_point and visuals:
-		cast_point = visuals.find_child("CastPoint", true, false) as Marker3D
-	if not cast_point:
-		cast_point = find_child("CastPoint", true, false) as Marker3D
-
-	_setup_joysticks()
-
-func _connect_hud_touch_buttons() -> void:
-	var hud := get_tree().current_scene.find_child("HUD", true, false)
-	if hud:
-		var orb_panel := hud.find_child("Orb", true, false)
-		if orb_panel:
-			orb_panel.gui_input.connect(func(event: InputEvent):
-				if event is InputEventMouseButton and event.pressed:
-					shoot_spell()
-			)
-		var dash_btn := hud.find_child("LockSkill1", true, false) as Button
-		if dash_btn:
-			dash_btn.text = "⚡"
-			if not dash_btn.pressed.is_connected(dash):
-				dash_btn.pressed.connect(dash)
-
-func _setup_joysticks() -> void:
-	if not move_joystick:
-		move_joystick = get_tree().current_scene.find_child("MoveJoystick", true, false) as MobileVirtualJoystick
-		if not move_joystick:
-			move_joystick = get_tree().current_scene.find_child("LeftJoystick", true, false) as MobileVirtualJoystick
-
-	if not aim_joystick:
-		aim_joystick = get_tree().current_scene.find_child("AimJoystick", true, false) as MobileVirtualJoystick
-		if not aim_joystick:
-			aim_joystick = get_tree().current_scene.find_child("RightJoystick", true, false) as MobileVirtualJoystick
-
-	if aim_joystick and not aim_joystick.joystick_released.is_connected(_on_aim_joystick_released):
-		aim_joystick.joystick_released.connect(_on_aim_joystick_released)
 
 func _update_nameplate(curr: float, max_hp: float) -> void:
-	if nameplate:
-		nameplate.text = "[ %d / %d ]\n%s" % [int(curr), int(max_hp), display_name]
-		nameplate.modulate = Color(0.65, 0.95, 0.3) if curr > 30 else Color(0.95, 0.3, 0.3)
+	if not nameplate:
+		return
+	var status_tag: String = " ❄️" if _is_slowed else ""
+	var beam_tag: String = " | ☀️ [E]" if _beam_timer <= 0.0 else " | ⏳ %.1fs" % _beam_timer
+	var shield_tag: String = " | 🛡️ [R]" if _shield_timer <= 0.0 else ""
+	var dash_tag: String = " | ⚡ [Q]" if _dash_cd_timer <= 0.0 else ""
+	nameplate.text = "✨ [ %d / %d ]%s%s%s%s\n%s (Lvl 24)" % [int(curr), int(max_hp), status_tag, beam_tag, shield_tag, dash_tag, display_name]
+	nameplate.modulate = Color(0.4, 0.9, 1.0) if _is_slowed else (Color(1.0, 0.88, 0.35) if curr > 40 else Color(0.95, 0.3, 0.3))
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_SPACE or event.keycode == KEY_K or event.keycode == KEY_ENTER:
-			shoot_spell()
-		elif event.keycode == KEY_F:
-			perform_flip()
-		elif event.keycode == KEY_SHIFT:
-			dash()
-
-	elif event is InputEventMouseButton:
-		var mb := event as InputEventMouseButton
-		if mb.button_index == MOUSE_BUTTON_RIGHT:
-			if mb.pressed:
-				dash()
-		elif mb.button_index == MOUSE_BUTTON_LEFT:
-			if not aim_joystick or aim_joystick.get_output().length() < aim_threshold:
-				if mb.pressed:
-					_mouse_aim_start = mb.position
-					_is_mouse_aiming = true
-				else:
-					if _is_mouse_aiming:
-						_is_mouse_aiming = false
-						var cast_dir := _last_mouse_aim_dir
-						if cast_dir.length_squared() > 0.01:
-							_trigger_spell_cast(cast_dir)
-
-## Reusable 360° Movement Flip Action (SPACEBAR / Mobile Button)
-func perform_flip() -> void:
-	if not can_flip or is_flipping or not visuals:
+	if not health_component or not health_component.is_alive():
 		return
-	can_flip = false
-	is_flipping = true
 	
-	var tween := create_tween()
-	# 1. Prepare / Anticipation Bend
-	tween.tween_property(visuals, "position:y", -0.15, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.parallel().tween_property(visuals, "scale", Vector3(1.15, 0.82, 1.15), 0.15)
-	
-	# 2. Jump & Air Movement
-	tween.chain().tween_property(visuals, "position:y", 0.85, 0.22).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.parallel().tween_property(visuals, "scale", Vector3(0.9, 1.15, 0.9), 0.18)
-	
-	# 3. 360° Pitch Rotation through air
-	tween.parallel().tween_property(visuals, "rotation:x", -TAU, 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	
-	# 4. Land & Squash
-	tween.chain().tween_property(visuals, "position:y", 0.0, 0.18).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.parallel().tween_property(visuals, "rotation:x", 0.0, 0.15)
-	tween.parallel().tween_property(visuals, "scale", Vector3(1.2, 0.8, 1.2), 0.10)
-	
-	# 5. Recovery to Idle
-	tween.chain().tween_property(visuals, "scale", Vector3.ONE, 0.15)
-	
-	await tween.finished
-	is_flipping = false
-	
-	await get_tree().create_timer(flip_cooldown).timeout
-	can_flip = true
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			_request_spell(fireball_scene)
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			_request_spell(ice_lance_scene)
+		elif event.button_index == MOUSE_BUTTON_MIDDLE and _beam_timer <= 0.0:
+			_request_celestial_beam()
+	elif event is InputEventKey and event.pressed and not event.echo:
+		var keycode: int = (event as InputEventKey).keycode
+		if keycode == KEY_SPACE:
+			_request_spell(fireball_scene)
+		elif keycode == KEY_SHIFT:
+			_request_spell(ice_lance_scene)
+		elif (keycode == KEY_E or keycode == KEY_F) and _beam_timer <= 0.0:
+			_request_celestial_beam()
+		elif (keycode == KEY_R or keycode == KEY_C) and _shield_timer <= 0.0:
+			_cast_celestial_shield()
+		elif keycode == KEY_Q and _dash_cd_timer <= 0.0:
+			_perform_dash()
 
-func shoot_spell() -> void:
-	if not can_shoot or is_dashing:
-		return
-	can_shoot = false
-	
-	var forward_dir := -visuals.global_transform.basis.z if visuals else Vector3.FORWARD
-	var spawn_pos: Vector3 = wand_flame.global_position if wand_flame else (cast_point.global_position if cast_point else global_position + Vector3(0, 0.8, 0))
-	
-	_trigger_spell_cast(forward_dir)
-	
-	var fireball_scene: PackedScene = spell_scene if spell_scene else (load("res://scenes/spells/fireball.tscn") as PackedScene)
-	if fireball_scene:
-		var proj: Projectile = fireball_scene.instantiate() as Projectile
-		if proj:
-			proj.caster = self
-			get_tree().current_scene.add_child(proj)
-			proj.global_position = spawn_pos
-			proj.look_at(spawn_pos + forward_dir, Vector3.UP)
-	
-	if right_arm_pivot:
-		var tween := create_tween()
-		tween.tween_property(right_arm_pivot, "rotation:x", -1.2, 0.08)
-		tween.tween_property(right_arm_pivot, "rotation:x", 0.0, 0.15)
-		
-	await get_tree().create_timer(shoot_cooldown).timeout
-	can_shoot = true
-
-func dash() -> void:
-	if not can_dash or is_dashing:
-		return
-	can_dash = false
-	is_dashing = true
-	dash_time_left = 0.22
-	
-	dash_direction = -visuals.global_transform.basis.z if visuals else Vector3.FORWARD
-	
-	if visuals:
-		var tween := create_tween()
-		tween.tween_property(visuals, "scale", Vector3(1.3, 0.7, 1.3), 0.08)
-		tween.tween_property(visuals, "scale", Vector3.ONE, 0.14)
-	
-	await get_tree().create_timer(dash_cooldown).timeout
-	can_dash = true
-
-func _physics_process(delta: float) -> void:
-	if not move_joystick or not aim_joystick:
-		_setup_joysticks()
-
-	if antigravity_enabled:
-		AntigravityScript.apply_antigravity(self, antigravity_enabled, delta)
-	elif not is_on_floor():
-		velocity.y -= 9.8 * delta
-
-	if is_dashing:
-		dash_time_left -= delta
-		velocity.x = dash_direction.x * 22.0
-		velocity.z = dash_direction.z * 22.0
-		if dash_time_left <= 0.0:
-			is_dashing = false
-		move_and_slide()
-		return
-
-	# Movement Input (Joystick + WASD Fallback)
-	var input_dir := Vector2.ZERO
-	if move_joystick:
-		input_dir = move_joystick.get_output()
-
-	if input_dir.length_squared() < 0.01:
-		if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
-			input_dir.y -= 1
-		if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
-			input_dir.y += 1
-		if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
-			input_dir.x -= 1
-		if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
-			input_dir.x += 1
-
-	if input_dir.length_squared() > 1.0:
-		input_dir = input_dir.normalized()
-
-	# Relative to camera orientation
-	var cam: Camera3D = get_viewport().get_camera_3d()
-	var cam_forward: Vector3 = Vector3.FORWARD
-	var cam_right: Vector3 = Vector3.RIGHT
-	if cam:
-		var cam_basis := cam.global_transform.basis
-		cam_forward = -cam_basis.z
-		cam_forward.y = 0
-		cam_forward = cam_forward.normalized()
-		cam_right = cam_basis.x
-		cam_right.y = 0
-		cam_right = cam_right.normalized()
-
-	var move_vector: Vector3 = (cam_right * input_dir.x + cam_forward * -input_dir.y)
-	if move_vector.length_squared() > 1.0:
-		move_vector = move_vector.normalized()
-
-	var target_vel := move_vector * move_speed
-	if move_vector.length_squared() > 0.01:
-		velocity.x = move_toward(velocity.x, target_vel.x, acceleration * delta * move_speed)
-		velocity.z = move_toward(velocity.z, target_vel.z, acceleration * delta * move_speed)
-	else:
-		velocity.x = move_toward(velocity.x, 0.0, deceleration * delta * move_speed)
-		velocity.z = move_toward(velocity.z, 0.0, deceleration * delta * move_speed)
-
-	move_and_slide()
-
-	# Aiming Input (Right Joystick + Mouse Fallback)
-	var aim_input := Vector2.ZERO
-	if aim_joystick:
-		aim_input = aim_joystick.get_output()
-
-	var is_aiming := false
-	var active_aim_dir := Vector3.ZERO
-
-	if aim_input.length() >= aim_threshold:
-		active_aim_dir = (cam_right * aim_input.x + cam_forward * -aim_input.y).normalized()
-		is_aiming = true
-	elif _is_mouse_aiming:
-		var mouse_dir := _get_mouse_world_dir()
-		if mouse_dir.length_squared() > 0.01:
-			active_aim_dir = mouse_dir
-			_last_mouse_aim_dir = mouse_dir
-			is_aiming = true
-
-	# Rotation & Animations
-	if visuals and not is_flipping:
-		if is_aiming and active_aim_dir.length_squared() > 0.01:
-			var target_angle := atan2(active_aim_dir.x, active_aim_dir.z)
-			visuals.rotation.y = lerp_angle(visuals.rotation.y, target_angle, rotation_speed * delta)
-		elif move_vector.length_squared() > 0.01:
-			var target_angle := atan2(move_vector.x, move_vector.z)
-			visuals.rotation.y = lerp_angle(visuals.rotation.y, target_angle, rotation_speed * delta)
-
-		# Walk animations & Wobble
-		if move_vector.length_squared() > 0.05:
-			walk_cycle_time += delta * 14.0
-			var leg_swing := sin(walk_cycle_time) * 0.65
-			var arm_swing := cos(walk_cycle_time) * 0.55
-			var wobble := sin(walk_cycle_time * 0.5) * 0.12
-			
-			if left_leg_pivot:
-				left_leg_pivot.rotation.x = leg_swing
-			if right_leg_pivot:
-				right_leg_pivot.rotation.x = -leg_swing
-			if left_arm_pivot:
-				left_arm_pivot.rotation.x = -arm_swing
-			if right_arm_pivot and can_shoot:
-				right_arm_pivot.rotation.x = arm_swing
-				
-			visuals.rotation.z = wobble
-		else:
-			visuals.rotation.z = move_toward(visuals.rotation.z, 0.0, 8.0 * delta)
-			if left_leg_pivot:
-				left_leg_pivot.rotation.x = move_toward(left_leg_pivot.rotation.x, 0.0, 10.0 * delta)
-			if right_leg_pivot:
-				right_leg_pivot.rotation.x = move_toward(right_leg_pivot.rotation.x, 0.0, 10.0 * delta)
-			if left_arm_pivot:
-				left_arm_pivot.rotation.x = move_toward(left_arm_pivot.rotation.x, 0.0, 10.0 * delta)
-			if right_arm_pivot and can_shoot:
-				right_arm_pivot.rotation.x = move_toward(right_arm_pivot.rotation.x, 0.0, 10.0 * delta)
-
-func _get_mouse_world_dir() -> Vector3:
+## Computes world-space aiming direction pointing directly toward mouse cursor
+func _get_mouse_aim_direction() -> Vector3:
 	var viewport := get_viewport()
 	if not viewport:
-		return Vector3.ZERO
-	var camera := viewport.get_camera_3d()
-	if not camera:
-		return Vector3.ZERO
-	
+		return -visuals.global_transform.basis.z
 	var mouse_pos := viewport.get_mouse_position()
-	var ray_origin := camera.project_ray_origin(mouse_pos)
-	var ray_dir := camera.project_ray_normal(mouse_pos)
-	
-	var ground_plane := Plane(Vector3.UP, global_position.y)
-	var hit_pos: Variant = ground_plane.intersects_ray(ray_origin, ray_dir)
-	if hit_pos is Vector3:
-		var hit_vec: Vector3 = hit_pos
-		var dir: Vector3 = hit_vec - global_position
+	var cam := viewport.get_camera_3d()
+	if not cam:
+		return -visuals.global_transform.basis.z
+	var ray_origin := cam.project_ray_origin(mouse_pos)
+	var ray_normal := cam.project_ray_normal(mouse_pos)
+	var plane := Plane(Vector3.UP, global_position.y)
+	var hit_pos = plane.intersects_ray(ray_origin, ray_normal)
+	if hit_pos != null:
+		var dir: Vector3 = (hit_pos as Vector3) - global_position
 		dir.y = 0.0
-		return dir.normalized()
-	return Vector3.ZERO
+		if dir.length_squared() > 0.01:
+			return dir.normalized()
+	return -visuals.global_transform.basis.z
 
-func _on_aim_joystick_released(final_output: Vector2) -> void:
-	if final_output.length() >= aim_threshold:
-		var cam: Camera3D = get_viewport().get_camera_3d()
-		var cam_forward := -cam.global_transform.basis.z if cam else Vector3.FORWARD
-		cam_forward.y = 0
-		cam_forward = cam_forward.normalized()
-		var cam_right := cam.global_transform.basis.x if cam else Vector3.RIGHT
-		cam_right.y = 0
-		cam_right = cam_right.normalized()
+## Requests spell with 0.08s input buffering
+func _request_spell(spell_scene: PackedScene) -> void:
+	if not _is_casting_attack:
+		_start_spell_pipeline(spell_scene)
+	else:
+		var time_remaining: float = TOTAL_ATTACK_ANIM_TIME - _attack_timer
+		if time_remaining <= INPUT_BUFFER_WINDOW:
+			_buffered_attack = true
+			_buffered_spell_scene = spell_scene
 
-		var cast_dir := (cam_right * final_output.x + cam_forward * -final_output.y).normalized()
-		_trigger_spell_cast(cast_dir)
+func _start_spell_pipeline(spell_scene: PackedScene) -> void:
+	if not can_cast:
+		return
+	can_cast = false
+	_is_casting_attack = true
+	_attack_timer = 0.0
+	_attack_released = false
+	_buffered_attack = false
+	_pending_spell_scene = spell_scene
 
-func _trigger_spell_cast(direction: Vector3) -> void:
-	if direction.length_squared() < 0.01:
+## Requests beam adhering to Beam Standards
+func _request_celestial_beam() -> void:
+	if not celestial_beam_scene or _beam_timer > 0.0 or _is_charging_beam:
+		return
+	
+	_beam_timer = beam_cooldown
+	_is_charging_beam = true
+	_beam_pipeline_timer = 0.0
+	_beam_has_appeared = false
+	_is_beam_active = true
+	if health_component:
+		_update_nameplate(health_component.current_health, health_component.max_health)
+
+func _physics_process(delta: float) -> void:
+	if not is_on_floor():
+		velocity.y -= 9.8 * delta
+	
+	# Process beam cooldown timer
+	if _beam_timer > 0.0:
+		_beam_timer -= delta
+		if _beam_timer <= 0.0:
+			_beam_timer = 0.0
+			if health_component:
+				_update_nameplate(health_component.current_health, health_component.max_health)
+	
+	# Process shield cooldown timer
+	if _shield_timer > 0.0:
+		_shield_timer -= delta
+		if _shield_timer <= 0.0:
+			_shield_timer = 0.0
+			if health_component:
+				_update_nameplate(health_component.current_health, health_component.max_health)
+	
+	# Process dash cooldown timer
+	if _dash_cd_timer > 0.0:
+		_dash_cd_timer -= delta
+		if _dash_cd_timer <= 0.0:
+			_dash_cd_timer = 0.0
+			if health_component:
+				_update_nameplate(health_component.current_health, health_component.max_health)
+
+	# Process lingering dash invulnerability buffer
+	if _invulnerable_buffer > 0.0:
+		_invulnerable_buffer -= delta
+		if _invulnerable_buffer <= 0.0 and not _is_dashing:
+			if health_component:
+				health_component.invulnerable = false
+
+	# Knockback impulse handling
+	if _knockback_velocity.length_squared() > 0.01:
+		velocity.x = _knockback_velocity.x
+		velocity.z = _knockback_velocity.z
+		_knockback_velocity = _knockback_velocity.move_toward(Vector3.ZERO, 38.0 * delta)
+
+	# Stagger handling
+	if _stagger_timer > 0.0:
+		_stagger_timer -= delta
+	
+	# Process slow status timer
+	if _slow_timer > 0.0:
+		_slow_timer -= delta
+		if _slow_timer <= 0.0:
+			_speed_modifier = 1.0
+			_is_slowed = false
+			_apply_frost_visual(false)
+			if health_component:
+				_update_nameplate(health_component.current_health, health_component.max_health)
+
+	# Attack Release Standards Pipeline
+	# 0.00s: Press | 0.12s: Cast Start Delay | 0.20s: Attack Release | 0.18s Recovery -> 0.38s Total
+	if _is_casting_attack:
+		_attack_timer += delta
+		
+		# Phase 1: Cast Start Delay (0.0s to 0.12s) - Scepter pre-cast tilt
+		if _attack_timer < CAST_START_DELAY:
+			if scepter:
+				scepter.rotation.x = lerp_angle(scepter.rotation.x, -0.22, 20.0 * delta)
+		# Phase 2: Attack Release Time (at 0.20s after button press)
+		elif _attack_timer >= ATTACK_RELEASE_TIME and not _attack_released:
+			_attack_released = true
+			_spawn_spell(_pending_spell_scene)
+		# Phase 3: Recovery Time (0.20s to 0.38s)
+		elif _attack_timer >= ATTACK_RELEASE_TIME:
+			if scepter:
+				scepter.rotation.x = lerp_angle(scepter.rotation.x, 0.0, 14.0 * delta)
+		
+		# Minimum Total Animation Time (0.38s) reached
+		if _attack_timer >= TOTAL_ATTACK_ANIM_TIME:
+			_is_casting_attack = false
+			can_cast = true
+			if _buffered_attack and _buffered_spell_scene:
+				var next_spell := _buffered_spell_scene
+				_buffered_attack = false
+				_buffered_spell_scene = null
+				_start_spell_pipeline(next_spell)
+
+	# Beam Standards Pipeline:
+	# Charge: 0.18s | Appears: 0.20s | Active Duration: 0.35s | Disappears: 0.10s smooth fade
+	if _is_charging_beam:
+		_beam_pipeline_timer += delta
+		if _beam_pipeline_timer < BEAM_CHARGE_TIME:
+			if scepter:
+				scepter.rotation.x = lerp_angle(scepter.rotation.x, -0.65, 20.0 * delta)
+		elif _beam_pipeline_timer >= BEAM_APPEAR_TIME and not _beam_has_appeared:
+			_beam_has_appeared = true
+			_spawn_celestial_beam()
+		elif _beam_pipeline_timer >= (BEAM_APPEAR_TIME + BEAM_ACTIVE_DURATION):
+			if scepter:
+				scepter.rotation.x = lerp_angle(scepter.rotation.x, 0.0, 16.0 * delta)
+		
+		var total_beam_time: float = BEAM_APPEAR_TIME + BEAM_ACTIVE_DURATION + BEAM_FADE_DURATION
+		if _beam_pipeline_timer >= total_beam_time:
+			_is_charging_beam = false
+			_is_beam_active = false
+
+	# Active Silky Smooth Dash Processing (Dash Standard: Speed 16.0 units/s, Duration 0.22s)
+	if _is_dashing:
+		_dash_timer -= delta
+		
+		# Spawn ethereal chromatic Seraph ghost afterimage every 0.038s
+		_ghost_spawn_timer -= delta
+		if _ghost_spawn_timer <= 0.0:
+			_ghost_spawn_timer = 0.038
+			_spawn_dash_ghost()
+		
+		var progress: float = clampf(1.0 - (_dash_timer / dash_duration), 0.0, 1.0)
+		var speed_mult: float = lerp(1.18, 0.92, progress)
+		var current_dash_speed: float = dash_speed * speed_mult
+		velocity.x = _dash_direction.x * current_dash_speed
+		velocity.z = _dash_direction.z * current_dash_speed
+		
+		# Dynamic Kinetic Squash & Stretch
+		if progress < 0.16:
+			visuals.scale = visuals.scale.lerp(Vector3(1.12, 0.9, 0.86), 24.0 * delta)
+		else:
+			visuals.scale = visuals.scale.lerp(Vector3(0.9, 0.92, 1.25), 20.0 * delta)
+		
+		visuals.rotation.x = lerp_angle(visuals.rotation.x, -0.38, 22.0 * delta)
+		
+		# Slipstream wake: knock back nearby hostile units and deflect enemy projectiles
+		_process_dash_slipstream()
+		
+		move_and_slide()
+		_animate_seraph(delta, true)
+		
+		if _dash_timer <= 0.0:
+			_end_dash()
 		return
 
+	# Handle dash recovery spring settle
+	if _is_dash_recovering:
+		_dash_recovery_timer -= delta
+		visuals.scale = visuals.scale.lerp(Vector3.ONE, 16.0 * delta)
+		visuals.rotation.x = lerp_angle(visuals.rotation.x, 0.0, 14.0 * delta)
+		if _dash_recovery_timer <= 0.0:
+			_is_dash_recovering = false
+			visuals.scale = Vector3.ONE
+			visuals.rotation.x = 0.0
+
+	# Input: WASD / Arrow keys (Players can move during casting per specifications)
+	var input_dir := Vector2.ZERO
+	if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
+		input_dir.y -= 1
+	if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
+		input_dir.y += 1
+	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
+		input_dir.x -= 1
+	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
+		input_dir.x += 1
+	input_dir = input_dir.normalized()
+
+	var effective_speed: float = move_speed * _speed_modifier
+	var is_moving: bool = input_dir.length_squared() > 0.01
+
+	# Core Movement: Acceleration 35 units/s², Deceleration 45 units/s²
+	if is_moving:
+		var target_vel := Vector3(input_dir.x, 0, input_dir.y) * effective_speed
+		velocity.x = move_toward(velocity.x, target_vel.x, acceleration * delta)
+		velocity.z = move_toward(velocity.z, target_vel.z, acceleration * delta)
+	else:
+		velocity.x = move_toward(velocity.x, 0.0, deceleration * delta)
+		velocity.z = move_toward(velocity.z, 0.0, deceleration * delta)
+
+	# Core Rotation: Rotation Speed (towards mouse): 720°/second
+	var aim_dir := _get_mouse_aim_direction()
+	var target_rot_y: float = visuals.rotation.y
+	if aim_dir.length_squared() > 0.01:
+		target_rot_y = atan2(-aim_dir.x, -aim_dir.z)
+	elif is_moving:
+		target_rot_y = atan2(-input_dir.x, -input_dir.y)
+
+	var angle_diff: float = wrapf(target_rot_y - visuals.rotation.y, -PI, PI)
+	var max_rot: float = deg_to_rad(rotation_speed) * delta
+	if absf(angle_diff) <= max_rot:
+		visuals.rotation.y = target_rot_y
+	else:
+		visuals.rotation.y += signf(angle_diff) * max_rot
+	visuals.rotation.y = wrapf(visuals.rotation.y, -PI, PI)
+
+	if is_moving:
+		var wobble_rate: float = 0.015 * _speed_modifier
+		visuals.rotation.z = sin(Time.get_ticks_msec() * wobble_rate) * 0.1
+	else:
+		visuals.rotation.z = move_toward(visuals.rotation.z, 0, 8.0 * delta)
+
+	move_and_slide()
+	
+	# Seraph Archangel Wing & Halo Animations
+	_animate_seraph(delta, is_moving)
+
+## Animates Seraph wings flapping, rotating halo, and scepter hover
+func _animate_seraph(delta: float, is_moving: bool) -> void:
+	var time_ms := Time.get_ticks_msec()
+	
+	var is_shield_active: bool = _active_shield != null and is_instance_valid(_active_shield)
+	
+	if is_shield_active:
+		# Seraph Archangel Meditating Posture (Lotus cross-legged, praying mudra hands, floating levitation, orbiting scepter)
+		if visuals:
+			var target_levitation: float = _orig_visuals_pos_y + 0.36 + sin(time_ms * 0.003) * 0.05
+			visuals.position.y = lerp(visuals.position.y, target_levitation, 6.0 * delta)
+		
+		# Folded Lotus Legs
+		if left_leg:
+			left_leg.rotation.x = lerp_angle(left_leg.rotation.x, 1.25, 7.0 * delta)
+			left_leg.rotation.z = lerp_angle(left_leg.rotation.z, 0.65, 7.0 * delta)
+			left_leg.rotation.y = lerp_angle(left_leg.rotation.y, 0.45, 7.0 * delta)
+			left_leg.position.y = lerp(left_leg.position.y, 0.12, 7.0 * delta)
+		if right_leg:
+			right_leg.rotation.x = lerp_angle(right_leg.rotation.x, 1.25, 7.0 * delta)
+			right_leg.rotation.z = lerp_angle(right_leg.rotation.z, -0.65, 7.0 * delta)
+			right_leg.rotation.y = lerp_angle(right_leg.rotation.y, -0.45, 7.0 * delta)
+			right_leg.position.y = lerp(right_leg.position.y, 0.12, 7.0 * delta)
+		
+		# Meditating Prayer / Mudra hands joined in front of chest
+		if left_arm:
+			left_arm.rotation.x = lerp_angle(left_arm.rotation.x, -0.75, 7.0 * delta)
+			left_arm.rotation.y = lerp_angle(left_arm.rotation.y, 0.55, 7.0 * delta)
+			left_arm.rotation.z = lerp_angle(left_arm.rotation.z, -0.55, 7.0 * delta)
+			left_arm.position = lerp(left_arm.position, Vector3(-0.16, -0.05, -0.22), 7.0 * delta)
+		if right_arm:
+			right_arm.rotation.x = lerp_angle(right_arm.rotation.x, -0.75, 7.0 * delta)
+			right_arm.rotation.y = lerp_angle(right_arm.rotation.y, -0.55, 7.0 * delta)
+			right_arm.rotation.z = lerp_angle(right_arm.rotation.z, 0.55, 7.0 * delta)
+			right_arm.position = lerp(right_arm.position, Vector3(0.16, -0.05, -0.22), 7.0 * delta)
+		
+		# Floating Scepter revolving autonomously in front
+		if scepter:
+			scepter.position = lerp(scepter.position, Vector3(0.0, 0.85 + sin(time_ms * 0.004) * 0.04, -0.55), 5.0 * delta)
+			scepter.rotation.y += 1.8 * delta
+			scepter.rotation.x = lerp_angle(scepter.rotation.x, -0.2, 5.0 * delta)
+		
+		# Seraph Wings in serene protective embrace
+		if upper_left_wing:
+			upper_left_wing.rotation.y = lerp_angle(upper_left_wing.rotation.y, -0.68 + sin(time_ms * 0.003) * 0.05, 5.0 * delta)
+			upper_left_wing.rotation.z = lerp_angle(upper_left_wing.rotation.z, 0.52, 5.0 * delta)
+		if upper_right_wing:
+			upper_right_wing.rotation.y = lerp_angle(upper_right_wing.rotation.y, 0.68 - sin(time_ms * 0.003) * 0.05, 5.0 * delta)
+			upper_right_wing.rotation.z = lerp_angle(upper_right_wing.rotation.z, -0.52, 5.0 * delta)
+		if lower_left_wing:
+			lower_left_wing.rotation.y = lerp_angle(lower_left_wing.rotation.y, -0.4, 5.0 * delta)
+		if lower_right_wing:
+			lower_right_wing.rotation.y = lerp_angle(lower_right_wing.rotation.y, 0.4, 5.0 * delta)
+		
+		# Spinning holy halo
+		if halo:
+			halo.rotation.y += 5.0 * delta
+			halo.position.y = 0.66 + sin(time_ms * 0.005) * 0.03
+		
+		# Head serene meditation tilt
+		if head_node:
+			head_node.rotation.x = lerp_angle(head_node.rotation.x, 0.14, 5.0 * delta)
+		return
+
+	# Smoothly return from meditation pose to default stance when shield is inactive
 	if visuals:
-		visuals.rotation.y = atan2(direction.x, direction.z)
+		visuals.position.y = lerp(visuals.position.y, _orig_visuals_pos_y, 7.0 * delta)
+	if left_arm:
+		left_arm.position = lerp(left_arm.position, _orig_left_arm_trans.origin, 7.0 * delta)
+		left_arm.rotation.x = lerp_angle(left_arm.rotation.x, _orig_left_arm_trans.basis.get_euler().x, 7.0 * delta)
+		left_arm.rotation.y = lerp_angle(left_arm.rotation.y, _orig_left_arm_trans.basis.get_euler().y, 7.0 * delta)
+		left_arm.rotation.z = lerp_angle(left_arm.rotation.z, _orig_left_arm_trans.basis.get_euler().z, 7.0 * delta)
+	if right_arm:
+		right_arm.position = lerp(right_arm.position, _orig_right_arm_trans.origin, 7.0 * delta)
+		right_arm.rotation.x = lerp_angle(right_arm.rotation.x, _orig_right_arm_trans.basis.get_euler().x, 7.0 * delta)
+		right_arm.rotation.y = lerp_angle(right_arm.rotation.y, _orig_right_arm_trans.basis.get_euler().y, 7.0 * delta)
+		right_arm.rotation.z = lerp_angle(right_arm.rotation.z, _orig_right_arm_trans.basis.get_euler().z, 7.0 * delta)
+	if left_leg:
+		left_leg.position = lerp(left_leg.position, _orig_left_leg_trans.origin, 7.0 * delta)
+		left_leg.rotation.x = lerp_angle(left_leg.rotation.x, _orig_left_leg_trans.basis.get_euler().x, 7.0 * delta)
+		left_leg.rotation.y = lerp_angle(left_leg.rotation.y, _orig_left_leg_trans.basis.get_euler().y, 7.0 * delta)
+		left_leg.rotation.z = lerp_angle(left_leg.rotation.z, _orig_left_leg_trans.basis.get_euler().z, 7.0 * delta)
+	if right_leg:
+		right_leg.position = lerp(right_leg.position, _orig_right_leg_trans.origin, 7.0 * delta)
+		right_leg.rotation.x = lerp_angle(right_leg.rotation.x, _orig_right_leg_trans.basis.get_euler().x, 7.0 * delta)
+		right_leg.rotation.y = lerp_angle(right_leg.rotation.y, _orig_right_leg_trans.basis.get_euler().y, 7.0 * delta)
+		right_leg.rotation.z = lerp_angle(right_leg.rotation.z, _orig_right_leg_trans.basis.get_euler().z, 7.0 * delta)
+	if head_node:
+		head_node.rotation.x = lerp_angle(head_node.rotation.x, 0.0, 7.0 * delta)
 
-	var origin := global_position + Vector3(0, 0.8, 0)
-	if cast_point:
-		origin = cast_point.global_position
+	if _is_dashing:
+		# Supersonic Aerodynamic Dash Wing Sweep with High-Frequency Flutter
+		if upper_left_wing and upper_right_wing:
+			upper_left_wing.rotation.y = -1.28 + sin(time_ms * 0.065) * 0.06
+			upper_right_wing.rotation.y = 1.28 - sin(time_ms * 0.065) * 0.06
+			upper_left_wing.rotation.z = 0.14
+			upper_right_wing.rotation.z = -0.14
+		if lower_left_wing and lower_right_wing:
+			lower_left_wing.rotation.y = -0.92
+			lower_right_wing.rotation.y = 0.92
+		if right_arm and left_arm:
+			right_arm.rotation.x = lerp_angle(right_arm.rotation.x, 1.15, 22.0 * delta)
+			left_arm.rotation.x = lerp_angle(left_arm.rotation.x, 1.15, 22.0 * delta)
+		if left_leg and right_leg:
+			left_leg.rotation.x = lerp_angle(left_leg.rotation.x, 0.45, 20.0 * delta)
+			right_leg.rotation.x = lerp_angle(right_leg.rotation.x, 0.45, 20.0 * delta)
+		if scepter:
+			# Scepter held forward like an aerodynamic supersonic spearhead piercing the air
+			scepter.position = lerp(scepter.position, Vector3(0.14, 0.64, -0.58), 24.0 * delta)
+			scepter.rotation.x = lerp_angle(scepter.rotation.x, -1.4, 24.0 * delta)
+			scepter.rotation.y = lerp_angle(scepter.rotation.y, 0.0, 24.0 * delta)
+			scepter.rotation.z = lerp_angle(scepter.rotation.z, 0.0, 24.0 * delta)
+		if coattail_left:
+			coattail_left.rotation.x = lerp_angle(coattail_left.rotation.x, 1.2 + sin(time_ms * 0.06) * 0.18, 26.0 * delta)
+		if coattail_right:
+			coattail_right.rotation.x = lerp_angle(coattail_right.rotation.x, 1.2 + cos(time_ms * 0.06) * 0.18, 26.0 * delta)
+		if coattail_back:
+			coattail_back.rotation.x = lerp_angle(coattail_back.rotation.x, 1.38 + sin(time_ms * 0.07) * 0.22, 26.0 * delta)
+		if halo:
+			halo.rotation.y += 36.0 * delta
+			halo.rotation.x = lerp_angle(halo.rotation.x, -0.45, 20.0 * delta)
+		return
 
-	spell_cast.emit(spell_scene, origin, direction)
+	if _is_dash_recovering:
+		# Deceleration Air-Brake Wing Flare Recoil
+		if upper_left_wing and upper_right_wing:
+			upper_left_wing.rotation.y = lerp_angle(upper_left_wing.rotation.y, 0.75, 22.0 * delta)
+			upper_right_wing.rotation.y = lerp_angle(upper_right_wing.rotation.y, -0.75, 22.0 * delta)
+			upper_left_wing.rotation.z = lerp_angle(upper_left_wing.rotation.z, 0.62, 22.0 * delta)
+			upper_right_wing.rotation.z = lerp_angle(upper_right_wing.rotation.z, -0.62, 22.0 * delta)
+		if lower_left_wing and lower_right_wing:
+			lower_left_wing.rotation.y = lerp_angle(lower_left_wing.rotation.y, 0.45, 20.0 * delta)
+			lower_right_wing.rotation.y = lerp_angle(lower_right_wing.rotation.y, -0.45, 20.0 * delta)
+		if scepter:
+			scepter.position = lerp(scepter.position, _orig_scepter_pos, 14.0 * delta)
+			scepter.rotation.x = lerp_angle(scepter.rotation.x, 0.0, 14.0 * delta)
+		if coattail_left:
+			coattail_left.rotation = coattail_left.rotation.lerp(_orig_coattail_l_rot, 16.0 * delta)
+		if coattail_right:
+			coattail_right.rotation = coattail_right.rotation.lerp(_orig_coattail_r_rot, 16.0 * delta)
+		if coattail_back:
+			coattail_back.rotation = coattail_back.rotation.lerp(_orig_coattail_b_rot, 16.0 * delta)
+		if halo:
+			halo.rotation.y += 8.0 * delta
+			halo.rotation.x = lerp_angle(halo.rotation.x, _orig_halo_rot_x, 14.0 * delta)
+		return
+
+	if _is_beam_active:
+		# Hyper-kinetic Archangel Celestial Casting Animation
+		if upper_left_wing:
+			upper_left_wing.rotation.y = -0.75 + sin(time_ms * 0.03) * 0.35
+			upper_left_wing.rotation.z = 0.45
+		if upper_right_wing:
+			upper_right_wing.rotation.y = 0.75 - sin(time_ms * 0.03) * 0.35
+			upper_right_wing.rotation.z = -0.45
+		if halo:
+			halo.rotation.y += 14.0 * delta
+			halo.position.y = 0.65 + sin(time_ms * 0.02) * 0.06
+		return
+
+	var flap_speed: float = 0.008 if not is_moving else 0.016
+	var flap_amplitude: float = 0.22 if not is_moving else 0.38
+	var wing_flap: float = sin(time_ms * flap_speed) * flap_amplitude
+	
+	# Upper Wings Flap (Y and Z rotation)
+	if upper_left_wing:
+		upper_left_wing.rotation.y = -0.45 + wing_flap
+		upper_left_wing.rotation.z = 0.25 - (wing_flap * 0.4)
+	if upper_right_wing:
+		upper_right_wing.rotation.y = 0.45 - wing_flap
+		upper_right_wing.rotation.z = -0.25 + (wing_flap * 0.4)
+		
+	# Lower Wings Flutter (complementary phase)
+	if lower_left_wing:
+		lower_left_wing.rotation.y = -0.3 + (wing_flap * 0.6)
+	if lower_right_wing:
+		lower_right_wing.rotation.y = 0.3 - (wing_flap * 0.6)
+	
+	# Halo gentle rotation and vertical floating
+	if halo:
+		halo.rotation.y += 1.8 * delta
+		halo.position.y = 0.54 + sin(time_ms * 0.004) * 0.03
+	
+	# Scepter mystical idle bob
+	if scepter:
+		scepter.position.y = 0.58 + sin(time_ms * 0.005) * 0.02
+
+## Casts standard projectiles (Fireball / Ice Lance)
+## Public API forwarding to Attack Release Pipeline
+func _cast_spell(spell_packed: PackedScene) -> void:
+	_request_spell(spell_packed)
+
+## Spawns projectile at exactly 0.20s Attack Release Time
+func _spawn_spell(spell_packed: PackedScene) -> void:
+	if not spell_packed:
+		return
+	
+	var aim_dir := _get_mouse_aim_direction()
+	if aim_dir.length_squared() < 0.01:
+		aim_dir = -visuals.global_transform.basis.z
+		aim_dir.y = 0.0
+		if aim_dir.length_squared() < 0.01:
+			aim_dir = Vector3.FORWARD
+	aim_dir = aim_dir.normalized()
+	
+	var proj: Node3D = spell_packed.instantiate() as Node3D
+	if proj:
+		proj.set("caster", self)
+		get_tree().current_scene.add_child(proj)
+		
+		var cast_pt: Node3D = visuals.find_child("CastPoint", true, false) as Node3D
+		if cast_pt:
+			proj.global_position = cast_pt.global_position
+		else:
+			proj.global_position = global_position + aim_dir * 0.85 + Vector3(0, 0.6, 0)
+			
+		proj.look_at(proj.global_position + aim_dir, Vector3.UP)
+	
+	if scepter:
+		var tween := create_tween()
+		tween.tween_property(scepter, "rotation:x", -0.45, 0.06)
+		tween.tween_property(scepter, "rotation:x", 0.0, 0.12)
+
+## Public API forwarding to Beam Standards Pipeline
+func _cast_celestial_beam() -> void:
+	_request_celestial_beam()
+
+## Spawns Heaven's Ascendant Solar Beam at Beam Appear Time (0.20s after button press)
+func _spawn_celestial_beam() -> void:
+	if not celestial_beam_scene:
+		return
+	
+	var aim_dir := _get_mouse_aim_direction()
+	if aim_dir.length_squared() < 0.01:
+		aim_dir = -visuals.global_transform.basis.z
+		aim_dir.y = 0.0
+		if aim_dir.length_squared() < 0.01:
+			aim_dir = Vector3.FORWARD
+	aim_dir = aim_dir.normalized()
+	
+	var proj: Node3D = celestial_beam_scene.instantiate() as Node3D
+	if proj:
+		proj.set("caster", self)
+		get_tree().current_scene.add_child(proj)
+		
+		var cast_pt: Node3D = visuals.find_child("CastPoint", true, false) as Node3D
+		if cast_pt:
+			proj.global_position = cast_pt.global_position
+		else:
+			proj.global_position = global_position + aim_dir * 1.0 + Vector3(0, 0.7, 0)
+			
+		proj.look_at(proj.global_position + aim_dir, Vector3.UP)
+	
+	# Camera recoil shake on firing massive solar orb
+	var cam: CameraFollow = get_viewport().get_camera_3d() as CameraFollow
+	if cam:
+		cam.add_shake(0.22)
+	
+	if scepter:
+		var charge_tween: Tween = create_tween()
+		charge_tween.tween_property(scepter, "rotation:x", 0.35, 0.08)
+		charge_tween.tween_property(scepter, "rotation:x", 0.0, 0.12)
+		charge_tween.tween_callback(func(): _is_beam_active = false)
+	else:
+		_is_beam_active = false
+
+## Casts the 4-Sided Celestial Shield with Heaven Signs
+func _cast_celestial_shield() -> void:
+	if not celestial_shield_scene or _shield_timer > 0.0:
+		return
+	
+	_shield_timer = shield_cooldown
+	if health_component:
+		_update_nameplate(health_component.current_health, health_component.max_health)
+	
+	# If an old shield exists, dismiss it
+	if _active_shield and is_instance_valid(_active_shield):
+		if _active_shield.has_method("fade_out"):
+			_active_shield.call("fade_out")
+		else:
+			_active_shield.queue_free()
+	
+	var shield: Node3D = celestial_shield_scene.instantiate() as Node3D
+	if shield:
+		shield.set("caster", self)
+		get_tree().current_scene.add_child(shield)
+		shield.global_position = global_position
+		_active_shield = shield
+		shield.tree_exited.connect(func():
+			if _active_shield == shield:
+				_active_shield = null
+		)
+	
+	# Archangel seraph wing flare and halo spin on shield summon
+	if halo:
+		halo.rotation.y += 24.0
+	if upper_left_wing and upper_right_wing:
+		var wing_tween := create_tween()
+		wing_tween.tween_property(upper_left_wing, "rotation:z", 0.65, 0.1)
+		wing_tween.parallel().tween_property(upper_right_wing, "rotation:z", -0.65, 0.1)
+		wing_tween.tween_property(upper_left_wing, "rotation:z", 0.25, 0.2)
+		wing_tween.parallel().tween_property(upper_right_wing, "rotation:z", -0.25, 0.2)
+	if scepter:
+		var scepter_tween := create_tween()
+		scepter_tween.tween_property(scepter, "position:y", 0.85, 0.1)
+		scepter_tween.tween_property(scepter, "position:y", 0.58, 0.2)
+
+## Performs the silky smooth Celestial Dash (Q Ability)
+func _perform_dash() -> void:
+	if _dash_cd_timer > 0.0 or _is_dashing:
+		return
+	
+	# Determine dash direction: player input or current visual facing
+	var input_dir := Vector2.ZERO
+	if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
+		input_dir.y -= 1
+	if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
+		input_dir.y += 1
+	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
+		input_dir.x -= 1
+	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
+		input_dir.x += 1
+	
+	if input_dir.length_squared() > 0.05:
+		_dash_direction = Vector3(input_dir.x, 0, input_dir.y).normalized()
+	else:
+		_dash_direction = -visuals.global_transform.basis.z
+		_dash_direction.y = 0.0
+		if _dash_direction.length_squared() < 0.01:
+			_dash_direction = Vector3.FORWARD
+		_dash_direction = _dash_direction.normalized()
+	
+	_is_dashing = true
+	_is_dash_recovering = false
+	_dash_timer = dash_duration
+	_dash_cd_timer = dash_cooldown
+	_ghost_spawn_timer = 0.0
+	_ghost_counter = 0
+	_invulnerable_buffer = dash_duration + 0.06 # Lingering grace period
+	
+	# Invulnerability frames during the dash
+	if health_component:
+		health_component.invulnerable = true
+		_update_nameplate(health_component.current_health, health_component.max_health)
+	
+	# Turn visuals towards dash direction instantly
+	visuals.look_at(global_position + _dash_direction, Vector3.UP)
+	
+	# Initial kinetic launch compression squash
+	visuals.scale = Vector3(1.2, 0.85, 0.72)
+	
+	# Activate supersonic wind streamers
+	if dash_streamers:
+		dash_streamers.restart()
+		dash_streamers.emitting = true
+	
+	# Spawn start burst shockwave VFX & audio
+	if dash_burst_scene:
+		var burst: Node3D = dash_burst_scene.instantiate() as Node3D
+		if burst:
+			get_tree().current_scene.add_child(burst)
+			burst.global_position = global_position
+			burst.look_at(global_position + _dash_direction, Vector3.UP)
+	
+	# First afterimage ghost
+	_spawn_dash_ghost()
+	
+	# Camera FOV warp kick + screen punch
+	var cam: CameraFollow = get_viewport().get_camera_3d() as CameraFollow
+	if cam:
+		cam.trigger_fov_kick(6.2)
+		cam.add_shake(0.14)
+
+func _end_dash() -> void:
+	_is_dashing = false
+	_is_dash_recovering = true
+	_dash_recovery_timer = 0.16
+	
+	if dash_streamers:
+		dash_streamers.emitting = false
+	
+	# Air-brake landing impact squash & backwards brake pitch
+	visuals.scale = Vector3(1.22, 0.8, 1.14)
+	visuals.rotation.x = 0.18
+	
+	# Spawn deceleration arrival impact VFX
+	if dash_arrival_scene:
+		var arrival: Node3D = dash_arrival_scene.instantiate() as Node3D
+		if arrival:
+			get_tree().current_scene.add_child(arrival)
+			arrival.global_position = global_position
+	
+	# Camera subtle arrival settle shake
+	var cam: CameraFollow = get_viewport().get_camera_3d() as CameraFollow
+	if cam:
+		cam.add_shake(0.06)
+	
+	# Seamlessly preserve momentum into running speed if holding movement keys
+	var input_dir := Vector2.ZERO
+	if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP): input_dir.y -= 1
+	if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN): input_dir.y += 1
+	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT): input_dir.x -= 1
+	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT): input_dir.x += 1
+	
+	var effective_speed: float = move_speed * _speed_modifier
+	if input_dir.length_squared() > 0.05:
+		var move_dir := Vector3(input_dir.x, 0, input_dir.y).normalized()
+		velocity.x = move_dir.x * effective_speed
+		velocity.z = move_dir.z * effective_speed
+	else:
+		velocity.x = _dash_direction.x * (effective_speed * 0.45)
+		velocity.z = _dash_direction.z * (effective_speed * 0.45)
+
+func _spawn_dash_ghost() -> void:
+	if not dash_ghost_scene:
+		return
+	var ghost: Node3D = dash_ghost_scene.instantiate() as Node3D
+	if ghost:
+		# Multi-tier chromatic cycling: cyan -> solar gold -> pure celestial white -> electric teal
+		var tints: Array[Color] = [
+			Color(0.25, 0.85, 1.0, 0.85),
+			Color(1.0, 0.86, 0.35, 0.85),
+			Color(0.95, 0.98, 1.0, 0.9),
+			Color(0.3, 1.0, 0.9, 0.85)
+		]
+		var chosen_tint: Color = tints[_ghost_counter % tints.size()]
+		_ghost_counter += 1
+		
+		if ghost.has_method("setup_color"):
+			ghost.call("setup_color", chosen_tint)
+		
+		get_tree().current_scene.add_child(ghost)
+		ghost.global_transform = visuals.global_transform
+		ghost.global_position = visuals.global_position
+
+## Applies slipstream wake forces to nearby enemies and deflects hostile projectiles
+func _process_dash_slipstream() -> void:
+	var combatants: Array[Node] = get_tree().get_nodes_in_group("combatants")
+	for entity in combatants:
+		if not is_instance_valid(entity) or entity == self:
+			continue
+		var to_entity: Vector3 = entity.global_position - global_position
+		to_entity.y = 0.0
+		var dist: float = to_entity.length()
+		if dist <= 2.2:
+			var hp: HealthComponent = entity.find_child("HealthComponent", true, false) as HealthComponent
+			if hp and hp.is_alive():
+				hp.take_damage(5.0, self)
+			var push_dir: Vector3 = to_entity.normalized() if dist > 0.01 else _dash_direction.cross(Vector3.UP).normalized()
+			var impulse: Vector3 = push_dir * 8.0 + Vector3(0, 1.2, 0)
+			if entity.has_method("apply_knockback"):
+				entity.call("apply_knockback", impulse, 0.15)
+	
+	# Deflect projectiles along slipstream
+	var projectiles: Array[Node] = get_tree().get_nodes_in_group("projectiles")
+	for proj in projectiles:
+		if not is_instance_valid(proj) or proj.is_queued_for_deletion():
+			continue
+		if proj is Projectile:
+			var p: Projectile = proj as Projectile
+			if p.caster == self:
+				continue
+			var p_dist: float = global_position.distance_to(p.global_position)
+			if p_dist <= 2.2:
+				var away_dir: Vector3 = (p.global_position - global_position)
+				away_dir.y = 0.0
+				away_dir = away_dir.normalized() if away_dir.length_squared() > 0.01 else -_dash_direction
+				p.look_at(p.global_position + away_dir, Vector3.UP)
+				p.caster = self
+
+
+func apply_knockback(impulse: Vector3, stagger_duration: float = 0.2) -> void:
+	_knockback_velocity = impulse
+	_stagger_timer = stagger_duration
+
+## Applies movement slow debuff and displays frost visuals
+func apply_slow(multiplier: float, duration: float) -> void:
+	_speed_modifier = clampf(1.0 - multiplier, 0.2, 0.85)
+	_slow_timer = duration
+	_is_slowed = true
+	_apply_frost_visual(true)
+	if health_component:
+		_update_nameplate(health_component.current_health, health_component.max_health)
+
+func _apply_frost_visual(active: bool) -> void:
+	if not visuals:
+		return
+	var mesh_instances: Array[Node] = visuals.find_children("*", "MeshInstance3D", true, false)
+	for m in mesh_instances:
+		if m is MeshInstance3D:
+			if active:
+				var frost_mat := StandardMaterial3D.new()
+				frost_mat.albedo_color = Color(0.4, 0.88, 1.0, 0.9)
+				frost_mat.roughness = 0.15
+				frost_mat.emission_enabled = true
+				frost_mat.emission = Color(0.25, 0.75, 1.0)
+				frost_mat.emission_energy_multiplier = 0.5
+				m.material_override = frost_mat
+			else:
+				m.material_override = null
 
 func _on_health_changed(curr: float, max_hp: float) -> void:
 	_update_nameplate(curr, max_hp)
+
+func _on_player_died(_killer: Node) -> void:
+	collision_layer = 0
+	collision_mask = 0

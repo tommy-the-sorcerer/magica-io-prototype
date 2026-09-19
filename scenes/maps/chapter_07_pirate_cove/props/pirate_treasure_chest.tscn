@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://pcchest01"]
+
+[ext_resource type="PackedScene" path="res://assets/pirate_kit/chest.glb" id="1_chest"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chest"]
+size = Vector3(1.2, 1.0, 1.0)
+
+[node name="TreasureChest" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_chest")
+
+[node name="ChestModel" parent="." instance=ExtResource("1_chest")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 0, 0, 0)

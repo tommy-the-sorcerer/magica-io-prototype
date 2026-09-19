@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://cpge8sqofje1u"]
+
+[ext_resource type="Script" path="res://scripts/core/hazards/erupting_prop.gd" id="1_erupt"]
+[ext_resource type="Script" path="res://scripts/core/hazards/knockback_zone.gd" id="2_kb"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_mound"]
+top_radius = 0.8
+bottom_radius = 2.2
+height = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_geyser_sand"]
+albedo_color = Color(0.85, 0.65, 0.38, 1)
+roughness = 0.95
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_blast"]
+height = 7.0
+radius = 2.4
+
+[node name="SandGeyser" type="Node3D"]
+script = ExtResource("1_erupt")
+idle_duration = 7.0
+warning_duration = 1.6
+eruption_duration = 1.8
+cooldown_duration = 2.0
+
+[node name="SandMound" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+mesh = SubResource("CylinderMesh_mound")
+surface_material_override/0 = SubResource("StandardMaterial3D_geyser_sand")
+
+[node name="KnockbackArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("2_kb")
+knockback_force = 10.0
+vertical_lift = 16.0
+damage_on_launch = 15.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="KnockbackArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+shape = SubResource("CylinderShape3D_blast")

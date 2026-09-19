@@ -1,0 +1,91 @@
+[gd_scene format=3 uid="uid://c_apprentice_shield"]
+
+[ext_resource type="Script" path="res://characters/arcane_apprentice/skills/electro_shield.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://characters/arcane_apprentice/textures/viking_celtic_light.png" id="2_shield_tex"]
+[ext_resource type="Texture2D" path="res://characters/arcane_apprentice/textures/viking_celtic_light_emission.png" id="3_shield_em"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hitbox"]
+size = Vector3(2.4, 2.4, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shield_face"]
+transparency = 1
+cull_mode = 0
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 0.95)
+albedo_texture = ExtResource("2_shield_tex")
+
+[sub_resource type="QuadMesh" id="QuadMesh_shield_face"]
+material = SubResource("StandardMaterial3D_shield_face")
+size = Vector2(2.4, 2.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rim"]
+transparency = 1
+cull_mode = 0
+albedo_color = Color(0.82, 0.94, 1, 0.65)
+metallic = 0.8
+roughness = 0.2
+emission_enabled = true
+emission = Color(0.3, 0.75, 1, 1)
+emission_energy_multiplier = 1.6
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_rim"]
+material = SubResource("StandardMaterial3D_rim")
+top_radius = 1.18
+bottom_radius = 1.18
+height = 0.05
+radial_segments = 48
+rings = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sparks"]
+emission_shape = 2
+emission_sphere_radius = 1.15
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 2.0
+initial_velocity_max = 4.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.2
+scale_max = 0.5
+color = Color(0.35, 0.85, 1.0, 0.95)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spark"]
+shading_mode = 0
+albedo_color = Color(0.7, 0.95, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_spark"]
+material = SubResource("StandardMaterial3D_spark")
+size = Vector3(0.04, 0.04, 0.14)
+
+[node name="ElectroShield" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="HitArea" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HitArea"]
+shape = SubResource("BoxShape3D_hitbox")
+
+[node name="ShieldPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9848, 0.1736, 0, -0.1736, 0.9848, 0, 0, 0)
+
+[node name="ShieldFace" type="MeshInstance3D" parent="ShieldPivot"]
+mesh = SubResource("QuadMesh_shield_face")
+
+[node name="ShieldRim" type="MeshInstance3D" parent="ShieldPivot"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+mesh = SubResource("CylinderMesh_rim")
+
+[node name="ShieldLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+light_color = Color(0.35, 0.85, 1, 1)
+light_energy = 0.8
+omni_range = 3.5
+
+[node name="Sparks" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 16
+lifetime = 0.28
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_sparks")
+draw_pass_1 = SubResource("BoxMesh_spark")

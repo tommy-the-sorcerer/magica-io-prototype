@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c01yok8wimwvh"]
+
+[ext_resource type="Script" path="res://scripts/spells/wind_burst.gd" id="1_script"]
+
+[node name="WindBurst" type="Node3D"]
+script = ExtResource("1_script")

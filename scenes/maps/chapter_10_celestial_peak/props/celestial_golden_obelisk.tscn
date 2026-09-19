@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://cpobelisk01"]
+
+[ext_resource type="PackedScene" path="res://assets/nature_kit/statue_obelisk.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_obelisk"]
+size = Vector3(2.2, 5.8, 2.2)
+
+[node name="CelestialObelisk" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.9, 0)
+shape = SubResource("BoxShape3D_obelisk")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.8, 0, 0, 0, 2.8, 0, 0, 0, 2.8, 0, 0, 0)
+
+[node name="HolyGlow" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+light_color = Color(1, 0.9, 0.5, 1)
+light_energy = 2.2
+omni_range = 7.0

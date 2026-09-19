@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://bw1cfcqbxfi6l"]
+
+[ext_resource type="PackedScene" path="res://assets/nature_kit/bridge_wood.glb" id="1_bridge"]
+[ext_resource type="PackedScene" path="res://assets/nature_kit/lily_large.glb" id="2_lily"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bridge_deck"]
+size = Vector3(2.5, 0.4, 6.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pond_water"]
+transparency = 1
+albedo_color = Color(0.12, 0.65, 0.78, 0.72)
+roughness = 0.05
+metallic = 0.15
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pond"]
+top_radius = 6.0
+bottom_radius = 5.5
+height = 0.2
+radial_segments = 32
+
+[node name="WoodenBridgePond" type="Node3D"]
+
+[node name="Water" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+mesh = SubResource("CylinderMesh_pond")
+surface_material_override/0 = SubResource("StandardMaterial3D_pond_water")
+
+[node name="BridgeModel" parent="." instance=ExtResource("1_bridge")]
+transform = Transform3D(2.0, 0, 0, 0, 2.0, 0, 0, 0, 2.0, 0, -0.2, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+shape = SubResource("BoxShape3D_bridge_deck")
+
+[node name="LilyPad1" parent="." instance=ExtResource("2_lily")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 2.8, -0.25, 1.5)
+
+[node name="LilyPad2" parent="." instance=ExtResource("2_lily")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, -2.5, -0.25, -1.8)
