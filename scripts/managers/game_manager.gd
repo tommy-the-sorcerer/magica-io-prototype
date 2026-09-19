@@ -26,9 +26,29 @@ func _ready() -> void:
 	if hud:
 		hud.update_alive_count(alive_combatants, total_combatants)
 		
-	# Find Player
-	player_node = get_tree().current_scene.find_child("Player", true, false) as Node3D
+	# Find or spawn Player according to selected hero
+	var existing_player := get_tree().current_scene.find_child("Player", true, false) as Node3D
+	var selected_scene: PackedScene = LevelManager.instance.get_selected_player_scene() if (LevelManager.instance and LevelManager.instance.has_method("get_selected_player_scene")) else null
+	if selected_scene and existing_player and existing_player.scene_file_path != selected_scene.resource_path:
+		var pos: Vector3 = existing_player.global_position
+		var rot: Vector3 = existing_player.rotation
+		var p_parent: Node = existing_player.get_parent()
+		existing_player.name = "Player_Old"
+		existing_player.queue_free()
+		
+		var new_player := selected_scene.instantiate() as Node3D
+		new_player.name = "Player"
+		p_parent.add_child(new_player)
+		new_player.global_position = pos
+		new_player.rotation = rot
+		player_node = new_player
+	else:
+		player_node = existing_player
+
 	if player_node:
+		var cam := get_tree().current_scene.find_child("Camera3D", true, false)
+		if cam and cam.has_method("set"):
+			cam.set("target", player_node)
 		var hp_comp: HealthComponent = player_node.find_child("HealthComponent", true, false) as HealthComponent
 		if hp_comp:
 			hp_comp.died.connect(_on_player_died)

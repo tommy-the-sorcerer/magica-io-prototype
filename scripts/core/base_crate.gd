@@ -8,14 +8,19 @@ extends StaticBody3D
 @export var max_coins_dropped: int = 4
 @export var coin_scene: PackedScene
 
-@onready var health_component: HealthComponent = $HealthComponent
-@onready var mesh_instance: MeshInstance3D = $MeshInstance3D
-@onready var collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var health_component: HealthComponent = get_node_or_null("HealthComponent")
+@onready var mesh_instance: MeshInstance3D = get_node_or_null("MeshInstance3D")
+@onready var collision_shape: CollisionShape3D = get_node_or_null("CollisionShape3D")
 
 func _ready() -> void:
 	add_to_group("destructibles")
 	add_to_group("combatants") # Allows projectiles to collide and damage it
 	
+	if not mesh_instance:
+		mesh_instance = find_child("*Mesh*", true, false) as MeshInstance3D
+	if not collision_shape:
+		collision_shape = find_child("*Collision*", true, false) as CollisionShape3D
+		
 	if not health_component:
 		health_component = HealthComponent.new()
 		health_component.name = "HealthComponent"

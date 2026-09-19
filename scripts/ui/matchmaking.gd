@@ -61,9 +61,13 @@ func _on_all_players_found() -> void:
 
 func _start_game() -> void:
 	match_found.emit()
-	# Smooth fade out and transition to gameplay arena
+	var target_scene := "res://scenes/arena/arena.tscn"
+	if LevelManager.instance and LevelManager.instance.has_method("get_active_gameplay_scene"):
+		target_scene = LevelManager.instance.get_active_gameplay_scene()
+	
+	# Smooth fade out and transition to gameplay scene
 	var tween := create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, 0.4)
 	tween.tween_callback(func():
-		get_tree().change_scene_to_file("res://scenes/arena/arena.tscn")
+		get_tree().change_scene_to_file(target_scene)
 	)

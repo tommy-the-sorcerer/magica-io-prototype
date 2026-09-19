@@ -26,6 +26,10 @@ extends Control
 @onready var hero_anchor: Node3D = $SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/HeroAnchor if has_node("SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/HeroAnchor") else null
 @onready var rune_ring: MeshInstance3D = $SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/RuneRing if has_node("SubViewportContainer/SubViewport/ShowcaseWorld/HeroPlatform/RuneRing") else null
 @onready var drag_hint: Control = $CenterOverlay/DragHint if has_node("CenterOverlay/DragHint") else null
+@onready var hero_prev_btn: Button = $CenterOverlay/HeroSelectorBar/HeroPrevBtn if has_node("CenterOverlay/HeroSelectorBar/HeroPrevBtn") else null
+@onready var hero_badge: Button = $CenterOverlay/HeroSelectorBar/HeroBadge if has_node("CenterOverlay/HeroSelectorBar/HeroBadge") else null
+@onready var hero_next_btn: Button = $CenterOverlay/HeroSelectorBar/HeroNextBtn if has_node("CenterOverlay/HeroSelectorBar/HeroNextBtn") else null
+@onready var map_select_btn: Button = $BottomRightArea/MapSelectBtn if has_node("BottomRightArea/MapSelectBtn") else null
 @onready var play_button: Button = $BottomRightArea/PlayButton if has_node("BottomRightArea/PlayButton") else null
 
 # 3D Lighting for Hero Classes
@@ -160,6 +164,8 @@ const SAVE_DATA_PATH: String = "user://ludusforge_menu_data.json"
 var toast_tween: Tween = null
 
 func _ready() -> void:
+	if not LevelManager.instance:
+		LevelManager.new()
 	_load_menu_data()
 	_setup_showcase_hero()
 	_setup_button_effects()
@@ -172,6 +178,8 @@ func _ready() -> void:
 	if play_button:
 		play_button.pressed.connect(_on_play_pressed)
 
+const HERO_CYCLE_KEYS: Array[String] = ["dragonbound", "celestial", "arcane_apprentice", "pyromancer"]
+
 func _setup_showcase_hero() -> void:
 	if not hero_anchor:
 		return
@@ -179,7 +187,15 @@ func _setup_showcase_hero() -> void:
 	for child in hero_anchor.get_children():
 		child.queue_free()
 		
-	var player_scene: PackedScene = load("res://scenes/player/player.tscn") as PackedScene
+	var player_scene: PackedScene = null
+	if LevelManager.instance and LevelManager.instance.has_method("get_selected_player_scene"):
+		LevelManager.instance.selected_hero_id = current_hero_id
+		player_scene = LevelManager.instance.get_selected_player_scene()
+	if not player_scene:
+		player_scene = load("res://characters/dragonbound/dragonbound_character.tscn") as PackedScene
+	if not player_scene:
+		player_scene = load("res://scenes/player/player.tscn") as PackedScene
+		
 	if player_scene:
 		player_instance = player_scene.instantiate() as Node3D
 		hero_anchor.add_child(player_instance)
@@ -194,6 +210,39 @@ func _setup_showcase_hero() -> void:
 			nameplate.visible = false
 			
 	_apply_hero_visuals(current_hero_id)
+	_update_quick_hero_banner()
+
+func _update_quick_hero_banner() -> void:
+	if not hero_badge:
+		return
+	var h_data: Dictionary = LevelManager.PLAYABLE_CHARACTERS.get(current_hero_id, {}) if (LevelManager and "PLAYABLE_CHARACTERS" in LevelManager) else {}
+	var h_icon: String = str(h_data.get("icon", "🛡️"))
+	var h_name: String = str(h_data.get("name", "Hero"))
+	var h_class: String = str(h_data.get("class", ""))
+	hero_badge.text = "%s %s (%s)" % [h_icon, h_name, h_class]
+
+func _cycle_hero(direction: int) -> void:
+	var cur_idx := HERO_CYCLE_KEYS.find(current_hero_id)
+	if cur_idx == -1:
+		cur_idx = 0
+	var next_idx := (cur_idx + direction) % HERO_CYCLE_KEYS.size()
+	if next_idx < 0:
+		next_idx += HERO_CYCLE_KEYS.size()
+	_select_hero(HERO_CYCLE_KEYS[next_idx])
+
+func _select_hero(hero_id: String) -> void:
+	current_hero_id = hero_id
+	if LevelManager.instance:
+		LevelManager.instance.selected_hero_id = hero_id
+		LevelManager.instance.save_progression()
+	_setup_showcase_hero()
+	trigger_hero_flip()
+	_update_quick_hero_banner()
+	_save_menu_data()
+	var hero_name: String = hero_id
+	if LevelManager and "PLAYABLE_CHARACTERS" in LevelManager and LevelManager.PLAYABLE_CHARACTERS.has(hero_id):
+		hero_name = LevelManager.PLAYABLE_CHARACTERS[hero_id].get("name", hero_id)
+	show_toast("%s Selected & Ready for Battle!" % hero_name, "🛡️")
 
 func _connect_all_ui_buttons() -> void:
 	# Navigation & Feature Modals
@@ -272,6 +321,16 @@ func _connect_all_ui_buttons() -> void:
 		close_btn.pressed.connect(close_modal)
 	if modal_overlay:
 		modal_overlay.gui_input.connect(_on_modal_overlay_gui_input)
+		
+	# Hero Quick Selector & Map Realm Button
+	if hero_prev_btn:
+		hero_prev_btn.pressed.connect(func(): _cycle_hero(-1))
+	if hero_next_btn:
+		hero_next_btn.pressed.connect(func(): _cycle_hero(1))
+	if hero_badge:
+		hero_badge.pressed.connect(open_heroes)
+	if map_select_btn:
+		map_select_btn.pressed.connect(open_map_realms)
 
 func _setup_button_effects() -> void:
 	var buttons := find_children("*", "Button", true, false)
@@ -397,18 +456,21 @@ func trigger_hero_flip() -> void:
 
 func _apply_hero_visuals(hero_id: String) -> void:
 	match hero_id:
+		"dragonbound":
+			if purple_rim_light: purple_rim_light.light_color = Color(0.95, 0.2, 0.1)
+			if gold_front_light: gold_front_light.light_color = Color(1.0, 0.55, 0.15)
+		"celestial":
+			if purple_rim_light: purple_rim_light.light_color = Color(0.3, 0.85, 1.0)
+			if gold_front_light: gold_front_light.light_color = Color(1.0, 0.88, 0.4)
+		"arcane_apprentice":
+			if purple_rim_light: purple_rim_light.light_color = Color(0.75, 0.25, 0.95)
+			if gold_front_light: gold_front_light.light_color = Color(0.4, 0.9, 1.0)
 		"pyromancer":
 			if purple_rim_light: purple_rim_light.light_color = Color(0.95, 0.35, 0.15)
 			if gold_front_light: gold_front_light.light_color = Color(1.0, 0.75, 0.2)
-		"frost_weaver":
-			if purple_rim_light: purple_rim_light.light_color = Color(0.2, 0.65, 0.95)
-			if gold_front_light: gold_front_light.light_color = Color(0.5, 0.9, 1.0)
-		"stormbringer":
-			if purple_rim_light: purple_rim_light.light_color = Color(0.75, 0.25, 0.95)
-			if gold_front_light: gold_front_light.light_color = Color(0.9, 0.85, 0.2)
-		"void_sorcerer":
-			if purple_rim_light: purple_rim_light.light_color = Color(0.4, 0.08, 0.6)
-			if gold_front_light: gold_front_light.light_color = Color(0.65, 0.2, 0.85)
+		_:
+			if purple_rim_light: purple_rim_light.light_color = Color(0.7, 0.25, 0.95)
+			if gold_front_light: gold_front_light.light_color = Color(1.0, 0.7, 0.2)
 
 # ==============================================================================
 # CURRENCY & STATE SYNC
@@ -959,46 +1021,9 @@ func open_heroes() -> void:
 	action_btn.pressed.disconnect(close_modal) if action_btn.pressed.is_connected(close_modal) else null
 	action_btn.pressed.connect(close_modal, CONNECT_ONE_SHOT)
 	
-	var heroes_list: Array = [
-		{
-			"id": "pyromancer",
-			"name": "Ignis the Pyromancer",
-			"class": "Flame Magus",
-			"icon": "🧙‍♂️",
-			"desc": "Master of incinerating fireballs and explosive blasts.",
-			"stats": "ATK: 92  •  HP: 450  •  SPD: 5.2",
-			"passive": "+15% Fire Spell Radius"
-		},
-		{
-			"id": "frost_weaver",
-			"name": "Lyra the Frost Weaver",
-			"class": "Glacial Sorceress",
-			"icon": "🧝‍♀️",
-			"desc": "Commands blizzards and frost spells that cripple enemy movement.",
-			"stats": "ATK: 78  •  HP: 520  •  SPD: 4.8",
-			"passive": "Freezing attacks slow foes by 25%"
-		},
-		{
-			"id": "stormbringer",
-			"name": "Thorne the Stormbringer",
-			"class": "Lightning Duelist",
-			"icon": "⚡",
-			"desc": "Channels heavens thunderbolts with furious attack speed.",
-			"stats": "ATK: 88  •  HP: 480  •  SPD: 5.6",
-			"passive": "+20% Attack and Cast Speed"
-		},
-		{
-			"id": "void_sorcerer",
-			"name": "Malakor the Void Sorcerer",
-			"class": "Abyssal Warlock",
-			"icon": "🔮",
-			"desc": "Harvester of dark souls who drains life essence from enemies.",
-			"stats": "ATK: 105  •  HP: 410  •  SPD: 5.0",
-			"passive": "12% Life Steal on spell hits"
-		}
-	]
-	
-	for h in heroes_list:
+	var chars_dict: Dictionary = LevelManager.PLAYABLE_CHARACTERS if (LevelManager and "PLAYABLE_CHARACTERS" in LevelManager) else {}
+	for h_id in chars_dict:
+		var h: Dictionary = chars_dict[h_id]
 		var is_equipped: bool = (current_hero_id == str(h.id))
 		var card := _create_card_panel(
 			Color(0.2, 0.15, 0.28, 0.95) if is_equipped else Color(0.12, 0.09, 0.16, 0.85),
@@ -1057,17 +1082,93 @@ func open_heroes() -> void:
 			btn = _create_action_button("EQUIPPED ✓", Color(0.2, 0.6, 0.3))
 			btn.disabled = true
 		else:
-			btn = _create_action_button("EQUIP HERO", Color(0.92, 0.58, 0.08))
+			btn = _create_action_button("SELECT & PLAY", Color(0.92, 0.58, 0.08))
+			var chosen_id: String = str(h.id)
 			btn.pressed.connect(func():
-				current_hero_id = str(h.id)
-				_apply_hero_visuals(current_hero_id)
-				trigger_hero_flip()
-				show_toast("%s Equipped!" % h.name, "🛡️")
+				_select_hero(chosen_id)
 				open_heroes()
 			)
-		btn.custom_minimum_size = Vector2(110, 44)
+		btn.custom_minimum_size = Vector2(120, 44)
 		hbox.add_child(btn)
+		dynamic_content.add_child(card)
+
+func open_map_realms() -> void:
+	open_modal("MAP REALMS & CHAPTERS (1 - 10)")
+	action_btn.text = "CLOSE"
+	action_btn.pressed.disconnect(close_modal) if action_btn.pressed.is_connected(close_modal) else null
+	action_btn.pressed.connect(close_modal, CONNECT_ONE_SHOT)
+	
+	var maps_dict: Dictionary = LevelManager.CHAPTER_MAPS if (LevelManager and "CHAPTER_MAPS" in LevelManager) else {}
+	var order: Array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+	for map_idx in order:
+		if not maps_dict.has(map_idx):
+			continue
+		var m: Dictionary = maps_dict[map_idx]
+		var card := _create_card_panel(Color(0.12, 0.1, 0.18, 0.95), Color(0.4, 0.35, 0.6))
+		var hbox := HBoxContainer.new()
+		hbox.add_theme_constant_override("separation", 14)
+		card.add_child(hbox)
 		
+		var icon_box := PanelContainer.new()
+		icon_box.custom_minimum_size = Vector2(50, 50)
+		var sb_i := StyleBoxFlat.new()
+		sb_i.bg_color = Color(0.2, 0.15, 0.3)
+		sb_i.set_corner_radius_all(8)
+		icon_box.add_theme_stylebox_override("panel", sb_i)
+		var il := Label.new()
+		il.text = str(m.icon)
+		il.add_theme_font_size_override("font_size", 26)
+		il.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		il.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		icon_box.add_child(il)
+		hbox.add_child(icon_box)
+		
+		var info := VBoxContainer.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		
+		var title_h := HBoxContainer.new()
+		var n_lbl := Label.new()
+		n_lbl.text = str(m.name)
+		n_lbl.add_theme_color_override("font_color", Color(1, 0.88, 0.35))
+		n_lbl.add_theme_font_size_override("font_size", 14)
+		title_h.add_child(n_lbl)
+		
+		var r_lbl := Label.new()
+		r_lbl.text = " [Levels %s]" % str(m.level_range)
+		r_lbl.add_theme_color_override("font_color", Color(0.6, 0.9, 0.65))
+		r_lbl.add_theme_font_size_override("font_size", 11)
+		title_h.add_child(r_lbl)
+		info.add_child(title_h)
+		
+		var d_lbl := Label.new()
+		d_lbl.text = str(m.desc)
+		d_lbl.add_theme_color_override("font_color", Color(0.8, 0.8, 0.85))
+		d_lbl.add_theme_font_size_override("font_size", 11)
+		info.add_child(d_lbl)
+		
+		var b_lbl := Label.new()
+		b_lbl.text = "👑 BOSS: " + str(m.boss_name)
+		b_lbl.add_theme_color_override("font_color", Color(1.0, 0.65, 0.3))
+		b_lbl.add_theme_font_size_override("font_size", 11)
+		info.add_child(b_lbl)
+		hbox.add_child(info)
+		
+		var play_btn := _create_action_button("PLAY MAP", Color(0.18, 0.65, 0.35))
+		play_btn.custom_minimum_size = Vector2(110, 44)
+		var target_scene: String = str(m.scene_path)
+		var lvl_start: int = 1 if map_idx == 1 else (map_idx * 10 - 9 if map_idx > 1 else 1)
+		play_btn.pressed.connect(func():
+			close_modal()
+			if LevelManager.instance:
+				LevelManager.instance.selected_map_scene_path = target_scene
+				LevelManager.instance.current_level_id = lvl_start
+			var tween := create_tween()
+			tween.tween_property(self, "modulate:a", 0.0, 0.3)
+			tween.tween_callback(func():
+				get_tree().change_scene_to_file("res://scenes/ui/matchmaking_screen.tscn")
+			)
+		)
+		hbox.add_child(play_btn)
 		dynamic_content.add_child(card)
 
 # ==============================================================================
@@ -1515,6 +1616,8 @@ func _load_menu_data() -> void:
 			player_name = str(d.get("player_name", player_name))
 			player_level = int(d.get("player_level", player_level))
 			current_hero_id = str(d.get("current_hero_id", current_hero_id))
+			if LevelManager.instance and LevelManager.instance.selected_hero_id != "":
+				current_hero_id = LevelManager.instance.selected_hero_id
 			community_reward_claimed = bool(d.get("community_reward_claimed", community_reward_claimed))
 			if d.has("spells_data") and d.spells_data is Dictionary:
 				spells_data = d.spells_data

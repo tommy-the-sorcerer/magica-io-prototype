@@ -7,11 +7,198 @@ extends Node
 
 static var instance: LevelManager = null
 
+static func get_instance() -> LevelManager:
+	if instance == null:
+		instance = LevelManager.new()
+	return instance
+
 var unlocked_levels: int = 1
 var current_level_id: int = 1
 var player_coins: int = 1126
 var player_gems: int = 0
 var player_xp: int = 120
+
+var selected_hero_id: String = "dragonbound"
+var selected_map_scene_path: String = ""
+
+const PLAYABLE_CHARACTERS := {
+	"dragonbound": {
+		"id": "dragonbound",
+		"name": "Dragonbound",
+		"class": "Infernal Pyromancer",
+		"title": "Draconic Overlord",
+		"scene_path": "res://characters/dragonbound/dragonbound_character.tscn",
+		"icon": "🐉",
+		"desc": "Active multi-axis 3D flapping wings, hovering flight, infernal dash, and magma breath.",
+		"stats": "ATK: 105  •  HP: 600  •  SPD: 5.6",
+		"passive": "+25% Fire AoE & Hovering Flight",
+		"color": Color(1.0, 0.5, 0.15),
+		"rim_color": Color(0.95, 0.2, 0.1)
+	},
+	"celestial": {
+		"id": "celestial",
+		"name": "Celestial Seraph",
+		"class": "Heavenly Ascendant",
+		"title": "Archangel of Retribution",
+		"scene_path": "res://characters/celestial/celestial_character.tscn",
+		"icon": "✨",
+		"desc": "Divine golden halo, quad seraph wings, celestial beam cannon, and radiant barrier.",
+		"stats": "ATK: 98  •  HP: 550  •  SPD: 5.4",
+		"passive": "Divine Light Aura & Invulnerable Dash",
+		"color": Color(1.0, 0.88, 0.4),
+		"rim_color": Color(0.3, 0.85, 1.0)
+	},
+	"arcane_apprentice": {
+		"id": "arcane_apprentice",
+		"name": "Arcane Apprentice",
+		"class": "Storm Magus",
+		"title": "Lightning Adept",
+		"scene_path": "res://characters/arcane_apprentice/apprentice_character.tscn",
+		"icon": "⚡",
+		"desc": "Celtic lightning wand, high-voltage electro blast, spark dash, and kinetic barriers.",
+		"stats": "ATK: 90  •  HP: 480  •  SPD: 5.8",
+		"passive": "+20% Attack Speed & Electric Stun",
+		"color": Color(0.4, 0.9, 1.0),
+		"rim_color": Color(0.75, 0.25, 0.95)
+	},
+	"pyromancer": {
+		"id": "pyromancer",
+		"name": "Classic Magus",
+		"class": "Elemental Sorcerer",
+		"title": "Flame Magus",
+		"scene_path": "res://scenes/player/player.tscn",
+		"icon": "🧙‍♂️",
+		"desc": "Original battle arena sorcerer wielding explosive fireballs and freezing ice lances.",
+		"stats": "ATK: 92  •  HP: 500  •  SPD: 5.2",
+		"passive": "Dual Element Mastery (Fire & Ice)",
+		"color": Color(0.95, 0.35, 0.15),
+		"rim_color": Color(1.0, 0.75, 0.2)
+	}
+}
+
+const CHAPTER_MAPS := {
+	1: {
+		"id": 1,
+		"chapter_key": "chapter_01",
+		"name": "Emerald Plains",
+		"region": "The Whispering Woods",
+		"level_range": "1 - 10",
+		"scene_path": "res://scenes/maps/emerald_plains/emerald_plains.tscn",
+		"boss_name": "Gorgon — The Treant King",
+		"icon": "🌲",
+		"desc": "Lush woodland clearing guarded by ancient roots, treants, and living forest storms."
+	},
+	2: {
+		"id": 2,
+		"chapter_key": "chapter_02",
+		"name": "Desert Mirage",
+		"region": "The Sunken Sands",
+		"level_range": "11 - 20",
+		"scene_path": "res://scenes/maps/chapter_02_desert_mirage/desert_mirage.tscn",
+		"boss_name": "Anubis — Scythe Lord of Dunes",
+		"icon": "🏜️",
+		"desc": "Blistering dunes, ancient pharaonic stone monoliths, and sweeping sandstorms."
+	},
+	3: {
+		"id": 3,
+		"chapter_key": "chapter_03",
+		"name": "Frostbite Tundra",
+		"region": "The Glacial Peaks",
+		"level_range": "21 - 30",
+		"scene_path": "res://scenes/maps/chapter_03_frostbite_tundra/frostbite_tundra.tscn",
+		"boss_name": "Ymir — Glacial Berserker",
+		"icon": "❄️",
+		"desc": "Sub-zero ice shelf flanked by jagged glaciers, frost crystals, and frozen blizzards."
+	},
+	4: {
+		"id": 4,
+		"chapter_key": "chapter_04",
+		"name": "Magma Core",
+		"region": "The Volcanic Firelands",
+		"level_range": "31 - 40",
+		"scene_path": "res://scenes/maps/chapter_04_magma_core/magma_core.tscn",
+		"boss_name": "Ignis — Molten Overlord",
+		"icon": "🌋",
+		"desc": "Molten caldera surrounded by boiling lava rivers, volcanic eruptions, and obsidian rock."
+	},
+	5: {
+		"id": 5,
+		"chapter_key": "chapter_05",
+		"name": "Mystic Grove",
+		"region": "The Bioluminescent Hollows",
+		"level_range": "41 - 50",
+		"scene_path": "res://scenes/maps/chapter_05_mystic_grove/mystic_grove.tscn",
+		"boss_name": "Nightshade — Spore Queen",
+		"icon": "🍄",
+		"desc": "Deep twilight forest dense with giant luminescent mushrooms and toxic fungal spores."
+	},
+	6: {
+		"id": 6,
+		"chapter_key": "chapter_06",
+		"name": "Castle Ruins",
+		"region": "The Fortress Bastion",
+		"level_range": "51 - 60",
+		"scene_path": "res://scenes/maps/chapter_06_castle_ruins/castle_ruins.tscn",
+		"boss_name": "Warlord Iron-Bane",
+		"icon": "🏰",
+		"desc": "Shattered medieval stone ramparts, battlements, ballistas, and ruined iron siege gates."
+	},
+	7: {
+		"id": 7,
+		"chapter_key": "chapter_07",
+		"name": "Pirate Cove",
+		"region": "The Scourge Shores",
+		"level_range": "61 - 70",
+		"scene_path": "res://scenes/maps/chapter_07_pirate_cove/pirate_cove.tscn",
+		"boss_name": "Captain Davy Blood-Tide",
+		"icon": "🏴‍☠️",
+		"desc": "Shipwreck bay lined with beached galleons, wooden piers, cannons, and pirate skulls."
+	},
+	8: {
+		"id": 8,
+		"chapter_key": "chapter_08",
+		"name": "Cursed Swamp",
+		"region": "The Forgotten Graveyard",
+		"level_range": "71 - 80",
+		"scene_path": "res://scenes/maps/chapter_08_cursed_swamp/cursed_swamp.tscn",
+		"boss_name": "Lord Malakor — High Necromancer",
+		"icon": "💀",
+		"desc": "Dark stagnant waters, rotting logs, mossy tombstones, and necromantic crypt lanterns."
+	},
+	9: {
+		"id": 9,
+		"chapter_key": "chapter_09",
+		"name": "Cosmic Void",
+		"region": "The Astral Expanse",
+		"level_range": "81 - 90",
+		"scene_path": "res://scenes/maps/chapter_09_cosmic_void/cosmic_void.tscn",
+		"boss_name": "Xeno-Gorgon Apex",
+		"icon": "🌌",
+		"desc": "Sci-fi space station platform surrounded by asteroid clusters, void crystals, and nebula light."
+	},
+	10: {
+		"id": 10,
+		"chapter_key": "chapter_10",
+		"name": "Celestial Peak",
+		"region": "The Eldritch Path (Divine Realm)",
+		"level_range": "91 - 100",
+		"scene_path": "res://scenes/maps/chapter_10_celestial_peak/celestial_peak.tscn",
+		"boss_name": "Judgment Seraph",
+		"icon": "👑",
+		"desc": "Floating summit temple above the clouds featuring divine marble pillars and golden obelisks."
+	},
+	0: {
+		"id": 0,
+		"chapter_key": "arena",
+		"name": "Gladiator Arena",
+		"region": "Free For All Battle Royale",
+		"level_range": "FFA",
+		"scene_path": "res://scenes/arena/arena.tscn",
+		"boss_name": "15-Player Free For All",
+		"icon": "⚔️",
+		"desc": "Classic circular battle royale colosseum with 15 combatants and closing electric storm."
+	}
+}
 
 const SAVE_PATH: String = "user://ludusforge_save.json"
 
@@ -82,13 +269,53 @@ func unlock_next_level() -> void:
 	player_xp += cfg.get("reward_xp", 100)
 	save_progression()
 
+func get_selected_player_scene() -> PackedScene:
+	if PLAYABLE_CHARACTERS.has(selected_hero_id):
+		var path: String = PLAYABLE_CHARACTERS[selected_hero_id].get("scene_path", "")
+		if ResourceLoader.exists(path):
+			var sc := load(path) as PackedScene
+			if sc:
+				return sc
+	# Default fallback
+	var fallback := "res://characters/dragonbound/dragonbound_character.tscn"
+	if ResourceLoader.exists(fallback):
+		return load(fallback) as PackedScene
+	return load("res://scenes/player/player.tscn") as PackedScene
+
+func get_chapter_for_level(lvl: int) -> int:
+	if lvl <= 10: return 1
+	elif lvl <= 20: return 2
+	elif lvl <= 30: return 3
+	elif lvl <= 40: return 4
+	elif lvl <= 50: return 5
+	elif lvl <= 60: return 6
+	elif lvl <= 70: return 7
+	elif lvl <= 80: return 8
+	elif lvl <= 90: return 9
+	else: return 10
+
+func get_level_scene_path(lvl: int) -> String:
+	var ch: int = get_chapter_for_level(lvl)
+	if CHAPTER_MAPS.has(ch):
+		var p: String = CHAPTER_MAPS[ch].get("scene_path", "")
+		if ResourceLoader.exists(p):
+			return p
+	return "res://scenes/arena/arena.tscn"
+
+func get_active_gameplay_scene() -> String:
+	if selected_map_scene_path != "" and ResourceLoader.exists(selected_map_scene_path):
+		return selected_map_scene_path
+	return get_level_scene_path(current_level_id)
+
 func save_progression() -> void:
 	var data := {
 		"unlocked_levels": unlocked_levels,
 		"current_level_id": current_level_id,
 		"player_coins": player_coins,
 		"player_gems": player_gems,
-		"player_xp": player_xp
+		"player_xp": player_xp,
+		"selected_hero_id": selected_hero_id,
+		"selected_map_scene_path": selected_map_scene_path
 	}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
@@ -110,3 +337,7 @@ func load_progression() -> void:
 			player_coins = int(dict.get("player_coins", 1126))
 			player_gems = int(dict.get("player_gems", 0))
 			player_xp = int(dict.get("player_xp", 120))
+			if dict.has("selected_hero_id"):
+				selected_hero_id = str(dict.get("selected_hero_id", selected_hero_id))
+			if dict.has("selected_map_scene_path"):
+				selected_map_scene_path = str(dict.get("selected_map_scene_path", selected_map_scene_path))

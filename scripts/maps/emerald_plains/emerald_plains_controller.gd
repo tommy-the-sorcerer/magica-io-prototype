@@ -62,7 +62,11 @@ func _apply_environment_settings() -> void:
 		env.volumetric_fog_density = level_data.fog_density
 
 func _spawn_player() -> void:
-	var player_scene := load("res://scenes/player/player.tscn")
+	var player_scene: PackedScene = null
+	if LevelManager.instance and LevelManager.instance.has_method("get_selected_player_scene"):
+		player_scene = LevelManager.instance.get_selected_player_scene()
+	if not player_scene:
+		player_scene = load("res://scenes/player/player.tscn")
 	if not player_scene:
 		return
 		

@@ -582,18 +582,26 @@ func _show_locked_toast(lvl: int, unlocked: int) -> void:
 func _open_level_modal(lvl: int) -> void:
 	selected_level_num = lvl
 	var cfg: Dictionary = level_mgr.get_level_config(lvl) if level_mgr else {}
+	var ch_idx: int = level_mgr.get_chapter_for_level(lvl) if (level_mgr and level_mgr.has_method("get_chapter_for_level")) else 1
+	var ch_data: Dictionary = level_mgr.CHAPTER_MAPS.get(ch_idx, {}) if (level_mgr and "CHAPTER_MAPS" in level_mgr) else {}
+	var map_name: String = str(ch_data.get("name", "Realm"))
+	var boss_title: String = str(ch_data.get("boss_name", "Boss"))
+	var is_boss_lvl: bool = (lvl % 10 == 0)
 	
 	if level_title_label:
-		level_title_label.text = "LEVEL %d" % lvl
+		level_title_label.text = "LEVEL %d: %s" % [lvl, map_name.to_upper()]
 	if region_name_label:
-		region_name_label.text = cfg.get("name", "Stage %d" % lvl)
+		region_name_label.text = "👑 BOSS STAGE: %s" % boss_title if is_boss_lvl else "🗺️ REALM: %s (%s)" % [map_name, ch_data.get("region", "")]
 	if difficulty_label:
 		var stars_count: int = cfg.get("difficulty_stars", 1)
 		var star_str := ""
 		for s in range(stars_count): star_str += "⭐"
 		difficulty_label.text = "DIFFICULTY: %s" % star_str
 	if objective_label:
-		objective_label.text = "OBJECTIVE:\nDefeat %d arena combatants and survive the storm!" % cfg.get("enemy_count", 15)
+		if is_boss_lvl:
+			objective_label.text = "OBJECTIVE:\nDefeat %s in an epic chapter showdown!" % boss_title
+		else:
+			objective_label.text = "OBJECTIVE:\nDefeat %d arena combatants and survive the realm storm!" % cfg.get("enemy_count", 15)
 	if reward_label:
 		reward_label.text = "REWARDS:\n🪙 %d Coins  |  ⭐ %d XP" % [cfg.get("reward_coins", 300), cfg.get("reward_xp", 150)]
 		
@@ -621,6 +629,8 @@ func close_level_modal() -> void:
 func _on_start_selected_level() -> void:
 	if level_mgr:
 		level_mgr.current_level_id = selected_level_num
+		if level_mgr.has_method("get_level_scene_path"):
+			level_mgr.selected_map_scene_path = level_mgr.get_level_scene_path(selected_level_num)
 	level_selected.emit(selected_level_num)
 	var tween := create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, 0.3)

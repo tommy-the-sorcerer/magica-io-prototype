@@ -56,7 +56,11 @@ func _resolve_boss_scene() -> void:
 				break
 
 func _spawn_player() -> void:
-	var player_scene := load("res://scenes/player/player.tscn")
+	var player_scene: PackedScene = null
+	if LevelManager.instance and LevelManager.instance.has_method("get_selected_player_scene"):
+		player_scene = LevelManager.instance.get_selected_player_scene()
+	if not player_scene:
+		player_scene = load("res://scenes/player/player.tscn")
 	if not player_scene:
 		return
 		
