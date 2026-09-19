@@ -1,0 +1,89 @@
+[gd_scene format=3 uid="uid://crph1yf3bsx1j"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_stars"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 0.95)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_star"]
+material = SubResource("StandardMaterial3D_stars")
+size = Vector2(0.9, 0.9)
+
+[sub_resource type="Curve" id="Curve_star_scale"]
+_data = [Vector2(0, 0.2), 0.0, 0.0, 0, 0, Vector2(0.5, 1.0), 0.0, 0.0, 0, 0, Vector2(1, 0.2), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cosmic_dust"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.5, 0.25, 0.95, 0.55)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_nebula_cloud"]
+material = SubResource("StandardMaterial3D_cosmic_dust")
+size = Vector2(18.0, 18.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cyan_dust"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.15, 0.85, 1.0, 0.45)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_cyan_nebula"]
+material = SubResource("StandardMaterial3D_cyan_dust")
+size = Vector2(22.0, 22.0)
+
+[node name="Starfield3D" type="Node3D"]
+
+[node name="Ambient3DStars" type="CPUParticles3D" parent="."]
+amount = 260
+lifetime = 20.0
+preprocess = 20.0
+mesh = SubResource("QuadMesh_star")
+emission_shape = 3
+emission_box_extents = Vector3(240, 70, 240)
+direction = Vector3(0.2, 0.05, 0.1)
+spread = 45.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 1.8
+scale_amount_curve = SubResource("Curve_star_scale")
+color = Color(0.9, 0.95, 1, 0.95)
+
+[node name="VioletNebulaClouds" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20, 0)
+amount = 28
+lifetime = 24.0
+preprocess = 24.0
+mesh = SubResource("QuadMesh_nebula_cloud")
+emission_shape = 3
+emission_box_extents = Vector3(200, 30, 200)
+direction = Vector3(0.1, 0, 0.05)
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.2
+initial_velocity_max = 0.8
+color = Color(0.7, 0.3, 1, 0.4)
+
+[node name="CyanNebulaClouds" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -15, 0)
+amount = 24
+lifetime = 26.0
+preprocess = 26.0
+mesh = SubResource("QuadMesh_cyan_nebula")
+emission_shape = 3
+emission_box_extents = Vector3(210, 25, 210)
+direction = Vector3(-0.08, 0, 0.1)
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.2
+initial_velocity_max = 0.6
+color = Color(0.1, 0.8, 1, 0.35)

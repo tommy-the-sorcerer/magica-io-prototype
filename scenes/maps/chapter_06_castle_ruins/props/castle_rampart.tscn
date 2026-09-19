@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://crrampart01"]
+
+[ext_resource type="PackedScene" path="res://assets/castle_kit/wall.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall"]
+size = Vector3(4.0, 3.2, 1.6)
+
+[node name="CastleRampart" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+shape = SubResource("BoxShape3D_wall")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)

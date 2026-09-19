@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://d33bvsd5xg71n"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_stack_col"]
+size = Vector3(2.6, 2.2, 2.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_crate_wood"]
+albedo_color = Color(0.68, 0.46, 0.26, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_crate_unit"]
+size = Vector3(1.1, 1.1, 1.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_barrel_wood"]
+albedo_color = Color(0.52, 0.35, 0.2, 1)
+roughness = 0.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_barrel_unit"]
+top_radius = 0.42
+bottom_radius = 0.46
+height = 1.1
+radial_segments = 10
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_stone"]
+albedo_color = Color(0.5, 0.54, 0.52, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_stone_block"]
+size = Vector3(0.8, 0.5, 0.8)
+
+[node name="CrateStack" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+shape = SubResource("BoxShape3D_stack_col")
+
+[node name="CrateBottom1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.55, 0)
+mesh = SubResource("BoxMesh_crate_unit")
+surface_material_override/0 = SubResource("StandardMaterial3D_crate_wood")
+
+[node name="CrateBottom2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.55, 0)
+mesh = SubResource("BoxMesh_crate_unit")
+surface_material_override/0 = SubResource("StandardMaterial3D_crate_wood")
+
+[node name="CrateTop" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, 0, 1.65, 0)
+mesh = SubResource("BoxMesh_crate_unit")
+surface_material_override/0 = SubResource("StandardMaterial3D_crate_wood")
+
+[node name="Barrel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.55, 0.2)
+mesh = SubResource("CylinderMesh_barrel_unit")
+surface_material_override/0 = SubResource("StandardMaterial3D_barrel_wood")
+
+[node name="StoneBlock" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3, 0.25, 0.4)
+mesh = SubResource("BoxMesh_stone_block")
+surface_material_override/0 = SubResource("StandardMaterial3D_stone")

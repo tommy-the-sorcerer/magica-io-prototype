@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://un54arr74k4p2"]
+
+[ext_resource type="Script" path="res://scripts/vfx/dash_arrival_vfx.gd" id="1_script"]
+[ext_resource type="AudioStream" path="res://assets/audio/celestial_dash.wav" id="2_audio_wav"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ring"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.88, 0.4, 0.8)
+
+[sub_resource type="TorusMesh" id="TorusMesh_ring"]
+material = SubResource("StandardMaterial3D_ring")
+inner_radius = 0.3
+outer_radius = 0.45
+rings = 20
+ring_segments = 14
+
+[sub_resource type="Curve" id="Curve_feathers"]
+_data = [Vector2(0, 0.4), 0.0, 1.5, 0, 0, Vector2(0.4, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_feathers"]
+curve = SubResource("Curve_feathers")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_feathers"]
+emission_shape = 1
+emission_sphere_radius = 0.2
+direction = Vector3(0, 0.8, 0)
+spread = 60.0
+initial_velocity_min = 2.0
+initial_velocity_max = 4.2
+gravity = Vector3(0, -3.5, 0)
+scale_min = 0.3
+scale_max = 0.6
+scale_curve = SubResource("CurveTexture_feathers")
+color = Color(1, 0.95, 0.7, 0.9)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_feather"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(0.9, 0.95, 1, 0.85)
+
+[sub_resource type="PrismMesh" id="PrismMesh_feather"]
+material = SubResource("StandardMaterial3D_feather")
+size = Vector3(0.09, 0.25, 0.04)
+
+[node name="DashArrivalVFX" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_audio_wav")
+unit_size = 10.0
+max_distance = 35.0
+bus = &"Master"
+
+[node name="BrakeRing" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+mesh = SubResource("TorusMesh_ring")
+
+[node name="Feathers" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+emitting = false
+amount = 16
+lifetime = 0.35
+one_shot = true
+explosiveness = 0.9
+process_material = SubResource("ParticleProcessMaterial_feathers")
+draw_pass_1 = SubResource("PrismMesh_feather")

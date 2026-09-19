@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://cvpylon01"]
+
+[ext_resource type="PackedScene" path="res://assets/space_kit/satelliteDish_large.glb" id="1_model"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_dish"]
+height = 5.0
+radius = 2.0
+
+[node name="CosmicPylon" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+shape = SubResource("CylinderShape3D_dish")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.0, 0, 0, 0, 2.0, 0, 0, 0, 2.0, 0, 0, 0)
+
+[node name="EnergyLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0, 0)
+light_color = Color(0, 0.9, 1, 1)
+light_energy = 2.5
+omni_range = 8.0

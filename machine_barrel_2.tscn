@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://cay4j34s6h82b"]
+
+[ext_resource type="PackedScene" uid="uid://32776kgc14yx" path="res://assets/space_kit/machine_barrel.glb" id="1_s2u0g"]
+
+[node name="machine_barrel2" unique_id=388734383 instance=ExtResource("1_s2u0g")]

@@ -1,0 +1,81 @@
+[gd_scene format=3 uid="uid://d22062uo70ixq"]
+
+[ext_resource type="PackedScene" path="res://assets/nature_kit/cliff_waterfallTop_stone.glb" id="1_wtop"]
+[ext_resource type="PackedScene" path="res://assets/nature_kit/cliff_waterfall_stone.glb" id="2_wfall"]
+[ext_resource type="PackedScene" path="res://assets/nature_kit/cliff_large_stone.glb" id="3_clifflarge"]
+[ext_resource type="Shader" path="res://assets/shaders/waterfall_cascade.gdshader" id="4_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_water"]
+render_priority = 0
+shader = ExtResource("4_shader")
+shader_parameter/water_color = Color(0.18, 0.76, 0.98, 0.85)
+shader_parameter/foam_color = Color(0.92, 0.98, 1, 0.96)
+shader_parameter/flow_speed = 3.2
+
+[sub_resource type="QuadMesh" id="QuadMesh_cascade"]
+material = SubResource("ShaderMaterial_water")
+size = Vector2(5.5, 22.0)
+
+[sub_resource type="QuadMesh" id="QuadMesh_top_spill"]
+material = SubResource("ShaderMaterial_water")
+size = Vector2(5.0, 6.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mist"]
+transparency = 1
+albedo_color = Color(0.9, 0.96, 1, 0.45)
+roughness = 0.2
+emission_enabled = true
+emission = Color(0.6, 0.85, 1, 1)
+emission_energy_multiplier = 0.5
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_mist_particle"]
+material = SubResource("StandardMaterial3D_mist")
+size = Vector2(2.5, 2.5)
+
+[sub_resource type="Curve" id="Curve_mist_scale"]
+_data = [Vector2(0, 0.4), 0.0, 0.0, 0, 0, Vector2(0.5, 1.2), 0.0, 0.0, 0, 0, Vector2(1, 0.1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[node name="CliffWaterfallOverlook" type="Node3D"]
+
+[node name="CliffTop" parent="." instance=ExtResource("1_wtop")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+
+[node name="CliffFallMid" parent="." instance=ExtResource("2_wfall")]
+transform = Transform3D(3.2, 0, 0, 0, 3.2, 0, 0, 0, 3.2, 0, -4.5, -0.6)
+
+[node name="CliffFallLow" parent="." instance=ExtResource("2_wfall")]
+transform = Transform3D(3.4, 0, 0, 0, 3.8, 0, 0, 0, 3.4, 0, -10.5, -1.2)
+
+[node name="LeftFlankRock" parent="." instance=ExtResource("3_clifflarge")]
+transform = Transform3D(2.8, 0, 1.6, 0, 3.5, 0, -1.6, 0, 2.8, -4.5, -1.5, -1.0)
+
+[node name="RightFlankRock" parent="." instance=ExtResource("3_clifflarge")]
+transform = Transform3D(2.6, 0, -1.8, 0, 3.5, 0, 1.8, 0, 2.6, 4.5, -1.5, -1.0)
+
+[node name="WaterTopSpill" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.08, 1.5)
+mesh = SubResource("QuadMesh_top_spill")
+
+[node name="WaterCascadeCurtain" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, 0, -10.5, -1.4)
+mesh = SubResource("QuadMesh_cascade")
+
+[node name="MistPlume" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12.0, -2.5)
+amount = 24
+lifetime = 2.4
+mesh = SubResource("QuadMesh_mist_particle")
+emission_shape = 3
+emission_box_extents = Vector3(3.5, 1.0, 2.0)
+direction = Vector3(0, 1, 0.4)
+spread = 35.0
+gravity = Vector3(0, 1.2, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 4.5
+scale_amount_curve = SubResource("Curve_mist_scale")
+color = Color(1, 1, 1, 0.6)

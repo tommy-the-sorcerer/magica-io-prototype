@@ -1,0 +1,78 @@
+[gd_scene load_steps=10 format=3 uid="uid://0pq55spnk4p2"]
+
+[ext_resource type="Script" path="res://scripts/vfx/ice_impact_particles.gd" id="1_script"]
+
+[sub_resource type="Curve" id="Curve_scale"]
+_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_scale"]
+curve = SubResource("Curve_scale")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_crystals"]
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 4.0
+initial_velocity_max = 9.0
+gravity = Vector3(0, -6.0, 0)
+damping_min = 3.0
+damping_max = 6.0
+scale_min = 0.5
+scale_max = 1.0
+scale_curve = SubResource("CurveTexture_scale")
+color = Color(0.3, 0.9, 1.0, 1.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ice_shard"]
+shading_mode = 0
+albedo_color = Color(0.4, 0.92, 1.0, 1.0)
+
+[sub_resource type="PrismMesh" id="PrismMesh_shard"]
+material = SubResource("StandardMaterial3D_ice_shard")
+size = Vector3(0.12, 0.22, 0.12)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_frost_ring"]
+gravity = Vector3(0, 0, 0)
+scale_min = 0.4
+scale_max = 2.4
+scale_curve = SubResource("CurveTexture_scale")
+color = Color(0.5, 0.95, 1.0, 0.7)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_frost_ring"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.4, 0.88, 1.0, 0.5)
+
+[sub_resource type="TorusMesh" id="TorusMesh_ring"]
+material = SubResource("StandardMaterial3D_frost_ring")
+inner_radius = 0.65
+outer_radius = 0.95
+rings = 14
+ring_segments = 10
+
+[node name="IceImpactParticles" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Crystals" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 24
+lifetime = 0.55
+one_shot = true
+explosiveness = 0.92
+process_material = SubResource("ParticleProcessMaterial_crystals")
+draw_pass_1 = SubResource("PrismMesh_shard")
+
+[node name="FrostRing" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+emitting = false
+amount = 1
+lifetime = 0.3
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_frost_ring")
+draw_pass_1 = SubResource("TorusMesh_ring")
+
+[node name="FlashLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+light_color = Color(0.3, 0.85, 1.0, 1.0)
+light_energy = 3.0
+omni_range = 4.5

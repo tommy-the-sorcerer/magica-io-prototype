@@ -1,0 +1,281 @@
+[gd_scene load_steps=25 format=3 uid="uid://cef0n20y8mggd"]
+
+[ext_resource type="Script" path="res://scripts/core/chapter_map_controller.gd" id="1_ctrl"]
+[ext_resource type="Script" path="res://scripts/camera/camera_follow.gd" id="2_cam"]
+[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/pink_gem.tscn" id="3_gem"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_08_cursed_swamp/props/cursed_swamp_crate.tscn" id="4_crate"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_08_cursed_swamp/props/swamp_dead_tree.tscn" id="5_tree"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_08_cursed_swamp/props/rotting_swamp_log.tscn" id="6_log"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_08_cursed_swamp/props/mossy_tomb_marker.tscn" id="7_tomb"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="8_hud"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_08_cursed_swamp/props/swamp_crypt.tscn" id="9_crypt"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_08_cursed_swamp/props/cemetery_fence.tscn" id="10_fence"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_08_cursed_swamp/props/swamp_lantern.tscn" id="11_lantern"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_swamp"]
+sky_top_color = Color(0.12, 0.16, 0.10, 1)
+sky_horizon_color = Color(0.36, 0.45, 0.28, 1)
+ground_bottom_color = Color(0.22, 0.28, 0.16, 1)
+ground_horizon_color = Color(0.36, 0.45, 0.28, 1)
+
+[sub_resource type="Sky" id="Sky_swamp"]
+sky_material = SubResource("ProceduralSkyMaterial_swamp")
+
+[sub_resource type="Environment" id="Environment_swamp"]
+background_mode = 2
+sky = SubResource("Sky_swamp")
+ambient_light_source = 2
+ambient_light_color = Color(0.42, 0.52, 0.35, 1)
+ambient_light_energy = 0.45
+tonemap_mode = 3
+glow_enabled = true
+glow_intensity = 0.8
+glow_bloom = 0.0
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_swamp"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_swamp_mud"]
+top_radius = 50.0
+bottom_radius = 52.0
+height = 1.0
+radial_segments = 64
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_swamp_col"]
+height = 1.0
+radius = 50.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mud"]
+albedo_color = Color(0.24, 0.28, 0.20, 1)
+roughness = 0.95
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_peat_underbelly"]
+top_radius = 50.0
+bottom_radius = 4.0
+height = 18.0
+radial_segments = 64
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_peat_underbelly"]
+albedo_color = Color(0.16, 0.18, 0.12, 1)
+roughness = 0.96
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_toxic_sea"]
+size = Vector2(450, 450)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_toxic_sea"]
+transparency = 1
+albedo_color = Color(0.18, 0.45, 0.12, 0.88)
+emission_enabled = true
+emission = Color(0.2, 0.7, 0.15, 1)
+emission_energy_multiplier = 0.5
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_toxic_puff"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.45, 0.85, 0.25, 0.55)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_toxic_puff"]
+material = SubResource("StandardMaterial3D_toxic_puff")
+size = Vector2(2.8, 2.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_toxic_ooze"]
+albedo_color = Color(0.25, 0.85, 0.2, 1)
+emission_enabled = true
+emission = Color(0.2, 0.9, 0.15, 1)
+emission_energy_multiplier = 2.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_ooze_canal"]
+size = Vector3(4.5, 0.08, 48.0)
+
+[node name="CursedSwamp" type="Node3D"]
+script = ExtResource("1_ctrl")
+chapter_name = "Chapter 8: Cursed Swamp"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_swamp")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 35, 0)
+light_color = Color(0.75, 0.95, 0.65, 1)
+light_energy = 1.1
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 16, 16)
+fov = 42.0
+script = ExtResource("2_cam")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_swamp")
+
+[node name="GroundTerrain" type="StaticBody3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain"]
+mesh = SubResource("CylinderMesh_swamp_mud")
+surface_material_override/0 = SubResource("StandardMaterial3D_mud")
+
+[node name="UnderbellyMesh" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.5, 0)
+mesh = SubResource("CylinderMesh_peat_underbelly")
+surface_material_override/0 = SubResource("StandardMaterial3D_peat_underbelly")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/GroundTerrain"]
+shape = SubResource("CylinderShape3D_swamp_col")
+
+[node name="ToxicCanals" type="Node3D" parent="."]
+
+[node name="CanalNorth" type="MeshInstance3D" parent="ToxicCanals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -20)
+mesh = SubResource("BoxMesh_ooze_canal")
+surface_material_override/0 = SubResource("StandardMaterial3D_toxic_ooze")
+
+[node name="CanalSouth" type="MeshInstance3D" parent="ToxicCanals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 20)
+mesh = SubResource("BoxMesh_ooze_canal")
+surface_material_override/0 = SubResource("StandardMaterial3D_toxic_ooze")
+
+[node name="DeadTrees" type="Node3D" parent="."]
+
+[node name="Tree1" parent="DeadTrees" instance=ExtResource("5_tree")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, -16, 0, -14)
+
+[node name="Tree2" parent="DeadTrees" instance=ExtResource("5_tree")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, -14)
+
+[node name="Tree3" parent="DeadTrees" instance=ExtResource("5_tree")]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, -18, 0, 14)
+
+[node name="Tree4" parent="DeadTrees" instance=ExtResource("5_tree")]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 18, 0, 14)
+
+[node name="SwampLogs" type="Node3D" parent="."]
+
+[node name="Log1" parent="SwampLogs" instance=ExtResource("6_log")]
+transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, -10, 0, 0)
+
+[node name="Log2" parent="SwampLogs" instance=ExtResource("6_log")]
+transform = Transform3D(0.707, 0, -0.707, 0, 1, 0, 0.707, 0, 0.707, 10, 0, 0)
+
+[node name="Tombs" type="Node3D" parent="."]
+
+[node name="Tomb1" parent="Tombs" instance=ExtResource("7_tomb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -8)
+
+[node name="Tomb2" parent="Tombs" instance=ExtResource("7_tomb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
+
+[node name="Tomb3" parent="Tombs" instance=ExtResource("7_tomb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -18)
+
+[node name="Crypts" type="Node3D" parent="."]
+
+[node name="CryptNorth" parent="Crypts" instance=ExtResource("9_crypt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -26)
+
+[node name="CryptSouth" parent="Crypts" instance=ExtResource("9_crypt")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 26)
+
+[node name="Fences" type="Node3D" parent="."]
+
+[node name="Fence1" parent="Fences" instance=ExtResource("10_fence")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, -6)
+
+[node name="Fence2" parent="Fences" instance=ExtResource("10_fence")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 6)
+
+[node name="Fence3" parent="Fences" instance=ExtResource("10_fence")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -6, 0, 14)
+
+[node name="Fence4" parent="Fences" instance=ExtResource("10_fence")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6, 0, -14)
+
+[node name="Lanterns" type="Node3D" parent="."]
+
+[node name="Lantern1" parent="Lanterns" instance=ExtResource("11_lantern")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -5)
+
+[node name="Lantern2" parent="Lanterns" instance=ExtResource("11_lantern")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 5)
+
+[node name="Lantern3" parent="Lanterns" instance=ExtResource("11_lantern")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 5)
+
+[node name="Lantern4" parent="Lanterns" instance=ExtResource("11_lantern")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -5)
+
+[node name="TacticalCover" type="Node3D" parent="."]
+
+[node name="SwampCrate1" parent="TacticalCover" instance=ExtResource("4_crate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 6)
+
+[node name="SwampCrate2" parent="TacticalCover" instance=ExtResource("4_crate")]
+transform = Transform3D(0.9, 0, 0.4, 0, 1, 0, -0.4, 0, 0.9, 6, 0, -6)
+
+[node name="SwampCrate3" parent="TacticalCover" instance=ExtResource("4_crate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
+
+[node name="PinkDiamonds" type="Node3D" parent="."]
+
+[node name="GemCenter" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+
+[node name="GemN" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -12)
+
+[node name="GemS" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 12)
+
+[node name="GemE" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.35, 0)
+
+[node name="GemW" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.35, 0)
+
+[node name="Gameplay" type="Node3D" parent="."]
+
+[node name="PlayerSpawns" type="Node3D" parent="Gameplay"]
+
+[node name="PlayerSpawn_01" type="Marker3D" parent="Gameplay/PlayerSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 8)
+
+[node name="EnemySpawns" type="Node3D" parent="Gameplay"]
+
+[node name="EnemySpawn_North" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -22)
+
+[node name="EnemySpawn_South" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 22)
+
+[node name="EnemySpawn_East" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0.2, 0)
+
+[node name="EnemySpawn_West" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0.2, 0)
+
+[node name="HUD" parent="." instance=ExtResource("8_hud")]
+
+[node name="ToxicMiasmaAbyss" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -18.0, 0)
+
+[node name="ToxicSeaPlane" type="MeshInstance3D" parent="ToxicMiasmaAbyss"]
+mesh = SubResource("PlaneMesh_toxic_sea")
+surface_material_override/0 = SubResource("StandardMaterial3D_toxic_sea")
+
+[node name="RisingMiasmaPuffs" type="CPUParticles3D" parent="ToxicMiasmaAbyss"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0, 0)
+amount = 45
+lifetime = 6.0
+mesh = SubResource("QuadMesh_toxic_puff")
+emission_shape = 3
+emission_box_extents = Vector3(180, 4, 180)
+direction = Vector3(0, 1, 0.1)
+spread = 30.0
+gravity = Vector3(0, 0.8, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 5.0
+color = Color(0.5, 0.95, 0.3, 0.55)

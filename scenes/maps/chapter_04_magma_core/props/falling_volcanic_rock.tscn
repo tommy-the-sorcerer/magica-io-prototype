@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://mcrockbomb01"]
+
+[ext_resource type="Script" path="res://scripts/maps/chapter_04_magma_core/falling_volcanic_rock.gd" id="1_script"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_warning"]
+transparency = 1
+albedo_color = Color(1, 0.15, 0, 0.45)
+emission_enabled = true
+emission = Color(1, 0.2, 0, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_warning_ring"]
+top_radius = 4.5
+bottom_radius = 4.5
+height = 0.05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_meteor"]
+albedo_color = Color(0.18, 0.12, 0.1, 1)
+emission_enabled = true
+emission = Color(1, 0.35, 0, 1)
+emission_energy_multiplier = 2.8
+roughness = 0.5
+
+[sub_resource type="SphereMesh" id="SphereMesh_meteor"]
+radius = 1.4
+height = 2.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fire_trail"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 0.6, 0.1, 0.9)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_fire_trail"]
+material = SubResource("StandardMaterial3D_fire_trail")
+size = Vector2(1.2, 1.2)
+
+[node name="FallingVolcanicRock" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="WarningDecal" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_warning_ring")
+surface_material_override/0 = SubResource("StandardMaterial3D_warning")
+
+[node name="RockMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_meteor")
+surface_material_override/0 = SubResource("StandardMaterial3D_meteor")
+
+[node name="FireTrail" type="CPUParticles3D" parent="."]
+amount = 28
+lifetime = 0.5
+mesh = SubResource("QuadMesh_fire_trail")
+emission_shape = 1
+emission_sphere_radius = 0.8
+gravity = Vector3(0, 1.0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 2.5
+color = Color(1, 0.45, 0.05, 0.8)

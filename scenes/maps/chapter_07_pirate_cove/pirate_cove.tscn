@@ -1,0 +1,241 @@
+[gd_scene load_steps=28 format=3 uid="uid://dfktf6sx7mtw6"]
+
+[ext_resource type="Script" path="res://scripts/core/chapter_map_controller.gd" id="1_ctrl"]
+[ext_resource type="Script" path="res://scripts/camera/camera_follow.gd" id="2_cam"]
+[ext_resource type="PackedScene" path="res://scenes/maps/emerald_plains/props/pink_gem.tscn" id="3_gem"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_07_pirate_cove/props/pirate_chest_crate.tscn" id="4_crate"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_07_pirate_cove/props/pirate_palm.tscn" id="5_palm"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_07_pirate_cove/props/wooden_pier.tscn" id="6_pier"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_07_pirate_cove/props/wrecked_ship.tscn" id="7_wreck"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="8_hud"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_07_pirate_cove/props/pirate_cannon.tscn" id="9_cannon"]
+[ext_resource type="PackedScene" path="res://scenes/maps/chapter_07_pirate_cove/props/pirate_treasure_chest.tscn" id="10_chest"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pirate"]
+sky_top_color = Color(0.18, 0.55, 0.88, 1)
+sky_horizon_color = Color(0.72, 0.88, 0.98, 1)
+ground_bottom_color = Color(0.65, 0.85, 0.92, 1)
+ground_horizon_color = Color(0.72, 0.88, 0.98, 1)
+
+[sub_resource type="Sky" id="Sky_pirate"]
+sky_material = SubResource("ProceduralSkyMaterial_pirate")
+
+[sub_resource type="Environment" id="Environment_pirate"]
+background_mode = 2
+sky = SubResource("Sky_pirate")
+ambient_light_source = 2
+ambient_light_color = Color(0.74, 0.90, 0.98, 1)
+ambient_light_energy = 0.45
+tonemap_mode = 3
+glow_enabled = true
+glow_intensity = 0.8
+glow_bloom = 0.0
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_pirate"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_coral_sand"]
+top_radius = 50.0
+bottom_radius = 52.0
+height = 1.0
+radial_segments = 64
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_sand_col"]
+height = 1.0
+radius = 50.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_white_sand"]
+albedo_color = Color(0.95, 0.91, 0.77, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_coral_underbelly"]
+top_radius = 50.0
+bottom_radius = 4.0
+height = 18.0
+radial_segments = 64
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_coral_underbelly"]
+albedo_color = Color(0.35, 0.32, 0.28, 1)
+roughness = 0.92
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_sky_ocean"]
+size = Vector2(450, 450)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sky_ocean"]
+transparency = 1
+albedo_color = Color(0.1, 0.72, 0.78, 0.88)
+emission_enabled = true
+emission = Color(0.15, 0.65, 0.75, 1)
+emission_energy_multiplier = 0.4
+roughness = 0.15
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sea_spray"]
+transparency = 1
+albedo_color = Color(0.85, 0.96, 1, 0.55)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_sea_spray"]
+material = SubResource("StandardMaterial3D_sea_spray")
+size = Vector2(2.5, 2.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ocean"]
+transparency = 1
+albedo_color = Color(0.1, 0.76, 0.74, 0.82)
+roughness = 0.05
+metallic = 0.15
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cove_sea"]
+top_radius = 16.0
+bottom_radius = 16.0
+height = 0.2
+radial_segments = 32
+
+[node name="PirateCove" type="Node3D"]
+script = ExtResource("1_ctrl")
+chapter_name = "Chapter 7: Pirate Cove"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_pirate")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 35, 0)
+light_color = Color(1, 0.97, 0.88, 1)
+light_energy = 1.1
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 16, 16)
+fov = 42.0
+script = ExtResource("2_cam")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_pirate")
+
+[node name="GroundTerrain" type="StaticBody3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain"]
+mesh = SubResource("CylinderMesh_coral_sand")
+surface_material_override/0 = SubResource("StandardMaterial3D_white_sand")
+
+[node name="UnderbellyMesh" type="MeshInstance3D" parent="NavigationRegion3D/GroundTerrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.5, 0)
+mesh = SubResource("CylinderMesh_coral_underbelly")
+surface_material_override/0 = SubResource("StandardMaterial3D_coral_underbelly")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/GroundTerrain"]
+shape = SubResource("CylinderShape3D_sand_col")
+
+[node name="OceanLagoon" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0.05, 16)
+mesh = SubResource("CylinderMesh_cove_sea")
+surface_material_override/0 = SubResource("StandardMaterial3D_ocean")
+
+[node name="PierDock" parent="." instance=ExtResource("6_pier")]
+transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, -12, 0, 12)
+
+[node name="WreckedGalleon" parent="." instance=ExtResource("7_wreck")]
+transform = Transform3D(0.819152, 0.173648, -0.546948, -0.173648, 0.984808, 0.052684, 0.546948, 0.052684, 0.835488, -20, 0.2, 16)
+
+[node name="CliffCannonNorth" parent="." instance=ExtResource("9_cannon")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 8, 0, -28)
+
+[node name="CliffCannonWest" parent="." instance=ExtResource("9_cannon")]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -28, 0, -6)
+
+[node name="LagoonChest1" parent="." instance=ExtResource("10_chest")]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -11, 0, 9)
+
+[node name="LagoonChest2" parent="." instance=ExtResource("10_chest")]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -13, 0, 8)
+
+[node name="Palms" type="Node3D" parent="."]
+
+[node name="Palm1" parent="Palms" instance=ExtResource("5_palm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0, 8)
+
+[node name="Palm2" parent="Palms" instance=ExtResource("5_palm")]
+transform = Transform3D(-0.9, 0, 0.43, 0, 1, 0, -0.43, 0, -0.9, -12, 0, 24)
+
+[node name="Palm3" parent="Palms" instance=ExtResource("5_palm")]
+transform = Transform3D(0.7, 0, -0.7, 0, 1, 0, 0.7, 0, 0.7, 18, 0, -14)
+
+[node name="Palm4" parent="Palms" instance=ExtResource("5_palm")]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 15, 0, 16)
+
+[node name="Palm5" parent="Palms" instance=ExtResource("5_palm")]
+transform = Transform3D(0.85, 0, 0.5, 0, 1, 0, -0.5, 0, 0.85, 0, 0, -22)
+
+[node name="TacticalCover" type="Node3D" parent="."]
+
+[node name="PirateCrate1" parent="TacticalCover" instance=ExtResource("4_crate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -4)
+
+[node name="PirateCrate2" parent="TacticalCover" instance=ExtResource("4_crate")]
+transform = Transform3D(0.9, 0, 0.4, 0, 1, 0, -0.4, 0, 0.9, 6, 0, 4)
+
+[node name="PirateCrate3" parent="TacticalCover" instance=ExtResource("4_crate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -8)
+
+[node name="PinkDiamonds" type="Node3D" parent="."]
+
+[node name="GemCenter" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+
+[node name="GemN" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -12)
+
+[node name="GemS" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 12)
+
+[node name="GemE" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.35, 0)
+
+[node name="GemW" parent="PinkDiamonds" instance=ExtResource("3_gem")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0.35, 0)
+
+[node name="Gameplay" type="Node3D" parent="."]
+
+[node name="PlayerSpawns" type="Node3D" parent="Gameplay"]
+
+[node name="PlayerSpawn_01" type="Marker3D" parent="Gameplay/PlayerSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 8)
+
+[node name="EnemySpawns" type="Node3D" parent="Gameplay"]
+
+[node name="EnemySpawn_North" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -22)
+
+[node name="EnemySpawn_South" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 22)
+
+[node name="EnemySpawn_East" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0.2, 0)
+
+[node name="EnemySpawn_West" type="Marker3D" parent="Gameplay/EnemySpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0.2, 0)
+
+[node name="HUD" parent="." instance=ExtResource("8_hud")]
+
+[node name="SkyOceanAbyss" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -18.0, 0)
+
+[node name="SkyOceanPlane" type="MeshInstance3D" parent="SkyOceanAbyss"]
+mesh = SubResource("PlaneMesh_sky_ocean")
+surface_material_override/0 = SubResource("StandardMaterial3D_sky_ocean")
+
+[node name="SeaMistSpuffs" type="CPUParticles3D" parent="SkyOceanAbyss"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0, 0)
+amount = 40
+lifetime = 6.0
+mesh = SubResource("QuadMesh_sea_spray")
+emission_shape = 3
+emission_box_extents = Vector3(180, 4, 180)
+direction = Vector3(0, 1, 0)
+spread = 30.0
+gravity = Vector3(0, 0.5, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 5.0
+color = Color(0.9, 0.98, 1, 0.5)

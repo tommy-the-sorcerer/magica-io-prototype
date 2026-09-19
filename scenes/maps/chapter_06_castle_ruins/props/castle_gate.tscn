@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://crgate01"]
+
+[ext_resource type="PackedScene" path="res://assets/castle_kit/metal-gate.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gate"]
+size = Vector3(4.0, 3.5, 0.8)
+
+[node name="CastleGate" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
+shape = SubResource("BoxShape3D_gate")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)

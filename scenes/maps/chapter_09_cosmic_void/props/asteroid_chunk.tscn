@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://cvasteroid01"]
+
+[ext_resource type="PackedScene" path="res://assets/space_kit/meteor_detailed.glb" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_asteroid"]
+size = Vector3(3.4, 2.5, 3.2)
+
+[node name="AsteroidChunk" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+shape = SubResource("BoxShape3D_asteroid")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.4, 0, 0, 0, 2.4, 0, 0, 0, 2.4, 0, 0, 0)

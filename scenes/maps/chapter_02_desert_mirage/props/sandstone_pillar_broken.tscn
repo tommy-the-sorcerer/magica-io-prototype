@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dmsandstonebroken01"]
+
+[ext_resource type="PackedScene" path="res://assets/nature_kit/statue_columnDamaged.glb" id="1_model"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_broken"]
+height = 2.8
+radius = 0.75
+
+[node name="SandstonePillarBroken" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+shape = SubResource("CylinderShape3D_broken")
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)

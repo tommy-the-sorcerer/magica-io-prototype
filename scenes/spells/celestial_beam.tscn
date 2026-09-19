@@ -1,0 +1,170 @@
+[gd_scene load_steps=18 format=3 uid="uid://b7celestialbeam"]
+
+[ext_resource type="Script" path="res://scripts/spells/celestial_beam.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://c8celestialimpact" path="res://scenes/vfx/celestial_impact.tscn" id="2_impact"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hitbox"]
+radius = 0.58
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gold_core"]
+shading_mode = 0
+albedo_color = Color(1, 0.96, 0.6, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_core"]
+material = SubResource("StandardMaterial3D_gold_core")
+radius = 0.45
+height = 0.9
+radial_segments = 20
+rings = 12
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_corona"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.78, 0.15, 0.85)
+
+[sub_resource type="SphereMesh" id="SphereMesh_corona"]
+material = SubResource("StandardMaterial3D_corona")
+radius = 0.58
+height = 1.16
+radial_segments = 20
+rings = 12
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gold_ring"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.85, 0.3, 0.9)
+
+[sub_resource type="TorusMesh" id="TorusMesh_ring_h"]
+material = SubResource("StandardMaterial3D_gold_ring")
+inner_radius = 0.65
+outer_radius = 0.78
+rings = 24
+ring_segments = 16
+
+[sub_resource type="TorusMesh" id="TorusMesh_ring_v"]
+material = SubResource("StandardMaterial3D_gold_ring")
+inner_radius = 0.72
+outer_radius = 0.86
+rings = 24
+ring_segments = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tail_cone"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.75, 0.15, 0.8)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tail_cone"]
+material = SubResource("StandardMaterial3D_tail_cone")
+top_radius = 0.04
+bottom_radius = 0.42
+height = 1.7
+radial_segments = 16
+rings = 2
+
+[sub_resource type="Curve" id="Curve_tail_scale"]
+_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_tail"]
+curve = SubResource("Curve_tail_scale")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_long_tail"]
+emission_shape = 1
+emission_sphere_radius = 0.28
+direction = Vector3(0, 0, 1)
+spread = 18.0
+initial_velocity_min = 1.2
+initial_velocity_max = 2.6
+gravity = Vector3(0, 0.8, 0)
+scale_min = 0.8
+scale_max = 1.4
+scale_curve = SubResource("CurveTexture_tail")
+color = Color(1, 0.82, 0.22, 0.9)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tail_puff"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 0.78, 0.18, 0.8)
+
+[sub_resource type="SphereMesh" id="SphereMesh_tail_puff"]
+material = SubResource("StandardMaterial3D_tail_puff")
+radius = 0.24
+height = 0.48
+radial_segments = 12
+rings = 6
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sparks_trail"]
+emission_shape = 1
+emission_sphere_radius = 0.22
+direction = Vector3(0, 0, 1)
+spread = 35.0
+initial_velocity_min = 2.0
+initial_velocity_max = 4.2
+gravity = Vector3(0, 1.4, 0)
+scale_min = 0.5
+scale_max = 1.1
+scale_curve = SubResource("CurveTexture_tail")
+color = Color(1, 0.94, 0.6, 0.95)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spark_mat"]
+shading_mode = 0
+albedo_color = Color(1, 0.92, 0.5, 0.95)
+
+[sub_resource type="BoxMesh" id="BoxMesh_spark"]
+material = SubResource("StandardMaterial3D_spark_mat")
+size = Vector3(0.1, 0.1, 0.16)
+
+[node name="CelestialBeam" type="Area3D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_script")
+speed = 22.0
+lifetime = 0.75
+damage = 45.0
+is_aoe = true
+aoe_radius = 4.8
+knockback_force = 14.0
+explosion_vfx_scene = ExtResource("2_impact")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_hitbox")
+
+[node name="CoreOrb" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_core")
+
+[node name="CoronaAura" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_corona")
+
+[node name="RingH" type="MeshInstance3D" parent="."]
+mesh = SubResource("TorusMesh_ring_h")
+
+[node name="RingV" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("TorusMesh_ring_v")
+
+[node name="TeardropTail" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.85)
+mesh = SubResource("CylinderMesh_tail_cone")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_color = Color(1, 0.84, 0.32, 1)
+light_energy = 4.2
+omni_range = 7.5
+
+[node name="LongTailParticles" type="GPUParticles3D" parent="."]
+amount = 90
+lifetime = 1.15
+local_coords = false
+process_material = SubResource("ParticleProcessMaterial_long_tail")
+draw_pass_1 = SubResource("SphereMesh_tail_puff")
+
+[node name="SolarSparksParticles" type="GPUParticles3D" parent="."]
+amount = 55
+lifetime = 1.35
+local_coords = false
+process_material = SubResource("ParticleProcessMaterial_sparks_trail")
+draw_pass_1 = SubResource("BoxMesh_spark")

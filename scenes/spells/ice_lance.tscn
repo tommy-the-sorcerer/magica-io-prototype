@@ -1,0 +1,76 @@
+[gd_scene load_steps=9 format=3 uid="uid://c8icelancespell"]
+
+[ext_resource type="Script" path="res://scripts/spells/projectile.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://0pq55spnk4p2" path="res://scenes/vfx/ice_impact_particles.tscn" id="2_vfx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hitbox"]
+size = Vector3(0.35, 0.35, 1.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ice"]
+shading_mode = 0
+albedo_color = Color(0.35, 0.92, 1, 1)
+
+[sub_resource type="PrismMesh" id="PrismMesh_spike"]
+material = SubResource("StandardMaterial3D_ice")
+size = Vector3(0.26, 0.9, 0.26)
+
+[sub_resource type="Curve" id="Curve_trail_scale"]
+_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_trail"]
+curve = SubResource("Curve_trail_scale")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_frost_trail"]
+emission_shape = 1
+emission_sphere_radius = 0.1
+direction = Vector3(0, 0, 1)
+spread = 15.0
+initial_velocity_min = 1.0
+initial_velocity_max = 2.2
+gravity = Vector3(0, -0.4, 0)
+scale_min = 0.4
+scale_max = 0.9
+scale_curve = SubResource("CurveTexture_trail")
+color = Color(0.45, 0.95, 1, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_frost_spark"]
+shading_mode = 0
+albedo_color = Color(0.55, 0.95, 1, 0.85)
+
+[sub_resource type="BoxMesh" id="BoxMesh_frost_cube"]
+material = SubResource("StandardMaterial3D_frost_spark")
+size = Vector3(0.08, 0.08, 0.08)
+
+[node name="IceLance" type="Area3D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_script")
+speed = 22.0
+lifetime = 0.75
+damage = 35.0
+is_aoe = false
+aoe_radius = 0.0
+knockback_force = 5.0
+slow_multiplier = 0.5
+slow_duration = 2.5
+explosion_vfx_scene = ExtResource("2_vfx")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_hitbox")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("PrismMesh_spike")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_color = Color(0.35, 0.85, 1, 1)
+light_energy = 2.0
+omni_range = 3.0
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+amount = 24
+lifetime = 0.32
+local_coords = false
+process_material = SubResource("ParticleProcessMaterial_frost_trail")
+draw_pass_1 = SubResource("BoxMesh_frost_cube")

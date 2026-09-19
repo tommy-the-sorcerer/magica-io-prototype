@@ -1,0 +1,76 @@
+[gd_scene load_steps=9 format=3 uid="uid://c8fireballspell"]
+
+[ext_resource type="Script" path="res://scripts/spells/projectile.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://wc287vx0e4p2" path="res://scenes/vfx/explosion_particles.tscn" id="2_vfx"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hitbox"]
+radius = 0.38
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fire_core"]
+shading_mode = 0
+albedo_color = Color(1, 0.72, 0.15, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_core"]
+material = SubResource("StandardMaterial3D_fire_core")
+radius = 0.3
+height = 0.6
+radial_segments = 16
+rings = 12
+
+[sub_resource type="Curve" id="Curve_trail_scale"]
+_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_trail"]
+curve = SubResource("Curve_trail_scale")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_trail"]
+emission_shape = 1
+emission_sphere_radius = 0.14
+direction = Vector3(0, 0, 1)
+spread = 25.0
+initial_velocity_min = 1.0
+initial_velocity_max = 2.2
+gravity = Vector3(0, 1.0, 0)
+scale_min = 0.6
+scale_max = 1.1
+scale_curve = SubResource("CurveTexture_trail")
+color = Color(1, 0.45, 0.1, 0.75)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spark"]
+shading_mode = 0
+albedo_color = Color(1, 0.4, 0.08, 0.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_spark"]
+material = SubResource("StandardMaterial3D_spark")
+size = Vector3(0.09, 0.09, 0.09)
+
+[node name="Fireball" type="Area3D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_script")
+speed = 22.0
+lifetime = 0.75
+damage = 25.0
+is_aoe = true
+aoe_radius = 3.2
+knockback_force = 10.0
+explosion_vfx_scene = ExtResource("2_vfx")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_hitbox")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_core")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_color = Color(1, 0.55, 0.12, 1)
+light_energy = 2.4
+omni_range = 3.5
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+amount = 28
+lifetime = 0.4
+local_coords = false
+process_material = SubResource("ParticleProcessMaterial_trail")
+draw_pass_1 = SubResource("BoxMesh_spark")

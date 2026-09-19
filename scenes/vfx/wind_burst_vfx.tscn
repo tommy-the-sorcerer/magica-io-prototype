@@ -1,0 +1,178 @@
+[gd_scene format=3 uid="uid://bfv00tx74k4p2"]
+
+[ext_resource type="Script" path="res://scripts/vfx/wind_burst_vfx.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c8windrunetex" path="res://assets/textures/wind_rune.png" id="2_rune_tex"]
+[ext_resource type="Texture2D" uid="uid://c8feathertex" path="res://assets/textures/feather_particle.png" id="3_feather_tex"]
+[ext_resource type="AudioStream" uid="uid://c8windburstwav" path="res://assets/audio/wind_burst.wav" id="4_audio_wav"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rune"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 0.95)
+albedo_texture = ExtResource("2_rune_tex")
+
+[sub_resource type="QuadMesh" id="QuadMesh_rune"]
+material = SubResource("StandardMaterial3D_rune")
+size = Vector2(5.2, 5.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shockwave"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(0.31, 0.76, 1, 0.92)
+
+[sub_resource type="TorusMesh" id="TorusMesh_shockwave"]
+material = SubResource("StandardMaterial3D_shockwave")
+inner_radius = 0.46
+outer_radius = 0.54
+rings = 28
+ring_segments = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dust"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(0.85, 0.93, 1, 0.45)
+
+[sub_resource type="TorusMesh" id="TorusMesh_dust"]
+material = SubResource("StandardMaterial3D_dust")
+inner_radius = 0.48
+outer_radius = 0.55
+rings = 24
+ring_segments = 16
+
+[sub_resource type="Curve" id="Curve_feather_scale"]
+_data = [Vector2(0, 0.2), 0.0, 2.5, 0, 0, Vector2(0.3, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.8, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_feather_scale"]
+curve = SubResource("Curve_feather_scale")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_feathers"]
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 0.2
+emission_ring_radius = 2.4
+emission_ring_inner_radius = 0.5
+direction = Vector3(0, 1, 0)
+spread = 35.0
+initial_velocity_min = 1.8
+initial_velocity_max = 3.6
+angular_velocity_min = -80.0
+angular_velocity_max = 80.0
+gravity = Vector3(0, -0.3, 0)
+scale_min = 0.35
+scale_max = 0.65
+scale_curve = SubResource("CurveTexture_feather_scale")
+color = Color(1, 1, 1, 0.92)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_feather_billboard"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_texture = ExtResource("3_feather_tex")
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_feather"]
+material = SubResource("StandardMaterial3D_feather_billboard")
+size = Vector2(0.5, 0.5)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sparkles"]
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 3.0
+initial_velocity_max = 7.5
+gravity = Vector3(0, 0.5, 0)
+damping_min = 6.0
+damping_max = 10.0
+scale_min = 0.4
+scale_max = 0.9
+color = Color(1, 0.88, 0.35, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sparkle"]
+shading_mode = 0
+albedo_color = Color(1, 0.95, 0.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_sparkle"]
+material = SubResource("StandardMaterial3D_sparkle")
+size = Vector3(0.08, 0.08, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ribbon"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(0.5, 0.85, 1, 0.6)
+
+[sub_resource type="PrismMesh" id="PrismMesh_ribbon"]
+material = SubResource("StandardMaterial3D_ribbon")
+size = Vector3(0.12, 0.95, 0.04)
+
+[node name="WindBurstVFX" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="GroundRune" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.03, 0)
+mesh = SubResource("QuadMesh_rune")
+
+[node name="ShockwaveRing" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+mesh = SubResource("TorusMesh_shockwave")
+
+[node name="DustRipple" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+mesh = SubResource("TorusMesh_dust")
+
+[node name="FeatherParticles" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+emitting = false
+amount = 26
+lifetime = 0.95
+one_shot = true
+explosiveness = 0.85
+process_material = SubResource("ParticleProcessMaterial_feathers")
+draw_pass_1 = SubResource("QuadMesh_feather")
+
+[node name="SparkleParticles" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+emitting = false
+amount = 32
+lifetime = 0.8
+one_shot = true
+explosiveness = 0.9
+process_material = SubResource("ParticleProcessMaterial_sparkles")
+draw_pass_1 = SubResource("BoxMesh_sparkle")
+
+[node name="RibbonsParent" type="Node3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0.2, 0)
+
+[node name="Ribbon1" type="MeshInstance3D" parent="RibbonsParent"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0.45, 0, 0)
+mesh = SubResource("PrismMesh_ribbon")
+
+[node name="Ribbon2" type="MeshInstance3D" parent="RibbonsParent"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -0.45, 0, 0)
+mesh = SubResource("PrismMesh_ribbon")
+
+[node name="Ribbon3" type="MeshInstance3D" parent="RibbonsParent"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0.45)
+mesh = SubResource("PrismMesh_ribbon")
+
+[node name="Ribbon4" type="MeshInstance3D" parent="RibbonsParent"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0, 0, -0.45)
+mesh = SubResource("PrismMesh_ribbon")
+
+[node name="BurstLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+light_color = Color(0.42, 0.8, 1, 1)
+light_energy = 4.8
+omni_range = 6.5
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("4_audio_wav")
+unit_size = 14.0
+max_distance = 45.0
+bus = &"Master"
